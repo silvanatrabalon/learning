@@ -18,6 +18,7 @@ function StartLearning() {
   const [contentIndex, setContentIndex] = useState([])
 
   const topics = [
+    { id: 'javascript', name: 'JavaScript', icon: '📜' },
     { id: 'next', name: 'Next.js', icon: '⚛️' },
     { id: 'nest', name: 'NestJS', icon: '🪶' }
   ]
