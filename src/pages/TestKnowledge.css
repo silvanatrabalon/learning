@@ -281,7 +281,7 @@
   min-height: calc(100vh - 220px); /* Ajustado para el footer */
 }
 
-@media (max-width: 968px) {
+@media (max-width: 820px) {
   .test-container {
     flex-direction: column;
   }
@@ -420,7 +420,7 @@
 }
 
 /* Hide MobileMenu on desktop */
-@media (min-width: 969px) {
+@media (min-width: 821px) {
   .mobile-menu-container {
     display: none;
   }

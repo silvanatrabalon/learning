@@ -64,14 +64,14 @@
 }
 
 /* Hide MobileMenu on desktop */
-@media (min-width: 769px) {
+@media (min-width: 821px) {
   .mobile-menu-container {
     display: none;
   }
 }
 
-/* Show MobileMenu on mobile */
-@media (max-width: 768px) {
+/* Show MobileMenu on mobile/tablet */
+@media (max-width: 820px) {
   .learning-header {
     padding: 1rem;
   }
@@ -258,7 +258,7 @@
   padding: 0;
 }
 
-@media (max-width: 968px) {
+@media (max-width: 820px) {
   .learning-container {
     flex-direction: column;
   }

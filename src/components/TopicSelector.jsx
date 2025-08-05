@@ -56,7 +56,6 @@ function TopicSelector({ topics, selectedTopic, onTopicChange, language = 'en' }
                 >
                   <span className="topic-icon">{topic.icon}</span>
                   <span className="topic-name">{topic.name}</span>
-                  {selectedTopic === topic.id && <span className="check-icon">✓</span>}
                 </button>
               ))}
             </div>

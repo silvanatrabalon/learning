@@ -116,19 +116,14 @@
   font-weight: 600;
 }
 
-.check-icon {
-  margin-left: auto;
-  color: #48bb78;
-  font-weight: bold;
-}
-
 /* Responsive design for smaller screens */
-@media (max-width: 768px) {
+@media (max-width: 820px) {
   .topic-selector {
-    margin-top: 0; /* Remove top margin on mobile */
-    padding: 0.5rem 0; /* Reduce padding */
-    background: transparent; /* Remove background */
-    border-bottom: none; /* Remove border */
+    display: flex !important; /* Ensure visibility on mobile */
+    margin-top: 0;
+    padding: 0;
+    background: transparent;
+    border-bottom: none;
   }
   
   .topic-dropdown-button {
@@ -144,7 +139,7 @@
 
 @media (max-width: 480px) {
   .topic-dropdown-button {
-    min-width: 130px;
+    min-width: 120px; /* Even smaller for very small screens */
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
   }
