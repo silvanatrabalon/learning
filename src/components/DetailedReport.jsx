@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './DetailedReport.css'
 
 function DetailedReport({ sessionReport, topics, language, onRestartSession, onNewSession }) {
-  const [showDetails, setShowDetails] = useState(false)
 
   const getTexts = () => {
     const texts = {
@@ -19,17 +17,9 @@ function DetailedReport({ sessionReport, topics, language, onRestartSession, onN
         strongAreas: 'Strong Areas',
         areasToImprove: 'Areas to Improve',
         recommendations: 'Recommendations',
-        showDetails: 'Show Details',
-        hideDetails: 'Hide Details',
         tryAgain: '🔄 Try Again',
         newSession: '🎯 New Mixed Session',
-        studyMore: '📚 Study Individual Topics',
-        sessionStats: 'Session Statistics',
-        totalTime: 'Total Time',
-        avgPerQuestion: 'Avg per Question',
-        minutes: 'min',
-        seconds: 'sec',
-        exportReport: '📊 Export Report'
+        studyMore: '📚 Study Individual Topics'
       },
       es: {
         sessionComplete: '¡Sesión Mixta Completa!',
@@ -43,17 +33,9 @@ function DetailedReport({ sessionReport, topics, language, onRestartSession, onN
         strongAreas: 'Áreas Fuertes',
         areasToImprove: 'Áreas a Mejorar',
         recommendations: 'Recomendaciones',
-        showDetails: 'Mostrar Detalles',
-        hideDetails: 'Ocultar Detalles',
         tryAgain: '🔄 Intentar de Nuevo',
         newSession: '🎯 Nueva Sesión Mixta',
-        studyMore: '📚 Estudiar Temas Individuales',
-        sessionStats: 'Estadísticas de la Sesión',
-        totalTime: 'Tiempo Total',
-        avgPerQuestion: 'Promedio por Pregunta',
-        minutes: 'min',
-        seconds: 'seg',
-        exportReport: '📊 Exportar Reporte'
+        studyMore: '📚 Estudiar Temas Individuales'
       }
     }
     
@@ -92,12 +74,6 @@ function DetailedReport({ sessionReport, topics, language, onRestartSession, onN
   const areasToImprove = Object.entries(sessionReport.topics)
     .filter(([_, data]) => data.percentage < 70)
     .sort((a, b) => a[1].percentage - b[1].percentage)
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}${texts.minutes} ${secs}${texts.seconds}`
-  }
 
   return (
     <div className="detailed-report">
@@ -200,35 +176,6 @@ function DetailedReport({ sessionReport, topics, language, onRestartSession, onN
               <li key={index} className="recommendation-item">{rec}</li>
             ))}
           </ul>
-        </div>
-      )}
-
-      {/* Session Details Toggle */}
-      <div className="details-toggle">
-        <button 
-          className="toggle-btn"
-          onClick={() => setShowDetails(!showDetails)}
-        >
-          {showDetails ? texts.hideDetails : texts.showDetails}
-        </button>
-      </div>
-
-      {/* Detailed Session Stats */}
-      {showDetails && sessionReport.sessionStats && (
-        <div className="session-details">
-          <h3>{texts.sessionStats}</h3>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <span className="stat-icon">⏱️</span>
-              <span className="stat-label">{texts.totalTime}</span>
-              <span className="stat-value">{formatTime(sessionReport.sessionStats.totalTime)}</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-icon">⚡</span>
-              <span className="stat-label">{texts.avgPerQuestion}</span>
-              <span className="stat-value">{sessionReport.sessionStats.avgPerQuestion}s</span>
-            </div>
-          </div>
         </div>
       )}
 
