@@ -36,3 +36,10 @@
 .search-button:hover {
   background: #5a67d8;
 }
+
+/* Extra small screens like 393x852 */
+@media (max-width: 393px) {
+  .search-bar {
+    margin-top: 3rem;
+  }
+}
