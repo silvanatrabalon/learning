@@ -126,7 +126,11 @@ function StartLearning() {
   return (
     <div className="start-learning">
       <header className="learning-header">
-        <Link to="/" className="back-button">← Back to Home</Link>
+        <Link to="/" className="back-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </Link>
         <h1>Start Learning</h1>
         <div className="header-controls">
           <MobileMenu

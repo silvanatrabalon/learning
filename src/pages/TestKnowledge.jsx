@@ -307,7 +307,11 @@ function TestKnowledge() {
     return (
       <div className="test-knowledge">
         <header className="test-header">
-          <Link to="/" className="back-button">← Back to Home</Link>
+          <Link to="/" className="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </Link>
           <h1>{sessionTexts.sessionComplete}</h1>
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </header>
@@ -340,7 +344,11 @@ function TestKnowledge() {
   return (
     <div className="test-knowledge">
       <header className="test-header">
-        <Link to="/" className="back-button">← Back to Home</Link>
+        <Link to="/" className="back-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </Link>
         <h1>Test Knowledge</h1>
         <div className="header-controls">
           <MobileMenu

@@ -28,11 +28,29 @@
   color: #667eea;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
 }
 
 .back-button:hover {
   color: #5a67d8;
+  background: #f0f8ff;
+  border-color: #e6edff;
+  transform: translateX(-2px);
+}
+
+.back-button svg {
+  transition: transform 0.2s ease;
+}
+
+.back-button:hover svg {
+  transform: translateX(-2px);
 }
 
 .learning-header h1 {
