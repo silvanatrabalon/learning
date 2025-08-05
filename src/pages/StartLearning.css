@@ -1,6 +1,9 @@
 .start-learning {
   min-height: 100vh;
+  width: 100vw;
   background: #f8fafc;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .learning-header {
@@ -35,9 +38,12 @@
 .learning-container {
   display: flex;
   min-height: calc(100vh - 80px);
+  width: 100%;
+  margin: 0;
 }
 
 .sidebar {
+  min-width: 300px;
   width: 300px;
   background: white;
   border-right: 1px solid #e2e8f0;
@@ -209,6 +215,7 @@
   
   .sidebar {
     width: 100%;
+    min-width: 100%;
     position: sticky;
     top: 80px;
     z-index: 50;
@@ -218,9 +225,14 @@
   
   .main-content {
     padding: 1rem;
+    width: 100%;
   }
   
   .learning-header {
     padding: 1rem;
+  }
+  
+  .start-learning {
+    width: 100vw;
   }
 }
