@@ -92,7 +92,37 @@ function StartLearning() {
   }
 
   const handleConceptSelect = (concept) => {
-    setSelectedConcept(concept)
+    // Check if the concept already has content (from ContentIndex) or needs to be processed (from MobileMenu)
+    if (concept.content && concept.content.startsWith('## ')) {
+      // Already processed by ContentIndex component
+      setSelectedConcept(concept)
+    } else {
+      // Need to extract content from markdown (from MobileMenu)
+      if (!markdownContent) return
+      
+      const lines = markdownContent.split('\n')
+      const startLine = concept.line
+      let endLine = lines.length
+      
+      // Find the end of this concept (next ## or end of file)
+      for (let i = startLine + 1; i < lines.length; i++) {
+        if (lines[i].startsWith('## ')) {
+          endLine = i
+          break
+        }
+      }
+      
+      const conceptContent = lines.slice(startLine, endLine).join('\n')
+      
+      const conceptData = {
+        title: concept.title,
+        content: conceptContent,
+        id: concept.id
+      }
+      
+      setSelectedConcept(conceptData)
+    }
+    
     setShowExample(false)
     setSearchResults([])
   }
@@ -139,6 +169,8 @@ function StartLearning() {
             onTopicChange={setSelectedTopic}
             language={language}
             showModeSelector={false}
+            contentIndex={contentIndex}
+            onConceptSelect={handleConceptSelect}
           />
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>

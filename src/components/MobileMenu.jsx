@@ -8,7 +8,9 @@ function MobileMenu({
   mode,
   onModeChange,
   language,
-  showModeSelector = false 
+  showModeSelector = false,
+  contentIndex = null,
+  onConceptSelect = null
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -18,6 +20,7 @@ function MobileMenu({
         menu: 'Menu',
         selectTopic: 'Select Topic',
         selectMode: 'Select Mode',
+        contentIndex: 'Content Index',
         flashcard: '🃏 Flashcards',
         multipleChoice: '📝 Multiple Choice',
         flashcardDesc: 'Self-paced learning with flip cards',
@@ -27,6 +30,7 @@ function MobileMenu({
         menu: 'Menú',
         selectTopic: 'Seleccionar Tópico',
         selectMode: 'Seleccionar Modo',
+        contentIndex: 'Índice de Contenido',
         flashcard: '🃏 Flashcards',
         multipleChoice: '📝 Opción Múltiple',
         flashcardDesc: 'Aprendizaje auto-dirigido con tarjetas',
@@ -130,6 +134,30 @@ function MobileMenu({
                           </div>
                         </div>
                         {mode === modeOption.id && <span className="check-icon">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Content Index - only show if contentIndex is provided */}
+              {contentIndex && contentIndex.length > 0 && (
+                <div className="menu-section">
+                  <h4>{texts.contentIndex}</h4>
+                  <div className="content-index-options">
+                    {contentIndex.map((item, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          if (onConceptSelect) {
+                            onConceptSelect(item)
+                            setIsMenuOpen(false)
+                          }
+                        }}
+                        className="menu-option content-index-option"
+                      >
+                        <span className="option-icon">📄</span>
+                        <span className="option-name">{item.title}</span>
                       </button>
                     ))}
                   </div>

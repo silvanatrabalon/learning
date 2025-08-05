@@ -260,13 +260,7 @@
   }
   
   .sidebar {
-    width: 100%;
-    min-width: 100%;
-    position: sticky;
-    top: 80px;
-    z-index: 50;
-    max-height: 200px;
-    overflow-y: auto;
+    display: none; /* Hide sidebar completely on mobile - content index is now in hamburger menu */
   }
   
   .main-content {
