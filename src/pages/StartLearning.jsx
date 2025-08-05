@@ -6,6 +6,7 @@ import TopicSelector from '../components/TopicSelector'
 import LanguageToggle from '../components/LanguageToggle'
 import ContentIndex from '../components/ContentIndex'
 import MobileMenu from '../components/MobileMenu'
+import Modal from '../components/Modal'
 import './StartLearning.css'
 
 function StartLearning() {
@@ -14,7 +15,7 @@ function StartLearning() {
   const [markdownContent, setMarkdownContent] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [selectedConcept, setSelectedConcept] = useState(null)
-  const [showExample, setShowExample] = useState(false)
+  const [showExampleModal, setShowExampleModal] = useState(false)
   const [contentIndex, setContentIndex] = useState([])
 
   const topics = [
@@ -34,7 +35,7 @@ function StartLearning() {
       setMarkdownContent(content)
       parseContentIndex(content)
       setSelectedConcept(null)
-      setShowExample(false)
+      setShowExampleModal(false)
     } catch (error) {
       console.error('Error loading markdown:', error)
     }
@@ -124,34 +125,53 @@ function StartLearning() {
       setSelectedConcept(conceptData)
     }
     
-    setShowExample(false)
+    setShowExampleModal(false)
     setSearchResults([])
   }
 
   const renderConceptContent = (content) => {
-    if (!showExample) {
-      // Remove example sections from content
-      const lines = content.split('\n')
-      const filteredLines = []
-      let skipExample = false
-      
-      lines.forEach(line => {
-        if (line.includes('**Example:**') || line.includes('**Ejemplo:**')) {
-          skipExample = true
-          return
-        }
-        if (line.includes('**Comparison:**') || line.includes('**Comparación:**')) {
-          skipExample = false
-        }
-        if (!skipExample) {
-          filteredLines.push(line)
-        }
-      })
-      
-      return filteredLines.join('\n')
-    }
+    // Always show content without examples (examples will be in modal)
+    const lines = content.split('\n')
+    const filteredLines = []
+    let skipExample = false
     
-    return content
+    lines.forEach(line => {
+      if (line.includes('**Example:**') || line.includes('**Ejemplo:**')) {
+        skipExample = true
+        return
+      }
+      if (line.includes('**Comparison:**') || line.includes('**Comparación:**')) {
+        skipExample = false
+      }
+      if (!skipExample) {
+        filteredLines.push(line)
+      }
+    })
+    
+    return filteredLines.join('\n')
+  }
+
+  const extractExampleContent = (content) => {
+    const lines = content.split('\n')
+    const exampleLines = []
+    let inExample = false
+    
+    lines.forEach(line => {
+      if (line.includes('**Example:**') || line.includes('**Ejemplo:**')) {
+        inExample = true
+        exampleLines.push(line)
+        return
+      }
+      if (line.includes('**Comparison:**') || line.includes('**Comparación:**')) {
+        inExample = false
+        return
+      }
+      if (inExample) {
+        exampleLines.push(line)
+      }
+    })
+    
+    return exampleLines.join('\n')
   }
 
   return (
@@ -220,10 +240,10 @@ function StartLearning() {
             <div className="concept-display">
               <div className="concept-actions">
                 <button 
-                  onClick={() => setShowExample(!showExample)}
+                  onClick={() => setShowExampleModal(true)}
                   className="example-toggle-btn"
                 >
-                  {showExample ? 'Hide Example' : 'Show Example'}
+                  Show Example
                 </button>
               </div>
               
@@ -246,6 +266,21 @@ function StartLearning() {
           )}
         </main>
       </div>
+
+      {/* Example Modal */}
+      <Modal
+        isOpen={showExampleModal}
+        onClose={() => setShowExampleModal(false)}
+        title={`${selectedConcept?.title} - Example`}
+      >
+        {selectedConcept && (
+          <div className="markdown-content">
+            <ReactMarkdown>
+              {extractExampleContent(selectedConcept.content)}
+            </ReactMarkdown>
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }
