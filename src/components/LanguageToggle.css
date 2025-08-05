@@ -1,0 +1,27 @@
+.language-toggle {
+  display: flex;
+  background: #f7fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lang-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: #4a5568;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 50px;
+}
+
+.lang-button:hover {
+  background: #edf2f7;
+}
+
+.lang-button.active {
+  background: #667eea;
+  color: white;
+}

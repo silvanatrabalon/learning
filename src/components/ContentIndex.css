@@ -1,0 +1,38 @@
+.content-index {
+  margin-top: 2rem;
+}
+
+.content-index h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.index-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.index-item {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: #4a5568;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.index-item:hover {
+  background: #edf2f7;
+  color: #2d3748;
+}
+
+.index-item:active {
+  background: #e2e8f0;
+}

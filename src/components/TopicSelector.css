@@ -1,0 +1,50 @@
+.topic-selector {
+  margin-bottom: 2rem;
+}
+
+.topic-selector h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-size: 1.1rem;
+}
+
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.topic-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f7fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.topic-button:hover {
+  background: #edf2f7;
+  border-color: #cbd5e0;
+}
+
+.topic-button.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.topic-icon {
+  font-size: 1.2rem;
+}
+
+.topic-name {
+  font-weight: 500;
+  font-size: 1rem;
+}
