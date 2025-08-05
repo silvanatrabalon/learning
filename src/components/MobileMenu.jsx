@@ -9,6 +9,7 @@ function MobileMenu({
   onModeChange,
   language,
   showModeSelector = false,
+  showTopicSelector = true,
   contentIndex = null,
   onConceptSelect = null
 }) {
@@ -97,23 +98,25 @@ function MobileMenu({
             </div>
 
             <div className="menu-content">
-              {/* Topic Selection */}
-              <div className="menu-section">
-                <h4>{texts.selectTopic}</h4>
-                <div className="topic-options">
-                  {topics.map(topic => (
-                    <button
-                      key={topic.id}
-                      onClick={() => handleTopicChange(topic.id)}
-                      className={`menu-option ${selectedTopic === topic.id ? 'active' : ''}`}
-                    >
-                      <span className="option-icon">{topic.icon}</span>
-                      <span className="option-name">{topic.name}</span>
-                      {selectedTopic === topic.id && <span className="check-icon">✓</span>}
-                    </button>
-                  ))}
+              {/* Topic Selection - only show if showTopicSelector is true */}
+              {showTopicSelector && (
+                <div className="menu-section">
+                  <h4>{texts.selectTopic}</h4>
+                  <div className="topic-options">
+                    {topics.map(topic => (
+                      <button
+                        key={topic.id}
+                        onClick={() => handleTopicChange(topic.id)}
+                        className={`menu-option ${selectedTopic === topic.id ? 'active' : ''}`}
+                      >
+                        <span className="option-icon">{topic.icon}</span>
+                        <span className="option-name">{topic.name}</span>
+                        {selectedTopic === topic.id && <span className="check-icon">✓</span>}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Mode Selection - only show if showModeSelector is true */}
               {showModeSelector && (

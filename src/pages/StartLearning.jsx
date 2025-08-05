@@ -163,6 +163,12 @@ function StartLearning() {
         </Link>
         <h1>Start Learning</h1>
         <div className="header-controls">
+          <TopicSelector 
+            topics={topics}
+            selectedTopic={selectedTopic}
+            onTopicChange={setSelectedTopic}
+            language={language}
+          />
           <MobileMenu
             topics={topics}
             selectedTopic={selectedTopic}
@@ -171,17 +177,11 @@ function StartLearning() {
             showModeSelector={false}
             contentIndex={contentIndex}
             onConceptSelect={handleConceptSelect}
+            showTopicSelector={false}
           />
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>
       </header>
-
-      <TopicSelector 
-        topics={topics}
-        selectedTopic={selectedTopic}
-        onTopicChange={setSelectedTopic}
-        language={language}
-      />
 
       <div className="learning-container">
         <aside className="sidebar">          

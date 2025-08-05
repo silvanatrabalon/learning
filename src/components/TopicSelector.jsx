@@ -2,19 +2,15 @@ import { useState } from 'react'
 import './TopicSelector.css'
 
 function TopicSelector({ topics, selectedTopic, onTopicChange, language = 'en' }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const getTexts = () => {
     const texts = {
       en: {
         selectTopic: 'Select Topic',
-        currentTopic: 'Current Topic',
-        menu: 'Menu'
       },
       es: {
         selectTopic: 'Seleccionar Tópico',
-        currentTopic: 'Tópico Actual',
-        menu: 'Menú'
       }
     }
     
@@ -26,75 +22,45 @@ function TopicSelector({ topics, selectedTopic, onTopicChange, language = 'en' }
 
   const handleTopicChange = (topicId) => {
     onTopicChange(topicId)
-    setIsMenuOpen(false) // Close menu after selection
+    setIsDropdownOpen(false)
   }
 
   return (
     <div className="topic-selector">
-      {/* Desktop version */}
-      <div className="topic-selector-desktop">
-        <div className="topic-list">
-          {topics.map(topic => (
-            <button
-              key={topic.id}
-              onClick={() => onTopicChange(topic.id)}
-              className={`topic-button ${selectedTopic === topic.id ? 'active' : ''}`}
-            >
-              <span className="topic-icon">{topic.icon}</span>
-              <span className="topic-name">{topic.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Mobile hamburger version */}
-      <div className="topic-selector-mobile">
+      <div className="topic-dropdown">
         <button 
-          className="topic-hamburger-button"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label={texts.menu}
+          className="topic-dropdown-button"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          aria-label={texts.selectTopic}
         >
-          <div className="current-topic-display">
-            <span className="current-topic-icon">{currentTopic?.icon}</span>
-            <span className="current-topic-text">{currentTopic?.name}</span>
+          <div className="selected-topic">
+            <span className="topic-icon">{currentTopic?.icon}</span>
+            <span className="topic-name">{currentTopic?.name}</span>
           </div>
-          <div className={`topic-hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
-            <span></span>
-            <span></span>
-            <span></span>
+          <div className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
           </div>
         </button>
 
-        {isMenuOpen && (
-          <div className="topic-menu-overlay" onClick={() => setIsMenuOpen(false)}>
-            <div className="topic-menu" onClick={(e) => e.stopPropagation()}>
-              <div className="topic-menu-header">
-                <h4>{texts.selectTopic}</h4>
-                <button 
-                  className="close-topic-menu"
-                  onClick={() => setIsMenuOpen(false)}
-                  aria-label="Close"
+        {isDropdownOpen && (
+          <>
+            <div className="dropdown-overlay" onClick={() => setIsDropdownOpen(false)} />
+            <div className="topic-dropdown-menu">
+              {topics.map(topic => (
+                <button
+                  key={topic.id}
+                  onClick={() => handleTopicChange(topic.id)}
+                  className={`topic-dropdown-item ${selectedTopic === topic.id ? 'active' : ''}`}
                 >
-                  ×
+                  <span className="topic-icon">{topic.icon}</span>
+                  <span className="topic-name">{topic.name}</span>
+                  {selectedTopic === topic.id && <span className="check-icon">✓</span>}
                 </button>
-              </div>
-              <div className="mobile-topic-list">
-                {topics.map(topic => (
-                  <button
-                    key={topic.id}
-                    onClick={() => handleTopicChange(topic.id)}
-                    className={`mobile-topic-button ${selectedTopic === topic.id ? 'active' : ''}`}
-                  >
-                    <div className="mobile-topic-header">
-                      <span className="topic-icon">{topic.icon}</span>
-                      <span className="topic-name">{topic.name}</span>
-                      {selectedTopic === topic.id && <span className="check-icon">✓</span>}
-                    </div>
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

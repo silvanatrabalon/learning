@@ -351,6 +351,12 @@ function TestKnowledge() {
         </Link>
         <h1>Test Knowledge</h1>
         <div className="header-controls">
+          <TopicSelector 
+            topics={topics}
+            selectedTopic={selectedTopic}
+            onTopicChange={setSelectedTopic}
+            language={language}
+          />
           <MobileMenu
             topics={topics}
             selectedTopic={selectedTopic}
@@ -359,17 +365,11 @@ function TestKnowledge() {
             onModeChange={setMode}
             language={language}
             showModeSelector={true}
+            showTopicSelector={false}
           />
           <LanguageToggle language={language} onLanguageChange={setLanguage} />
         </div>
       </header>
-
-      <TopicSelector 
-        topics={topics}
-        selectedTopic={selectedTopic}
-        onTopicChange={setSelectedTopic}
-        language={language}
-      />
 
       <div className="test-container">
         <aside className="test-sidebar">
