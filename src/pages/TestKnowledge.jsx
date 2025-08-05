@@ -2,19 +2,24 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import TopicSelector from '../components/TopicSelector'
 import LanguageToggle from '../components/LanguageToggle'
+import ModeSelector from '../components/ModeSelector'
 import FlashCard from '../components/FlashCard'
+import MultipleChoiceCard from '../components/MultipleChoiceCard'
 import ProgressBar from '../components/ProgressBar'
 import './TestKnowledge.css'
 
 function TestKnowledge() {
   const [selectedTopic, setSelectedTopic] = useState('next')
   const [language, setLanguage] = useState('en')
+  const [mode, setMode] = useState('flashcard') // 'flashcard' or 'multiple-choice'
   const [flashCards, setFlashCards] = useState([])
+  const [multipleChoiceQuestions, setMultipleChoiceQuestions] = useState([])
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [showAnswer, setShowAnswer] = useState(false)
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [isSessionComplete, setIsSessionComplete] = useState(false)
   const [reviewedCards, setReviewedCards] = useState([])
+  const [allConcepts, setAllConcepts] = useState([])
 
   const topics = [
     { id: 'next', name: 'Next.js', icon: '⚛️' },
@@ -22,24 +27,32 @@ function TestKnowledge() {
   ]
 
   useEffect(() => {
-    loadFlashCards()
+    loadContent()
     resetSession()
-  }, [selectedTopic, language])
+  }, [selectedTopic, language, mode])
 
-  const loadFlashCards = async () => {
+  const loadContent = async () => {
     try {
       const response = await fetch(`/learning/guides/${selectedTopic}-${language}.md`)
       const content = await response.text()
-      const cards = generateFlashCards(content)
-      setFlashCards(shuffleArray(cards))
+      const concepts = extractConcepts(content)
+      setAllConcepts(concepts)
+      
+      if (mode === 'flashcard') {
+        const cards = generateFlashCards(concepts)
+        setFlashCards(shuffleArray(cards))
+      } else {
+        const questions = generateMultipleChoiceQuestions(concepts)
+        setMultipleChoiceQuestions(shuffleArray(questions))
+      }
     } catch (error) {
       console.error('Error loading markdown:', error)
     }
   }
 
-  const generateFlashCards = (content) => {
+  const extractConcepts = (content) => {
     const lines = content.split('\n')
-    const cards = []
+    const concepts = []
     
     let currentConcept = null
     let currentDescription = ''
@@ -49,25 +62,13 @@ function TestKnowledge() {
 
     lines.forEach(line => {
       if (line.startsWith('## ')) {
-        // Save previous card if exists
+        // Save previous concept if exists
         if (currentConcept && currentDescription) {
-          cards.push({
-            id: cards.length,
-            concept: currentConcept,
+          concepts.push({
+            name: currentConcept,
             description: currentDescription.trim(),
-            comparison: currentComparison.trim(),
-            type: 'description'
+            comparison: currentComparison.trim()
           })
-          
-          if (currentComparison) {
-            cards.push({
-              id: cards.length,
-              concept: currentConcept,
-              description: currentDescription.trim(),
-              comparison: currentComparison.trim(),
-              type: 'comparison'
-            })
-          }
         }
         
         // Start new concept
@@ -94,28 +95,103 @@ function TestKnowledge() {
       }
     })
 
-    // Don't forget the last card
+    // Don't forget the last concept
     if (currentConcept && currentDescription) {
-      cards.push({
-        id: cards.length,
-        concept: currentConcept,
+      concepts.push({
+        name: currentConcept,
         description: currentDescription.trim(),
-        comparison: currentComparison.trim(),
-        type: 'description'
+        comparison: currentComparison.trim()
       })
-      
-      if (currentComparison) {
+    }
+
+    return concepts
+  }
+
+  const generateFlashCards = (concepts) => {
+    const cards = []
+    
+    concepts.forEach((concept, index) => {
+      if (concept.description) {
         cards.push({
           id: cards.length,
-          concept: currentConcept,
-          description: currentDescription.trim(),
-          comparison: currentComparison.trim(),
+          concept: concept.name,
+          description: concept.description,
+          comparison: concept.comparison,
+          type: 'description'
+        })
+      }
+      
+      if (concept.comparison) {
+        cards.push({
+          id: cards.length,
+          concept: concept.name,
+          description: concept.description,
+          comparison: concept.comparison,
           type: 'comparison'
         })
       }
-    }
+    })
 
     return cards
+  }
+
+  const generateMultipleChoiceQuestions = (concepts) => {
+    const questions = []
+    
+    concepts.forEach((concept, index) => {
+      if (concept.description) {
+        // Definition question
+        const wrongAnswers = concepts
+          .filter(c => c.name !== concept.name && c.description)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3)
+          .map(c => c.description)
+        
+        questions.push({
+          id: questions.length,
+          type: 'definition',
+          question: getMultipleChoiceQuestion(concept.name, 'definition'),
+          correctAnswer: concept.description,
+          options: shuffleArray([concept.description, ...wrongAnswers]),
+          concept: concept.name
+        })
+      }
+      
+      if (concept.comparison) {
+        // Comparison question
+        const wrongAnswers = concepts
+          .filter(c => c.name !== concept.name && c.comparison)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3)
+          .map(c => c.comparison)
+        
+        questions.push({
+          id: questions.length,
+          type: 'comparison',
+          question: getMultipleChoiceQuestion(concept.name, 'comparison'),
+          correctAnswer: concept.comparison,
+          options: shuffleArray([concept.comparison, ...wrongAnswers]),
+          concept: concept.name
+        })
+      }
+    })
+
+    return questions
+  }
+
+  const getMultipleChoiceQuestion = (conceptName, type) => {
+    const questions = {
+      en: {
+        definition: `What is ${conceptName}?`,
+        comparison: `How does ${conceptName} compare to other concepts?`
+      },
+      es: {
+        definition: `¿Qué es ${conceptName}?`,
+        comparison: `¿Cómo se compara ${conceptName} con otros conceptos?`
+      }
+    }
+    
+    return questions[language][type] || questions.en[type]
   }
 
   const shuffleArray = (array) => {
@@ -142,8 +218,9 @@ function TestKnowledge() {
     }
     setScore(newScore)
     
+    const currentItem = mode === 'flashcard' ? flashCards[currentCardIndex] : multipleChoiceQuestions[currentCardIndex]
     const cardResult = {
-      ...flashCards[currentCardIndex],
+      ...currentItem,
       isCorrect,
       timestamp: new Date()
     }
@@ -151,7 +228,8 @@ function TestKnowledge() {
 
     // Move to next card after a short delay
     setTimeout(() => {
-      if (currentCardIndex + 1 >= flashCards.length) {
+      const totalItems = mode === 'flashcard' ? flashCards.length : multipleChoiceQuestions.length
+      if (currentCardIndex + 1 >= totalItems) {
         setIsSessionComplete(true)
       } else {
         setCurrentCardIndex(currentCardIndex + 1)
@@ -161,11 +239,18 @@ function TestKnowledge() {
   }
 
   const restartSession = () => {
-    setFlashCards(shuffleArray(flashCards))
+    if (mode === 'flashcard') {
+      setFlashCards(shuffleArray(flashCards))
+    } else {
+      const questions = generateMultipleChoiceQuestions(allConcepts)
+      setMultipleChoiceQuestions(shuffleArray(questions))
+    }
     resetSession()
   }
 
-  const currentCard = flashCards[currentCardIndex]
+  const currentCard = mode === 'flashcard' ? flashCards[currentCardIndex] : null
+  const currentQuestion = mode === 'multiple-choice' ? multipleChoiceQuestions[currentCardIndex] : null
+  const totalItems = mode === 'flashcard' ? flashCards.length : multipleChoiceQuestions.length
 
   const getSessionTexts = () => {
     const texts = {
@@ -263,15 +348,21 @@ function TestKnowledge() {
             onTopicChange={setSelectedTopic}
           />
           
+          <ModeSelector 
+            mode={mode}
+            onModeChange={setMode}
+            language={language}
+          />
+          
           <div className="session-stats">
             <h3>{sessionTexts.sessionProgress}</h3>
             <ProgressBar 
               current={currentCardIndex + 1} 
-              total={flashCards.length}
+              total={totalItems}
               correct={score.correct}
             />
             <div className="score-info">
-              <p>{sessionTexts.card}: {currentCardIndex + 1} {sessionTexts.of} {flashCards.length}</p>
+              <p>{sessionTexts.card}: {currentCardIndex + 1} {sessionTexts.of} {totalItems}</p>
               <p>{sessionTexts.score}: {score.correct}/{score.total}</p>
               {score.total > 0 && (
                 <p>{sessionTexts.accuracy}: {Math.round((score.correct / score.total) * 100)}%</p>
@@ -281,14 +372,22 @@ function TestKnowledge() {
         </aside>
 
         <main className="test-main">
-          {flashCards.length > 0 && currentCard ? (
-            <FlashCard
-              card={currentCard}
-              showAnswer={showAnswer}
-              onShowAnswer={() => setShowAnswer(true)}
-              onAnswer={handleAnswer}
-              language={language}
-            />
+          {totalItems > 0 ? (
+            mode === 'flashcard' && currentCard ? (
+              <FlashCard
+                card={currentCard}
+                showAnswer={showAnswer}
+                onShowAnswer={() => setShowAnswer(true)}
+                onAnswer={handleAnswer}
+                language={language}
+              />
+            ) : mode === 'multiple-choice' && currentQuestion ? (
+              <MultipleChoiceCard
+                question={currentQuestion}
+                onAnswer={handleAnswer}
+                language={language}
+              />
+            ) : null
           ) : (
             <div className="loading">
               <p>{sessionTexts.loading}</p>
