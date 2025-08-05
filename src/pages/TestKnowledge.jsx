@@ -340,14 +340,15 @@ function TestKnowledge() {
         <LanguageToggle language={language} onLanguageChange={setLanguage} />
       </header>
 
+      <TopicSelector 
+        topics={topics}
+        selectedTopic={selectedTopic}
+        onTopicChange={setSelectedTopic}
+        language={language}
+      />
+
       <div className="test-container">
         <aside className="test-sidebar">
-          <TopicSelector 
-            topics={topics}
-            selectedTopic={selectedTopic}
-            onTopicChange={setSelectedTopic}
-          />
-          
           <ModeSelector 
             mode={mode}
             onModeChange={setMode}

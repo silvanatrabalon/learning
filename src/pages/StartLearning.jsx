@@ -130,14 +130,15 @@ function StartLearning() {
         <LanguageToggle language={language} onLanguageChange={setLanguage} />
       </header>
 
+      <TopicSelector 
+        topics={topics}
+        selectedTopic={selectedTopic}
+        onTopicChange={setSelectedTopic}
+        language={language}
+      />
+
       <div className="learning-container">
-        <aside className="sidebar">
-          <TopicSelector 
-            topics={topics}
-            selectedTopic={selectedTopic}
-            onTopicChange={setSelectedTopic}
-          />
-          
+        <aside className="sidebar">          
           <ContentIndex 
             index={contentIndex}
             onConceptSelect={handleConceptSelect}

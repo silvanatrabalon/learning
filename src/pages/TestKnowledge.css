@@ -26,7 +26,7 @@
 
 .test-container {
   display: flex;
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 140px); /* Ajustado para el topic selector */
   width: 100%;
   margin: 0;
 }

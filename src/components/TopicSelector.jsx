@@ -1,9 +1,26 @@
 import './TopicSelector.css'
 
-function TopicSelector({ topics, selectedTopic, onTopicChange }) {
+function TopicSelector({ topics, selectedTopic, onTopicChange, language = 'en' }) {
+  const getTexts = () => {
+    const texts = {
+      en: {
+        selectTopic: 'Select Topic'
+      },
+      es: {
+        selectTopic: 'Seleccionar Tópico'
+      }
+    }
+    
+    return texts[language] || texts.en
+  }
+
+  const texts = getTexts()
+
   return (
     <div className="topic-selector">
-      <h3>Select Topic</h3>
+      <div className="topic-selector-label">
+        <span>{texts.selectTopic}</span>
+      </div>
       <div className="topic-list">
         {topics.map(topic => (
           <button
