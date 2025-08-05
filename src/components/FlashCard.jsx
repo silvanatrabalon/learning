@@ -30,13 +30,13 @@ function FlashCard({ card, showAnswer, onShowAnswer, onAnswer, language = 'en' }
       }
     }
     
-    return questions[language][card.type] || questions.en[card.type]
+    return questions[language][card.cardType || 'description'] || questions.en[card.cardType || 'description']
   }
 
   const getAnswer = () => {
-    if (card.type === 'description') {
+    if (card.cardType === 'description') {
       return card.description
-    } else if (card.type === 'comparison') {
+    } else if (card.cardType === 'comparison') {
       return card.comparison
     }
     return card.description
@@ -79,7 +79,7 @@ function FlashCard({ card, showAnswer, onShowAnswer, onAnswer, language = 'en' }
         <div className="flashcard-front">
           <div className="card-header">
             <span className="card-type">
-              {card.type === 'description' ? texts.definition : texts.comparison}
+              {card.cardType === 'description' ? texts.definition : texts.comparison}
             </span>
             <span className="card-topic">{card.concept}</span>
           </div>
@@ -99,7 +99,7 @@ function FlashCard({ card, showAnswer, onShowAnswer, onAnswer, language = 'en' }
         <div className="flashcard-back">
           <div className="card-header">
             <span className="card-type">
-              {card.type === 'description' ? texts.definition : texts.comparison}
+              {card.cardType === 'description' ? texts.definition : texts.comparison}
             </span>
             <span className="card-topic">{card.concept}</span>
           </div>

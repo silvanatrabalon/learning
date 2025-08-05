@@ -386,7 +386,7 @@ function MixedTopicsQuiz() {
               <FlashCard
                 card={currentQuestion}
                 showAnswer={showAnswer}
-                onReveal={handleRevealAnswer}
+                onShowAnswer={handleRevealAnswer}
                 onAnswer={handleAnswer}
                 language={language}
               />
