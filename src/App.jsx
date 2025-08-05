@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import StartLearning from './pages/StartLearning'
 import TestKnowledge from './pages/TestKnowledge'
+import MixedTopicsQuiz from './pages/MixedTopicsQuiz'
 import './App.css'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/start-learning" element={<StartLearning />} />
           <Route path="/test-knowledge" element={<TestKnowledge />} />
+          <Route path="/mixed-topics-quiz" element={<MixedTopicsQuiz />} />
         </Routes>
       </div>
     </Router>

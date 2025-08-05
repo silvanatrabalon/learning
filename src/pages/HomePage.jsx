@@ -24,6 +24,14 @@ function HomePage() {
             <p>Test your skills with interactive flashcards and track your progress</p>
             <span className="card-arrow">→</span>
           </Link>
+
+          <Link to="/mixed-topics-quiz" className="action-card featured">
+            <div className="card-icon">🎯</div>
+            <h2>Mixed Topics Quiz</h2>
+            <p>Challenge yourself with questions from multiple topics and get detailed performance reports</p>
+            <span className="card-badge">NEW</span>
+            <span className="card-arrow">→</span>
+          </Link>
         </div>
       </main>
     </div>

@@ -1,0 +1,383 @@
+.mixed-topics-quiz {
+  min-height: 100vh;
+  width: 100vw;
+  background: #f8fafc;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.quiz-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 80px;
+  box-sizing: border-box;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.desktop-language-toggle {
+  display: block;
+}
+
+.back-button {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.back-button:hover {
+  color: #5a67d8;
+  background: #f0f8ff;
+  border-color: #e6edff;
+  transform: translateX(-2px);
+}
+
+.back-button svg {
+  transition: transform 0.2s ease;
+}
+
+.back-button:hover svg {
+  transform: translateX(-2px);
+}
+
+.quiz-header h1 {
+  margin: 0;
+  color: #2d3748;
+  font-size: 1.5rem;
+}
+
+/* Setup Container */
+.setup-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-bottom: 140px;
+}
+
+.start-session-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.start-session-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+  min-width: 200px;
+}
+
+.start-session-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.warning-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #fffaf0;
+  border: 2px solid #fed7aa;
+  border-radius: 12px;
+  color: #c05621;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
+}
+
+.warning-icon {
+  font-size: 1.25rem;
+}
+
+/* Session Container */
+.session-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-bottom: 140px;
+  min-height: calc(100vh - 160px);
+}
+
+.current-topic-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.topic-label {
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+.topic-name {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.session-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 300px);
+}
+
+/* Session Progress Footer */
+.session-progress-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progress-info-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.progress-details {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.question-counter {
+  font-weight: 600;
+  color: #667eea;
+  background: #f7faff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid #e6edff;
+}
+
+.score-display {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.accuracy {
+  color: #48bb78;
+  font-weight: 600;
+}
+
+/* Mobile Styles */
+@media (max-width: 820px) {
+  .desktop-language-toggle {
+    display: none;
+  }
+  
+  .quiz-header {
+    padding: 1rem;
+  }
+  
+  .quiz-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .setup-container,
+  .session-container {
+    padding: 1rem;
+    padding-bottom: 120px;
+  }
+  
+  .current-topic-indicator {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .session-main {
+    min-height: calc(100vh - 250px);
+  }
+  
+  .session-progress-footer {
+    padding: 0.75rem;
+  }
+  
+  .progress-info-compact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .progress-details {
+    gap: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .progress-label {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-header {
+    padding: 0.75rem;
+  }
+  
+  .quiz-header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .setup-container,
+  .session-container {
+    padding: 0.75rem;
+    padding-bottom: 100px;
+  }
+  
+  .start-session-btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    min-width: 180px;
+  }
+  
+  .warning-message {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+  
+  .current-topic-indicator {
+    padding: 0.625rem;
+  }
+  
+  .topic-label {
+    font-size: 0.9rem;
+  }
+  
+  .topic-name {
+    font-size: 0.95rem;
+  }
+  
+  .session-progress-footer {
+    padding: 0.5rem;
+  }
+  
+  .progress-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .progress-label {
+    font-size: 0.8rem;
+  }
+  
+  .question-counter {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 393px) {
+  .quiz-header {
+    padding: 0.5rem;
+    height: 70px;
+  }
+  
+  .quiz-header h1 {
+    font-size: 1rem;
+  }
+  
+  .setup-container,
+  .session-container {
+    padding: 0.5rem;
+    padding-bottom: 90px;
+  }
+  
+  .session-main {
+    min-height: calc(100vh - 200px);
+  }
+  
+  .current-topic-indicator {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .session-progress-footer {
+    min-height: 80px;
+  }
+
+  .progress-content {
+    gap: 0.25rem;
+  }
+  
+  .progress-info-compact {
+    font-size: 0.75rem;
+  }
+  
+  .question-counter {
+    font-size: 0.7rem;
+  }
+  
+  .progress-details {
+    font-size: 0.7rem;
+  }
+}
+
+/* Hide MobileMenu on desktop */
+@media (min-width: 821px) {
+  .mobile-menu-container {
+    display: none;
+  }
+}
