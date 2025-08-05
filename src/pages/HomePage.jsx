@@ -18,12 +18,12 @@ function HomePage() {
             <span className="card-arrow">→</span>
           </Link>
           
-          <div className="action-card disabled">
+          <Link to="/test-knowledge" className="action-card">
             <div className="card-icon">🧪</div>
             <h2>Test Knowledge</h2>
-            <p>Coming soon - Test your skills with interactive quizzes and challenges</p>
-            <span className="card-status">Coming Soon</span>
-          </div>
+            <p>Test your skills with interactive flashcards and track your progress</p>
+            <span className="card-arrow">→</span>
+          </Link>
         </div>
       </main>
     </div>
