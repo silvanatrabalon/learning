@@ -24,6 +24,10 @@
   gap: 1rem;
 }
 
+.desktop-language-toggle {
+  display: block;
+}
+
 .back-button {
   color: #667eea;
   text-decoration: none;
@@ -284,6 +288,10 @@
   
   .test-sidebar {
     display: none; /* Hide the sidebar completely on mobile */
+  }
+  
+  .desktop-language-toggle {
+    display: none; /* Hide language toggle on mobile - it's now in hamburger menu */
   }
   
   .test-main {

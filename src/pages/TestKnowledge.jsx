@@ -313,7 +313,9 @@ function TestKnowledge() {
             </svg>
           </Link>
           <h1>{sessionTexts.sessionComplete}</h1>
-          <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          <div className="desktop-language-toggle">
+            <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          </div>
         </header>
 
         <div className="session-complete">
@@ -364,10 +366,13 @@ function TestKnowledge() {
             mode={mode}
             onModeChange={setMode}
             language={language}
+            onLanguageChange={setLanguage}
             showModeSelector={true}
             showTopicSelector={false}
           />
-          <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          <div className="desktop-language-toggle">
+            <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          </div>
         </div>
       </header>
 

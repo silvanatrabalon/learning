@@ -174,12 +174,15 @@ function StartLearning() {
             selectedTopic={selectedTopic}
             onTopicChange={setSelectedTopic}
             language={language}
+            onLanguageChange={setLanguage}
             showModeSelector={false}
             contentIndex={contentIndex}
             onConceptSelect={handleConceptSelect}
             showTopicSelector={false}
           />
-          <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          <div className="desktop-language-toggle">
+            <LanguageToggle language={language} onLanguageChange={setLanguage} />
+          </div>
         </div>
       </header>
 

@@ -24,6 +24,10 @@
   gap: 1rem;
 }
 
+.desktop-language-toggle {
+  display: block;
+}
+
 .back-button {
   color: #667eea;
   text-decoration: none;
@@ -270,6 +274,10 @@
   
   .learning-header {
     padding: 1rem;
+  }
+  
+  .desktop-language-toggle {
+    display: none; /* Hide language toggle on mobile - it's now in hamburger menu */
   }
   
   .start-learning {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import LanguageToggle from './LanguageToggle'
 import './MobileMenu.css'
 
 function MobileMenu({ 
@@ -8,6 +9,7 @@ function MobileMenu({
   mode,
   onModeChange,
   language,
+  onLanguageChange,
   showModeSelector = false,
   showTopicSelector = true,
   contentIndex = null,
@@ -166,6 +168,17 @@ function MobileMenu({
                   </div>
                 </div>
               )}
+
+              {/* Language Toggle Section */}
+              <div className="menu-section language-section">
+                <h4>Language</h4>
+                <div className="language-toggle-container">
+                  <LanguageToggle 
+                    language={language} 
+                    onLanguageChange={onLanguageChange} 
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
