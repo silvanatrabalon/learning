@@ -262,3 +262,10 @@
     font-size: 0.85rem;
   }
 }
+
+/* iPad specific styling (820x1180) - add more top margin */
+@media (min-width: 769px) and (max-width: 820px) {
+  .flashcard-container {
+    margin-top: 2rem;
+  }
+}

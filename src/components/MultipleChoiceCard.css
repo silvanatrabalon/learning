@@ -361,3 +361,10 @@
     line-height: 1.25;
   }
 }
+
+/* iPad specific styling (820x1180) - add more top margin */
+@media (min-width: 769px) and (max-width: 820px) {
+  .multiple-choice-container {
+    margin-top: 2rem;
+  }
+}

@@ -20,6 +20,13 @@
   font-size: 1.1rem;
 }
 
+/* Add more top margin for desktop screens */
+@media (min-width: 821px) {
+  .mode-selector h3 {
+    margin-top: 1.5rem;
+  }
+}
+
 .mode-list {
   display: flex;
   flex-direction: column;
