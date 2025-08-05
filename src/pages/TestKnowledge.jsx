@@ -6,6 +6,7 @@ import ModeSelector from '../components/ModeSelector'
 import FlashCard from '../components/FlashCard'
 import MultipleChoiceCard from '../components/MultipleChoiceCard'
 import ProgressBar from '../components/ProgressBar'
+import MobileMenu from '../components/MobileMenu'
 import './TestKnowledge.css'
 
 function TestKnowledge() {
@@ -211,6 +212,10 @@ function TestKnowledge() {
     setReviewedCards([])
   }
 
+  const handleRevealAnswer = () => {
+    setShowAnswer(true)
+  }
+
   const handleAnswer = (isCorrect) => {
     const newScore = {
       correct: score.correct + (isCorrect ? 1 : 0),
@@ -337,7 +342,18 @@ function TestKnowledge() {
       <header className="test-header">
         <Link to="/" className="back-button">← Back to Home</Link>
         <h1>Test Knowledge</h1>
-        <LanguageToggle language={language} onLanguageChange={setLanguage} />
+        <div className="header-controls">
+          <MobileMenu
+            topics={topics}
+            selectedTopic={selectedTopic}
+            onTopicChange={setSelectedTopic}
+            mode={mode}
+            onModeChange={setMode}
+            language={language}
+            showModeSelector={true}
+          />
+          <LanguageToggle language={language} onLanguageChange={setLanguage} />
+        </div>
       </header>
 
       <TopicSelector 
@@ -354,22 +370,6 @@ function TestKnowledge() {
             onModeChange={setMode}
             language={language}
           />
-          
-          <div className="session-stats">
-            <h3>{sessionTexts.sessionProgress}</h3>
-            <ProgressBar 
-              current={currentCardIndex + 1} 
-              total={totalItems}
-              correct={score.correct}
-            />
-            <div className="score-info">
-              <p>{sessionTexts.card}: {currentCardIndex + 1} {sessionTexts.of} {totalItems}</p>
-              <p>{sessionTexts.score}: {score.correct}/{score.total}</p>
-              {score.total > 0 && (
-                <p>{sessionTexts.accuracy}: {Math.round((score.correct / score.total) * 100)}%</p>
-              )}
-            </div>
-          </div>
         </aside>
 
         <main className="test-main">
@@ -378,7 +378,7 @@ function TestKnowledge() {
               <FlashCard
                 card={currentCard}
                 showAnswer={showAnswer}
-                onShowAnswer={() => setShowAnswer(true)}
+                onReveal={handleRevealAnswer}
                 onAnswer={handleAnswer}
                 language={language}
               />
@@ -396,6 +396,33 @@ function TestKnowledge() {
           )}
         </main>
       </div>
+
+      {/* Session Progress Footer */}
+      {totalItems > 0 && (
+        <footer className="session-progress-footer">
+          <div className="progress-content">
+            <div className="progress-info-compact">
+              <span className="progress-label">{sessionTexts.sessionProgress}</span>
+              <div className="progress-details">
+                <span className="card-counter">
+                  {currentCardIndex + 1}/{totalItems}
+                </span>
+                <span className="score-display">
+                  {sessionTexts.score}: {score.correct}/{score.total}
+                  {score.total > 0 && (
+                    <span className="accuracy"> • {Math.round((score.correct / score.total) * 100)}%</span>
+                  )}
+                </span>
+              </div>
+            </div>
+            <ProgressBar 
+              current={currentCardIndex + 1} 
+              total={totalItems}
+              correct={score.correct}
+            />
+          </div>
+        </footer>
+      )}
     </div>
   )
 }

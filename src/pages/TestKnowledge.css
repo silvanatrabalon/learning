@@ -15,7 +15,24 @@
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000; /* Increased z-index to ensure it stays on top */
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-button {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.back-button:hover {
+  color: #5a67d8;
 }
 
 .test-header h1 {
@@ -174,37 +191,286 @@
   font-size: 1.1rem;
 }
 
+/* Session Progress Footer */
+.session-progress-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.progress-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progress-info-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.9rem;
+}
+
+.progress-details {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.card-counter {
+  font-weight: 600;
+  color: #667eea;
+  background: #f7faff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid #e6edff;
+}
+
+.score-display {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.accuracy {
+  color: #48bb78;
+  font-weight: 600;
+}
+
+/* Ajustar el contenido principal para dar espacio al footer */
+.test-knowledge {
+  padding-bottom: 120px; /* Espacio para el footer */
+}
+
+.test-main {
+  min-height: calc(100vh - 220px); /* Ajustado para el footer */
+}
+
 @media (max-width: 968px) {
   .test-container {
     flex-direction: column;
   }
   
   .test-sidebar {
-    width: 100%;
-    min-width: 100%;
-    position: sticky;
-    top: 80px;
-    z-index: 50;
-    max-height: 250px;
-    overflow-y: auto;
+    display: none; /* Hide the sidebar completely on mobile */
   }
   
   .test-main {
     padding: 1rem;
+    align-items: flex-start;
+    min-height: auto;
+    max-height: none;
+    overflow-y: auto;
+    padding-top: 1.5rem;
   }
   
   .test-header {
     padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .test-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .header-controls {
+    gap: 0.75rem;
+  }
+  
+  .session-progress-footer {
+    padding: 0.75rem;
+  }
+  
+  .progress-content {
+    gap: 0.5rem;
+  }
+  
+  .progress-info-compact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .progress-details {
+    gap: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .progress-label {
+    font-size: 0.85rem;
   }
   
   .session-actions {
     flex-direction: column;
     align-items: center;
+    gap: 0.75rem;
   }
   
   .restart-btn,
   .study-btn {
     width: 100%;
     max-width: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-main {
+    padding: 0.75rem;
+    padding-top: 1rem;
+    padding-bottom: 100px; /* Space for footer */
+    min-height: auto;
+    max-height: none;
+  }
+  
+  .test-header {
+    padding: 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+  }
+  
+  .test-header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .test-container {
+    min-height: auto;
+    max-height: none;
+  }
+  
+  .session-progress-footer {
+    padding: 0.5rem;
+  }
+  
+  .progress-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .progress-label {
+    font-size: 0.8rem;
+  }
+  
+  .card-counter {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .final-score {
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .final-score h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .score-number {
+    font-size: 2.5rem;
+  }
+  
+  .score-percentage {
+    font-size: 1.25rem;
+  }
+}
+
+/* Hide MobileMenu on desktop */
+@media (min-width: 969px) {
+  .mobile-menu-container {
+    display: none;
+  }
+}
+
+/* Extra extra small screens like 393x852 */
+@media (max-width: 393px) {
+  .test-knowledge {
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .test-header {
+    padding: 0.5rem;
+    position: fixed; /* Changed to fixed to prevent being pushed up */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    height: 60px; /* Fixed height */
+    box-sizing: border-box;
+  }
+  
+  .test-header h1 {
+    font-size: 1rem;
+  }
+  
+  .header-controls {
+    gap: 0.5rem;
+  }
+  
+  .test-container {
+    margin-top: 60px; /* Add space for fixed header */
+    min-height: calc(100vh - 60px - 70px); /* Account for header and footer */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .test-main {
+    padding: 0.5rem;
+    padding-top: 2.75rem;
+    padding-bottom: 80px; /* Space for footer */
+    min-height: calc(100vh - 60px - 70px);
+    height: calc(100vh - 60px - 70px);
+    max-height: calc(100vh - 60px - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  .session-progress-footer {
+    padding: 0.5rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 70px;
+    z-index: 999; /* Below header but above content */
+    box-sizing: border-box;
+  }
+  
+  .progress-content {
+    gap: 0.25rem;
+  }
+  
+  .progress-info-compact {
+    font-size: 0.75rem;
+  }
+  
+  .card-counter {
+    font-size: 0.7rem;
+  }
+  
+  .progress-details {
+    font-size: 0.7rem;
   }
 }

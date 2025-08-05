@@ -62,3 +62,48 @@
   color: #4a5568;
   font-weight: 500;
 }
+
+@media (max-width: 480px) {
+  .progress-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .progress-text,
+  .progress-numbers {
+    font-size: 0.8rem;
+  }
+  
+  .progress-bar {
+    height: 6px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .accuracy-bar {
+    height: 5px;
+  }
+  
+  .accuracy-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* Estilos específicos para el footer */
+.session-progress-footer .progress-container {
+  margin-bottom: 0;
+}
+
+.session-progress-footer .progress-bar {
+  height: 6px;
+  margin-bottom: 0;
+}
+
+.session-progress-footer .progress-info {
+  display: none; /* Ocultamos la info duplicada */
+}
+
+.session-progress-footer .accuracy-info {
+  display: none; /* Ocultamos la accuracy info duplicada */
+}

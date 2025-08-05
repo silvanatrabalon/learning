@@ -5,6 +5,7 @@ import SearchBar from '../components/SearchBar'
 import TopicSelector from '../components/TopicSelector'
 import LanguageToggle from '../components/LanguageToggle'
 import ContentIndex from '../components/ContentIndex'
+import MobileMenu from '../components/MobileMenu'
 import './StartLearning.css'
 
 function StartLearning() {
@@ -127,7 +128,16 @@ function StartLearning() {
       <header className="learning-header">
         <Link to="/" className="back-button">← Back to Home</Link>
         <h1>Start Learning</h1>
-        <LanguageToggle language={language} onLanguageChange={setLanguage} />
+        <div className="header-controls">
+          <MobileMenu
+            topics={topics}
+            selectedTopic={selectedTopic}
+            onTopicChange={setSelectedTopic}
+            language={language}
+            showModeSelector={false}
+          />
+          <LanguageToggle language={language} onLanguageChange={setLanguage} />
+        </div>
       </header>
 
       <TopicSelector 

@@ -18,6 +18,12 @@
   z-index: 100;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .back-button {
   color: #667eea;
   text-decoration: none;
@@ -33,6 +39,28 @@
   margin: 0;
   color: #2d3748;
   font-size: 1.5rem;
+}
+
+/* Hide MobileMenu on desktop */
+@media (min-width: 769px) {
+  .mobile-menu-container {
+    display: none;
+  }
+}
+
+/* Show MobileMenu on mobile */
+@media (max-width: 768px) {
+  .learning-header {
+    padding: 1rem;
+  }
+  
+  .learning-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .header-controls {
+    gap: 0.75rem;
+  }
 }
 
 .learning-container {
