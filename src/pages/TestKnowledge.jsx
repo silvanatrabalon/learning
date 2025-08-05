@@ -10,7 +10,7 @@ import MobileMenu from '../components/MobileMenu'
 import './TestKnowledge.css'
 
 function TestKnowledge() {
-  const [selectedTopic, setSelectedTopic] = useState('next')
+  const [selectedTopic, setSelectedTopic] = useState('javascript')
   const [language, setLanguage] = useState('en')
   const [mode, setMode] = useState('flashcard') // 'flashcard' or 'multiple-choice'
   const [flashCards, setFlashCards] = useState([])

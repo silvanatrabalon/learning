@@ -10,7 +10,7 @@ import Modal from '../components/Modal'
 import './StartLearning.css'
 
 function StartLearning() {
-  const [selectedTopic, setSelectedTopic] = useState('next')
+  const [selectedTopic, setSelectedTopic] = useState('javascript')
   const [language, setLanguage] = useState('en')
   const [markdownContent, setMarkdownContent] = useState('')
   const [searchResults, setSearchResults] = useState([])
