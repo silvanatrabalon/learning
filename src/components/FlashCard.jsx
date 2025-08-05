@@ -1,21 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './FlashCard.css'
 
 function FlashCard({ card, showAnswer, onShowAnswer, onAnswer, language = 'en' }) {
   const [isFlipped, setIsFlipped] = useState(false)
 
+  // Sync internal state with parent prop
+  useEffect(() => {
+    setIsFlipped(showAnswer)
+  }, [showAnswer])
+
   if (!card) return null
 
   const handleFlip = () => {
-    if (!showAnswer) {
-      setIsFlipped(true)
-      onShowAnswer()
-    }
+    onShowAnswer()
   }
 
   const handleAnswer = (isCorrect) => {
     onAnswer(isCorrect)
-    setIsFlipped(false)
   }
 
   const getQuestion = () => {
