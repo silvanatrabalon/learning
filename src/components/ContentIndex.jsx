@@ -1,6 +1,6 @@
 import './ContentIndex.css'
 
-function ContentIndex({ index, onConceptSelect, markdownContent }) {
+function ContentIndex({ index, onConceptSelect, markdownContent, topics = [] }) {
   const handleConceptClick = (concept) => {
     if (!markdownContent) return
     
@@ -21,10 +21,22 @@ function ContentIndex({ index, onConceptSelect, markdownContent }) {
     const conceptData = {
       title: concept.title,
       content: conceptContent,
-      id: concept.id
+      id: concept.id,
+      topicId: concept.topicId,
+      topicName: concept.topicName,
+      topicIcon: concept.topicIcon || topics.find(t => t.id === concept.topicId)?.icon
     }
     
     onConceptSelect(conceptData)
+  }
+
+  const getTopicIcon = (concept) => {
+    if (concept.topicIcon) return concept.topicIcon
+    if (concept.topicId) {
+      const topic = topics.find(t => t.id === concept.topicId)
+      return topic?.icon || '📚'
+    }
+    return '📚'
   }
 
   return (
@@ -37,7 +49,8 @@ function ContentIndex({ index, onConceptSelect, markdownContent }) {
             onClick={() => handleConceptClick(concept)}
             className="index-item"
           >
-            {concept.title}
+            <span className="topic-icon">{getTopicIcon(concept)}</span>
+            <span className="concept-title">{concept.title}</span>
           </button>
         ))}
       </div>

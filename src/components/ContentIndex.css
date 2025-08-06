@@ -16,6 +16,9 @@
 }
 
 .index-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 0.5rem 0.75rem;
   background: transparent;
   border: none;
@@ -35,4 +38,14 @@
 
 .index-item:active {
   background: #e2e8f0;
+}
+
+.index-item .topic-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.index-item .concept-title {
+  flex: 1;
 }

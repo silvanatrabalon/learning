@@ -59,12 +59,14 @@ function StartLearning() {
     lines.forEach((line, i) => {
       if (line.startsWith('## ')) {
         const title = line.replace('## ', '')
+        const topic = topics.find(t => t.id === topicId)
         index.push({
           title,
           line: i,
-          id: title.toLowerCase().replace(/\s+/g, '-'),
+          id: `${topicId}-${title.toLowerCase().replace(/\s+/g, '-')}`, // Make unique across topics
           topicId, // Add topic information
-          topicName: topics.find(t => t.id === topicId)?.name || topicId
+          topicName: topic?.name || topicId,
+          topicIcon: topic?.icon || '📚'
         })
       }
     })
@@ -244,6 +246,7 @@ function StartLearning() {
             index={Object.values(contentIndices).flat()} // Show all indices from all topics
             onConceptSelect={handleConceptSelect}
             markdownContent={Object.values(markdownContents).join('\n\n')} // Combine all content
+            topics={topics} // Pass topics information for icons
           />
         </aside>
 
