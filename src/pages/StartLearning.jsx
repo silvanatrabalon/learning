@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import SearchBar from '../components/SearchBar'
 import TopicSelector from '../components/TopicSelector'
+import MultiTopicDropdown from '../components/MultiTopicDropdown'
 import LanguageToggle from '../components/LanguageToggle'
 import ContentIndex from '../components/ContentIndex'
 import MobileMenu from '../components/MobileMenu'
@@ -10,13 +11,13 @@ import Modal from '../components/Modal'
 import './StartLearning.css'
 
 function StartLearning() {
-  const [selectedTopic, setSelectedTopic] = useState('javascript')
+  const [selectedTopics, setSelectedTopics] = useState(['javascript']) // Changed to array
   const [language, setLanguage] = useState('en')
-  const [markdownContent, setMarkdownContent] = useState('')
+  const [markdownContents, setMarkdownContents] = useState({}) // Changed to object for multiple topics
   const [searchResults, setSearchResults] = useState([])
   const [selectedConcept, setSelectedConcept] = useState(null)
   const [showExampleModal, setShowExampleModal] = useState(false)
-  const [contentIndex, setContentIndex] = useState([])
+  const [contentIndices, setContentIndices] = useState({}) // Changed to object for multiple topics
 
   const topics = [
     { id: 'javascript', name: 'JavaScript', icon: '📜' },
@@ -25,23 +26,33 @@ function StartLearning() {
   ]
 
   useEffect(() => {
-    loadMarkdownContent()
-  }, [selectedTopic, language])
+    loadAllTopicsContent()
+  }, [selectedTopics, language])
 
-  const loadMarkdownContent = async () => {
-    try {
-      const response = await fetch(`/learning/guides/${selectedTopic}-${language}.md`)
-      const content = await response.text()
-      setMarkdownContent(content)
-      parseContentIndex(content)
-      setSelectedConcept(null)
-      setShowExampleModal(false)
-    } catch (error) {
-      console.error('Error loading markdown:', error)
+  const loadAllTopicsContent = async () => {
+    const allContents = {}
+    const allIndices = {}
+    
+    for (const topicId of selectedTopics) {
+      try {
+        const response = await fetch(`/learning/guides/${topicId}-${language}.md`)
+        const content = await response.text()
+        allContents[topicId] = content
+        allIndices[topicId] = parseContentIndex(content, topicId)
+      } catch (error) {
+        console.error(`Error loading ${topicId}:`, error)
+        allContents[topicId] = ''
+        allIndices[topicId] = []
+      }
     }
+    
+    setMarkdownContents(allContents)
+    setContentIndices(allIndices)
+    setSelectedConcept(null)
+    setShowExampleModal(false)
   }
 
-  const parseContentIndex = (content) => {
+  const parseContentIndex = (content, topicId) => {
     const lines = content.split('\n')
     const index = []
     
@@ -51,12 +62,14 @@ function StartLearning() {
         index.push({
           title,
           line: i,
-          id: title.toLowerCase().replace(/\s+/g, '-')
+          id: title.toLowerCase().replace(/\s+/g, '-'),
+          topicId, // Add topic information
+          topicName: topics.find(t => t.id === topicId)?.name || topicId
         })
       }
     })
     
-    setContentIndex(index)
+    return index
   }
 
   const handleSearch = (query) => {
@@ -65,29 +78,41 @@ function StartLearning() {
       return
     }
 
-    const lines = markdownContent.split('\n')
     const results = []
     
-    contentIndex.forEach(concept => {
-      if (concept.title.toLowerCase().includes(query.toLowerCase())) {
-        const startLine = concept.line
-        let endLine = lines.length
-        
-        // Find the end of this concept (next ## or end of file)
-        for (let i = startLine + 1; i < lines.length; i++) {
-          if (lines[i].startsWith('## ')) {
-            endLine = i
-            break
+    // Search across all selected topics
+    selectedTopics.forEach(topicId => {
+      const content = markdownContents[topicId]
+      const index = contentIndices[topicId] || []
+      
+      if (!content) return
+      
+      const lines = content.split('\n')
+      
+      index.forEach(concept => {
+        if (concept.title.toLowerCase().includes(query.toLowerCase())) {
+          const startLine = concept.line
+          let endLine = lines.length
+          
+          // Find the end of this concept (next ## or end of file)
+          for (let i = startLine + 1; i < lines.length; i++) {
+            if (lines[i].startsWith('## ')) {
+              endLine = i
+              break
+            }
           }
+          
+          const conceptContent = lines.slice(startLine, endLine).join('\n')
+          results.push({
+            title: concept.title,
+            content: conceptContent,
+            id: `${topicId}-${concept.id}`, // Make unique across topics
+            topicId: concept.topicId,
+            topicName: concept.topicName,
+            topicIcon: topics.find(t => t.id === topicId)?.icon || '📚'
+          })
         }
-        
-        const conceptContent = lines.slice(startLine, endLine).join('\n')
-        results.push({
-          title: concept.title,
-          content: conceptContent,
-          id: concept.id
-        })
-      }
+      })
     })
     
     setSearchResults(results)
@@ -96,10 +121,13 @@ function StartLearning() {
   const handleConceptSelect = (concept) => {
     // Check if the concept already has content (from ContentIndex) or needs to be processed (from MobileMenu)
     if (concept.content && concept.content.startsWith('## ')) {
-      // Already processed by ContentIndex component
+      // Already processed by ContentIndex component or search
       setSelectedConcept(concept)
     } else {
       // Need to extract content from markdown (from MobileMenu)
+      const topicId = concept.topicId
+      const markdownContent = markdownContents[topicId]
+      
       if (!markdownContent) return
       
       const lines = markdownContent.split('\n')
@@ -119,7 +147,10 @@ function StartLearning() {
       const conceptData = {
         title: concept.title,
         content: conceptContent,
-        id: concept.id
+        id: concept.id,
+        topicId: concept.topicId,
+        topicName: concept.topicName,
+        topicIcon: topics.find(t => t.id === topicId)?.icon || '📚'
       }
       
       setSelectedConcept(conceptData)
@@ -184,20 +215,20 @@ function StartLearning() {
         </Link>
         <h1>Start Learning</h1>
         <div className="header-controls">
-          <TopicSelector 
+          <MultiTopicDropdown
             topics={topics}
-            selectedTopic={selectedTopic}
-            onTopicChange={setSelectedTopic}
+            selectedTopics={selectedTopics}
+            onSelectionChange={setSelectedTopics}
             language={language}
           />
           <MobileMenu
             topics={topics}
-            selectedTopic={selectedTopic}
-            onTopicChange={setSelectedTopic}
+            selectedTopic={selectedTopics[0] || 'javascript'} // Use first selected topic for mobile menu
+            onTopicChange={(topicId) => setSelectedTopics([topicId])} // Convert back to single selection for mobile
             language={language}
             onLanguageChange={setLanguage}
             showModeSelector={false}
-            contentIndex={contentIndex}
+            contentIndex={Object.values(contentIndices).flat()} // Flatten all indices
             onConceptSelect={handleConceptSelect}
             showTopicSelector={false}
           />
@@ -210,9 +241,9 @@ function StartLearning() {
       <div className="learning-container">
         <aside className="sidebar">          
           <ContentIndex 
-            index={contentIndex}
+            index={Object.values(contentIndices).flat()} // Show all indices from all topics
             onConceptSelect={handleConceptSelect}
-            markdownContent={markdownContent}
+            markdownContent={Object.values(markdownContents).join('\n\n')} // Combine all content
           />
         </aside>
 
@@ -224,7 +255,12 @@ function StartLearning() {
               <h3>Search Results:</h3>
               {searchResults.map(result => (
                 <div key={result.id} className="search-result-item">
-                  <h4>{result.title}</h4>
+                  <div className="result-header">
+                    <h4>{result.title}</h4>
+                    <span className="topic-badge">
+                      {result.topicIcon} {result.topicName}
+                    </span>
+                  </div>
                   <button 
                     onClick={() => handleConceptSelect(result)}
                     className="select-concept-btn"
@@ -238,13 +274,23 @@ function StartLearning() {
 
           {selectedConcept ? (
             <div className="concept-display">
-              <div className="concept-actions">
-                <button 
-                  onClick={() => setShowExampleModal(true)}
-                  className="example-toggle-btn"
-                >
-                  Show Example
-                </button>
+              <div className="concept-header">
+                <div className="concept-title">
+                  <h2>{selectedConcept.title}</h2>
+                  {selectedConcept.topicName && (
+                    <span className="concept-topic-badge">
+                      {selectedConcept.topicIcon} {selectedConcept.topicName}
+                    </span>
+                  )}
+                </div>
+                <div className="concept-actions">
+                  <button 
+                    onClick={() => setShowExampleModal(true)}
+                    className="example-toggle-btn"
+                  >
+                    Show Example
+                  </button>
+                </div>
               </div>
               
               <div className="markdown-content">
@@ -255,12 +301,19 @@ function StartLearning() {
             </div>
           ) : (
             <div className="welcome-message">
-              <h2>Welcome to {topics.find(t => t.id === selectedTopic)?.name} Guide</h2>
-              <p>Use the search bar to find specific concepts, or browse the index on the left to explore all available topics.</p>
-              <div className="topic-preview">
-                <ReactMarkdown>
-                  {markdownContent.split('\n').slice(0, 10).join('\n')}
-                </ReactMarkdown>
+              <h2>Welcome to Multi-Topic Learning</h2>
+              <p>Select multiple topics above, then use the search bar to find specific concepts across all selected topics, or browse the index on the left.</p>
+              <div className="selected-topics-preview">
+                <h3>Selected Topics:</h3>
+                {selectedTopics.map(topicId => {
+                  const topic = topics.find(t => t.id === topicId)
+                  return (
+                    <div key={topicId} className="topic-preview-card">
+                      <span className="topic-icon">{topic?.icon}</span>
+                      <span className="topic-name">{topic?.name}</span>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
