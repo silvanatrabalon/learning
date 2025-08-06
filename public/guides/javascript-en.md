@@ -1,8 +1,7 @@
 # JavaScript Guide
 
 ## Data Types
-**Description:** JavaScript has various data types including primitives (number, string, boolean, null, undefined, symbol, bigint) and objects. Understanding comparison operators and type checking is crucial for writing reliable code.
-
+**Description:** JavaScript has various data types including primitives (number, string, boolean, null, undefined, symbol, bigint) and objects.
 **Example:**
 ```javascript
 // == vs === (Shallow comparison)
@@ -151,7 +150,7 @@ function takeFunction(fn) { return fn(); }
 **Comparison:** Lexical scope is determined at compile time. Closures maintain access to outer variables. ES Modules use import/export, CommonJS uses require/module.exports. call/apply invoke immediately, bind creates new function. Strict mode prevents common mistakes. First-class functions can be stored, passed, and returned like any other value.
 
 ## Synchronism
-**Description:** JavaScript's single-threaded nature with event loop, call stack, and callback queue. Understanding asynchronous execution patterns is essential for modern JavaScript development.
+**Description:** JavaScript's single-threaded nature with event loop, call stack, and callback queue. 
 
 **Example:**
 ```javascript
@@ -263,7 +262,7 @@ console.log('4');
 // Output: 1, 4, 2, 3 (Promise microtask executes before setTimeout)
 ```
 
-**Comparison:** Promise.all fails fast, Promise.allSettled waits for all. Promise.race returns first settled, Promise.any returns first resolved. Async/await provides synchronous-like syntax for promises. Microtasks (Promises) have higher priority than macrotasks (setTimeout).
+**Comparison:** Promise.all fails if one fail, Promise.allSettled waits for all. Promise.race returns first settled, Promise.any returns first resolved. Async/await provides synchronous-like syntax for promises. Microtasks (Promises) have higher priority than macrotasks (setTimeout).
 
 ## Prototype
 **Description:** JavaScript's inheritance mechanism where objects can inherit properties and methods from other objects through the prototype chain.
@@ -335,7 +334,7 @@ const modernDog = new ModernDog("Buddy", "Golden Retriever");
 
 **Comparison:** Prototype chain enables inheritance through __proto__ links. Object.create directly sets prototype, class syntax provides cleaner inheritance model. Classes are syntactic sugar over prototypal inheritance.
 
-## Optimization
+## Debounce & Throttle
 **Description:** Techniques to improve performance and user experience by controlling function execution frequency and optimizing code delivery.
 
 **Example:**

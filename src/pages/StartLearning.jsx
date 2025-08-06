@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
-import { SiJavascript, SiNextdotjs, SiNestjs } from 'react-icons/si'
+import { SiJavascript, SiNextdotjs, SiNestjs, SiNodedotjs, SiGit } from 'react-icons/si'
+import { FaBuilding, FaUniversalAccess, FaTools, FaCogs } from 'react-icons/fa'
 import SearchBar from '../components/SearchBar'
 import TopicSelector from '../components/TopicSelector'
 import MultiTopicDropdown from '../components/MultiTopicDropdown'
@@ -23,7 +24,13 @@ function StartLearning() {
   const topics = [
     { id: 'javascript', name: 'JavaScript', icon: <SiJavascript /> },
     { id: 'next', name: 'Next.js', icon: <SiNextdotjs /> },
-    { id: 'nest', name: 'NestJS', icon: <SiNestjs /> }
+    { id: 'nest', name: 'NestJS', icon: <SiNestjs /> },
+    { id: 'node', name: 'Node.js', icon: <SiNodedotjs /> },
+    { id: 'architecture', name: 'Architecture', icon: <FaBuilding /> },
+    { id: 'accessibility', name: 'Accessibility', icon: <FaUniversalAccess /> },
+    { id: 'git', name: 'Git', icon: <SiGit /> },
+    { id: 'tooling', name: 'Tooling', icon: <FaTools /> },
+    { id: 'devops', name: 'DevOps', icon: <FaCogs /> }
   ]
 
   useEffect(() => {

@@ -1,8 +1,7 @@
 # Guía de JavaScript
 
 ## Tipos de Datos
-**Descripción:** JavaScript tiene varios tipos de datos incluyendo primitivos (number, string, boolean, null, undefined, symbol, bigint) y objetos. Entender los operadores de comparación y verificación de tipos es crucial para escribir código confiable.
-
+**Descripción:** JavaScript tiene varios tipos de datos incluyendo primitivos (number, string, boolean, null, undefined, symbol, bigint) y objetos. 
 **Ejemplo:**
 ```javascript
 // == vs === (Comparación superficial)
@@ -86,8 +85,8 @@ const noElevada = () => "No estoy elevada";
 
 **Comparación:** var es elevada e inicializada con undefined, let/const son elevadas pero permanecen en Zona Temporal Muerta hasta su declaración. Las declaraciones de función son completamente elevadas, las expresiones de función no. IIFE crea aislamiento de ámbito inmediato.
 
-## Ámbito
-**Descripción:** Determina la accesibilidad de variables en diferentes partes del código. JavaScript usa ámbito léxico, closures y diferentes sistemas de módulos que afectan cómo se accede a las variables.
+## Scope
+**Descripción:** Determina la accesibilidad de variables en diferentes partes del código. JavaScript usa scope léxico, closures y diferentes sistemas de módulos que afectan cómo se accede a las variables.
 
 **Ejemplo:**
 ```javascript
@@ -148,10 +147,10 @@ const obj2 = { metodo: func };
 function tomarFuncion(fn) { return fn(); }
 ```
 
-**Comparación:** El ámbito léxico se determina en tiempo de compilación. Los closures mantienen acceso a variables externas. Los Módulos ES usan import/export, CommonJS usa require/module.exports. call/apply invocan inmediatamente, bind crea nueva función. El modo estricto previene errores comunes. Las funciones de primera clase pueden almacenarse, pasarse y devolver como cualquier otro valor.
+**Comparación:** El scope léxico se determina en tiempo de compilación. Los closures mantienen acceso a variables externas. Los Módulos ES usan import/export, CommonJS usa require/module.exports. call/apply invocan inmediatamente, bind crea nueva función. El modo estricto previene errores comunes. Las funciones de primera clase pueden almacenarse, pasarse y devolver como cualquier otro valor.
 
 ## Sincronismo
-**Descripción:** La naturaleza de hilo único de JavaScript con event loop, call stack y callback queue. Entender los patrones de ejecución asíncrona es esencial para el desarrollo moderno de JavaScript.
+**Descripción:** La naturaleza de hilo único de JS con event loop, call stack y callback queue.
 
 **Ejemplo:**
 ```javascript
@@ -263,7 +262,7 @@ console.log('4');
 // Salida: 1, 4, 2, 3 (microtarea Promise se ejecuta antes que setTimeout)
 ```
 
-**Comparación:** Promise.all falla rápido, Promise.allSettled espera a todas. Promise.race devuelve la primera establecida, Promise.any devuelve la primera resuelta. Async/await proporciona sintaxis similar a la síncrona para promesas. Las microtareas (Promises) tienen mayor prioridad que las macrotareas (setTimeout).
+**Comparación:** Promise.all falla si una falla, Promise.allSettled espera a todas. Promise.race devuelve la primera establecida, Promise.any devuelve la primera resuelta. Async/await proporciona sintaxis similar a la síncrona para promesas. Las microtareas (Promises) tienen mayor prioridad que las macrotareas (setTimeout).
 
 ## Prototipo
 **Descripción:** Mecanismo de herencia de JavaScript donde los objetos pueden heredar propiedades y métodos de otros objetos a través de la cadena de prototipos.
@@ -335,7 +334,7 @@ const perroModerno = new PerroModerno("Buddy", "Golden Retriever");
 
 **Comparación:** La cadena de prototipos habilita herencia a través de enlaces __proto__. Object.create establece prototipo directamente, la sintaxis de clase proporciona modelo de herencia más limpio. Las clases son azúcar sintáctico sobre herencia prototípica.
 
-## Optimización
+## Debounce & Throttle
 **Descripción:** Técnicas para mejorar el rendimiento y experiencia del usuario controlando la frecuencia de ejecución de funciones y optimizando la entrega de código.
 
 **Ejemplo:**
@@ -507,7 +506,7 @@ class BotonPersonalizado extends HTMLElement {
 customElements.define('boton-personalizado', BotonPersonalizado);
 ```
 
-**Comparación:** setTimeout ejecuta una vez, setInterval se repite. fetch devuelve promesas, maneja métodos HTTP y códigos de estado. localStorage persiste entre sesiones, sessionStorage es específico de pestaña. Service Workers habilitan funcionalidad offline, Web Workers ejecutan código en hilos de fondo. Scripts async ejecutan inmediatamente, defer espera el parsing HTML.
+**Comparación:** setTimeout ejecuta una vez, setInterval se repite. fetch devuelve promesas, maneja métodos HTTP y códigos de estado. localStorage persiste entre sesiones, sessionStorage es específico de pestaña. Service Workers habilitan funcionalidad offline, Web Workers ejecutan código en hilos en background. Scripts async ejecutan inmediatamente, defer espera el parsing HTML.
 
 ## ECMAScript
 **Descripción:** Características modernas de JavaScript y mejoras de sintaxis que aumentan la productividad del desarrollador y legibilidad del código, incluyendo funciones flecha, métodos de array y operadores más nuevos.
