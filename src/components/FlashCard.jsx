@@ -11,12 +11,26 @@ function FlashCard({ card, showAnswer, onShowAnswer, onAnswer, language = 'en' }
 
   if (!card) return null
 
+  // Add validation for required props
+  if (!onShowAnswer || !onAnswer) {
+    console.error('FlashCard: Missing required props', { onShowAnswer, onAnswer })
+    return <div>Error: Missing required props</div>
+  }
+
   const handleFlip = () => {
-    onShowAnswer()
+    if (typeof onShowAnswer === 'function') {
+      onShowAnswer()
+    } else {
+      console.error('onShowAnswer is not a function:', onShowAnswer)
+    }
   }
 
   const handleAnswer = (isCorrect) => {
-    onAnswer(isCorrect)
+    if (typeof onAnswer === 'function') {
+      onAnswer(isCorrect)
+    } else {
+      console.error('onAnswer is not a function:', onAnswer)
+    }
   }
 
   const getQuestion = () => {

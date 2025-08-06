@@ -119,7 +119,7 @@ function TestKnowledge() {
           concept: concept.name,
           description: concept.description,
           comparison: concept.comparison,
-          type: 'description'
+          cardType: 'description'
         })
       }
       
@@ -129,7 +129,7 @@ function TestKnowledge() {
           concept: concept.name,
           description: concept.description,
           comparison: concept.comparison,
-          type: 'comparison'
+          cardType: 'comparison'
         })
       }
     })
@@ -392,7 +392,7 @@ function TestKnowledge() {
               <FlashCard
                 card={currentCard}
                 showAnswer={showAnswer}
-                onReveal={handleRevealAnswer}
+                onShowAnswer={handleRevealAnswer}
                 onAnswer={handleAnswer}
                 language={language}
               />
