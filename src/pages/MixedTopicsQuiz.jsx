@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { SiJavascript, SiNextdotjs, SiNestjs } from 'react-icons/si'
 import MultiTopicSelector from '../components/MultiTopicSelector'
 import SessionConfig from '../components/SessionConfig'
 import DetailedReport from '../components/DetailedReport'
@@ -27,9 +28,9 @@ function MixedTopicsQuiz() {
   const [reviewedQuestions, setReviewedQuestions] = useState([])
 
   const topics = [
-    { id: 'javascript', name: 'JavaScript', icon: '📜' },
-    { id: 'next', name: 'Next.js', icon: '⚛️' },
-    { id: 'nest', name: 'NestJS', icon: '🪶' }
+    { id: 'javascript', name: 'JavaScript', icon: <SiJavascript /> },
+    { id: 'next', name: 'Next.js', icon: <SiNextdotjs /> },
+    { id: 'nest', name: 'NestJS', icon: <SiNestjs /> }
   ]
 
   const getTexts = () => {

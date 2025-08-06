@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import { SiJavascript, SiNextdotjs, SiNestjs } from 'react-icons/si'
 import SearchBar from '../components/SearchBar'
 import TopicSelector from '../components/TopicSelector'
 import MultiTopicDropdown from '../components/MultiTopicDropdown'
@@ -20,9 +21,9 @@ function StartLearning() {
   const [contentIndices, setContentIndices] = useState({}) // Changed to object for multiple topics
 
   const topics = [
-    { id: 'javascript', name: 'JavaScript', icon: '📜' },
-    { id: 'next', name: 'Next.js', icon: '⚛️' },
-    { id: 'nest', name: 'NestJS', icon: '🪶' }
+    { id: 'javascript', name: 'JavaScript', icon: <SiJavascript /> },
+    { id: 'next', name: 'Next.js', icon: <SiNextdotjs /> },
+    { id: 'nest', name: 'NestJS', icon: <SiNestjs /> }
   ]
 
   useEffect(() => {
@@ -66,7 +67,7 @@ function StartLearning() {
           id: `${topicId}-${title.toLowerCase().replace(/\s+/g, '-')}`, // Make unique across topics
           topicId, // Add topic information
           topicName: topic?.name || topicId,
-          topicIcon: topic?.icon || '📚'
+          topicIcon: topic?.icon || '📚' // This will be a React component now
         })
       }
     })
@@ -111,7 +112,7 @@ function StartLearning() {
             id: `${topicId}-${concept.id}`, // Make unique across topics
             topicId: concept.topicId,
             topicName: concept.topicName,
-            topicIcon: topics.find(t => t.id === topicId)?.icon || '📚'
+            topicIcon: topics.find(t => t.id === topicId)?.icon || '📚' // React component
           })
         }
       })
@@ -152,7 +153,7 @@ function StartLearning() {
         id: concept.id,
         topicId: concept.topicId,
         topicName: concept.topicName,
-        topicIcon: topics.find(t => t.id === topicId)?.icon || '📚'
+        topicIcon: topics.find(t => t.id === topicId)?.icon || '📚' // React component
       }
       
       setSelectedConcept(conceptData)

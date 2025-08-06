@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { SiJavascript, SiNextdotjs, SiNestjs } from 'react-icons/si'
 import TopicSelector from '../components/TopicSelector'
 import LanguageToggle from '../components/LanguageToggle'
 import ModeSelector from '../components/ModeSelector'
@@ -23,9 +24,9 @@ function TestKnowledge() {
   const [allConcepts, setAllConcepts] = useState([])
 
   const topics = [
-    { id: 'javascript', name: 'JavaScript', icon: '📜' },
-    { id: 'next', name: 'Next.js', icon: '⚛️' },
-    { id: 'nest', name: 'NestJS', icon: '🪶' }
+    { id: 'javascript', name: 'JavaScript', icon: <SiJavascript /> },
+    { id: 'next', name: 'Next.js', icon: <SiNextdotjs /> },
+    { id: 'nest', name: 'NestJS', icon: <SiNestjs /> }
   ]
 
   useEffect(() => {

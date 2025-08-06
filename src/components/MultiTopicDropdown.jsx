@@ -55,7 +55,11 @@ function MultiTopicDropdown({ topics, selectedTopics, onSelectionChange, languag
     }
     if (selectedTopics.length === 1) {
       const topic = topics.find(t => t.id === selectedTopics[0])
-      return `${topic?.icon} ${topic?.name}`
+      return (
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {topic?.icon} {topic?.name}
+        </span>
+      )
     }
     return `${selectedTopics.length} ${texts.selectedCount}`
   }
