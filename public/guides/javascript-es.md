@@ -1,5 +1,453 @@
 # Guía de JavaScript
 
+## Scope (Ámbito)
+**Descripción:** JavaScript tiene ámbito de función, ámbito de bloque (con let/const) y ámbito global. Entender el ámbito es crucial para la accesibilidad de variables y evitar conflictos.
+**Ejemplo:**
+```javascript
+// Ámbito Global
+var globalVar = "Soy global";
+let globalLet = "También soy global";
+
+function demoAmbito() {
+  // Ámbito de Función
+  var funcionVar = "Tengo ámbito de función";
+  
+  if (true) {
+    // Ámbito de Bloque
+    let bloqueLet = "Tengo ámbito de bloque";
+    const bloqueConst = "También tengo ámbito de bloque";
+    var funcionVarEnBloque = "Aún tengo ámbito de función";
+    
+    console.log(bloqueLet); // ✅ Funciona
+    console.log(globalVar); // ✅ Funciona - puede acceder al global
+  }
+  
+  // console.log(bloqueLet); // ❌ ReferenceError - ámbito de bloque
+  console.log(funcionVarEnBloque); // ✅ Funciona - ámbito de función
+}
+
+// Ejemplo de Ámbito Léxico
+function funcionExterna(x) {
+  function funcionInterna(y) {
+    console.log(x + y); // Puede acceder al parámetro de la función externa
+  }
+  return funcionInterna;
+}
+
+const closure = funcionExterna(10);
+closure(5); // 15
+```
+
+## Sintaxis y Semántica
+**Descripción:** Reglas de sintaxis de JavaScript y significado semántico. Incluye diferencias entre declaraciones vs expresiones, inserción automática de punto y coma, y construcciones del lenguaje.
+**Ejemplo:**
+```javascript
+// Declaración vs Expresión
+if (true) console.log("Declaración"); // Declaración
+const resultado = true ? "sí" : "no"; // Expresión
+
+// Inserción Automática de Punto y Coma (ASI)
+function retornoProblemático() {
+  return
+    {
+      valor: 42
+    }; // ASI inserta punto y coma después de return, devuelve undefined
+}
+
+function retornoCorrecto() {
+  return {
+    valor: 42
+  }; // Devuelve el objeto
+}
+
+// Modo Estricto
+"use strict";
+// variableNoDeclarada = 5; // ❌ Error en modo estricto
+// delete Object.prototype; // ❌ Error en modo estricto
+
+// Etiquetas y break/continue
+externo: for (let i = 0; i < 3; i++) {
+  interno: for (let j = 0; j < 3; j++) {
+    if (i === 1 && j === 1) break externo; // Rompe el bucle externo
+    console.log(i, j);
+  }
+}
+```
+
+## Closures (Clausuras)
+**Descripción:** Funciones que retienen acceso a variables de su ámbito externo incluso después de que la función externa haya terminado. Esencial para privacidad de datos y patrones de programación funcional.
+**Ejemplo:**
+```javascript
+// Closure Básico
+function crearContador() {
+  let contador = 0;
+  return function() {
+    contador++;
+    return contador;
+  };
+}
+
+const contador1 = crearContador();
+const contador2 = crearContador();
+console.log(contador1()); // 1
+console.log(contador1()); // 2
+console.log(contador2()); // 1 (closure separado)
+
+// Patrón de Módulo usando Closures
+const calculadora = (function() {
+  let resultado = 0;
+  
+  return {
+    sumar: function(x) { resultado += x; return this; },
+    restar: function(x) { resultado -= x; return this; },
+    multiplicar: function(x) { resultado *= x; return this; },
+    obtenerResultado: function() { return resultado; },
+    reiniciar: function() { resultado = 0; return this; }
+  };
+})();
+
+calculadora.sumar(10).multiplicar(2).restar(5).obtenerResultado(); // 15
+
+// Closure en Bucles (Trampa Común)
+// Forma incorrecta
+for (var i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i); // Imprime 3, 3, 3
+  }, 100);
+}
+
+// Forma correcta con closure
+for (let i = 0; i < 3; i++) {
+  setTimeout(function() {
+    console.log(i); // Imprime 0, 1, 2
+  }, 100);
+}
+
+// O con IIFE
+for (var i = 0; i < 3; i++) {
+  (function(indice) {
+    setTimeout(function() {
+      console.log(indice); // Imprime 0, 1, 2
+    }, 100);
+  })(i);
+}
+```
+
+## Coerción de Tipos
+**Descripción:** Conversión automática de tipos de JavaScript cuando se realizan operaciones entre diferentes tipos de datos. Entender la coerción previene comportamientos inesperados.
+**Ejemplo:**
+```javascript
+// Coerción Implícita
+console.log("5" + 3);       // "53" (número a string)
+console.log("5" - 3);       // 2 (string a número)
+console.log("5" * "2");     // 10 (ambos a números)
+console.log(true + 1);      // 2 (boolean a número)
+console.log(false + 1);     // 1
+console.log(null + 1);      // 1 (null se convierte a 0)
+console.log(undefined + 1); // NaN
+
+// Valores Falsy y Truthy
+const valoresFalsy = [false, 0, -0, 0n, "", null, undefined, NaN];
+const valoresTruthy = [true, 1, -1, "0", "false", [], {}, function(){}];
+
+valoresFalsy.forEach(val => console.log(!!val)); // Todos false
+valoresTruthy.forEach(val => console.log(!!val)); // Todos true
+
+// Coerción == vs ===
+console.log(0 == false);      // true (coerción)
+console.log(0 === false);     // false (sin coerción)
+console.log("" == false);     // true
+console.log("" === false);    // false
+console.log(null == undefined); // true (caso especial)
+console.log(null === undefined); // false
+
+// Conversión de Objeto a Primitivo
+const obj = {
+  valueOf: () => 42,
+  toString: () => "Objeto"
+};
+console.log(obj + 1);    // 43 (usa valueOf)
+console.log(obj + "");   // "42" (usa valueOf, luego string)
+console.log(String(obj)); // "Objeto" (usa toString)
+
+// Coerción de Arrays
+console.log([1,2,3] + [4,5,6]); // "1,2,34,5,6" (ambos se convierten a strings)
+console.log([1] + [2]);         // "12"
+console.log([1] - [2]);         // -1 (ambos se convierten a números: 1 - 2)
+```
+
+## Hoisting (Elevación)
+**Descripción:** Mecanismo de JavaScript que mueve las declaraciones de variables y funciones al inicio de su ámbito durante la compilación. Diferentes tipos de declaración se comportan diferente con hoisting.
+**Ejemplo:**
+```javascript
+// Hoisting de var vs let vs const
+console.log(variableVar); // undefined (elevada pero no inicializada)
+console.log(variableLet); // ❌ ReferenceError (zona muerta temporal)
+
+var variableVar = "Soy var";
+let variableLet = "Soy let";
+const variableConst = "Soy const";
+
+// Hoisting de Funciones
+console.log(funcionElevada()); // "¡Estoy elevada!" - funciona
+
+function funcionElevada() {
+  return "¡Estoy elevada!";
+}
+
+// Las expresiones de función no se elevan
+console.log(noElevada()); // ❌ TypeError: noElevada is not a function
+
+var noElevada = function() {
+  return "No estoy elevada";
+};
+
+// Zona Muerta Temporal con let/const
+function ejemploZonaMuerta() {
+  console.log(typeof miLet); // ❌ ReferenceError
+  let miLet = "inicializada";
+}
+
+// Hoisting de Clases
+console.log(new MiClase()); // ❌ ReferenceError
+
+class MiClase {
+  constructor() {
+    this.valor = 42;
+  }
+}
+```
+
+## Destructuring (Desestructuración)
+**Descripción:** Extraer valores de arrays o propiedades de objetos en variables distintas usando una sintaxis conveniente.
+**Ejemplo:**
+```javascript
+// Desestructuración de Arrays
+const numeros = [1, 2, 3, 4, 5];
+const [primero, segundo, ...resto] = numeros;
+console.log(primero);  // 1
+console.log(segundo); // 2
+console.log(resto);   // [3, 4, 5]
+
+// Omitir elementos
+const [a, , c] = numeros; // Omite el segundo elemento
+console.log(a, c); // 1, 3
+
+// Valores por defecto
+const [x = 0, y = 0] = [1]; // y obtiene valor por defecto
+console.log(x, y); // 1, 0
+
+// Desestructuración de Objetos
+const persona = { nombre: 'Juan', edad: 30, ciudad: 'Madrid' };
+const { nombre, edad, pais = 'España' } = persona;
+console.log(nombre, edad, pais); // Juan, 30, España
+
+// Renombrar variables
+const { nombre: nombrePersona, edad: edadPersona } = persona;
+console.log(nombrePersona, edadPersona); // Juan, 30
+
+// Desestructuración anidada
+const usuario = {
+  id: 1,
+  perfil: {
+    nombre: 'Ana',
+    apellido: 'García',
+    social: {
+      twitter: '@anagarcia'
+    }
+  }
+};
+
+const {
+  perfil: {
+    nombre,
+    social: { twitter }
+  }
+} = usuario;
+console.log(nombre, twitter); // Ana, @anagarcia
+
+// Desestructuración en parámetros de función
+function mostrarUsuario({ nombre, edad = 0, email }) {
+  console.log(`${nombre}, ${edad}, ${email}`);
+}
+
+mostrarUsuario({ nombre: 'Roberto', email: 'roberto@email.com' }); // Roberto, 0, roberto@email.com
+```
+
+## Rest y Spread
+**Descripción:** Rest (...) recoge múltiples elementos en un array/objeto. Spread (...) expande elementos de un array/objeto.
+**Ejemplo:**
+```javascript
+// Rest en Funciones
+function suma(...numeros) {
+  return numeros.reduce((total, num) => total + num, 0);
+}
+console.log(suma(1, 2, 3, 4)); // 10
+
+// Rest en Desestructuración
+const [cabeza, ...cola] = [1, 2, 3, 4];
+console.log(cabeza); // 1
+console.log(cola); // [2, 3, 4]
+
+const { nombre, ...otrasProps } = { nombre: 'Juan', edad: 30, ciudad: 'Madrid' };
+console.log(nombre);       // Juan
+console.log(otrasProps); // { edad: 30, ciudad: 'Madrid' }
+
+// Spread con Arrays
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combinado = [...arr1, ...arr2]; // [1, 2, 3, 4, 5, 6]
+
+// Spread con Objetos
+const obj1 = { a: 1, b: 2 };
+const obj2 = { c: 3, d: 4 };
+const fusionado = { ...obj1, ...obj2 }; // { a: 1, b: 2, c: 3, d: 4 }
+
+// Spread en llamadas a funciones
+function multiplicar(x, y, z) {
+  return x * y * z;
+}
+const nums = [2, 3, 4];
+console.log(multiplicar(...nums)); // 24
+
+// Clonación (superficial)
+const original = [1, 2, 3];
+const clon = [...original];
+const clonObjeto = { ...obj1 };
+```
+
+## Event Loop (Bucle de Eventos)
+**Descripción:** Modelo de concurrencia de JavaScript que maneja operaciones asíncronas a través de un call stack, cola de callbacks y mecanismo de event loop.
+**Ejemplo:**
+```javascript
+// Call Stack y Event Loop
+console.log('1'); // Síncrono
+
+setTimeout(() => {
+  console.log('2'); // Asíncrono - va a la cola de callbacks
+}, 0);
+
+console.log('3'); // Síncrono
+
+// Salida: 1, 3, 2
+
+// Microtasks vs Macrotasks
+console.log('Inicio');
+
+setTimeout(() => console.log('Macrotask 1'), 0);
+
+Promise.resolve().then(() => console.log('Microtask 1'));
+Promise.resolve().then(() => console.log('Microtask 2'));
+
+setTimeout(() => console.log('Macrotask 2'), 0);
+
+console.log('Fin');
+
+// Salida: Inicio, Fin, Microtask 1, Microtask 2, Macrotask 1, Macrotask 2
+```
+
+## Async/Await
+**Descripción:** Sintaxis moderna para manejar operaciones asíncronas, construida sobre Promises pero con código más limpio y legible que parece síncrono.
+**Ejemplo:**
+```javascript
+// async/await básico
+async function obtenerUsuario(id) {
+  try {
+    const respuesta = await fetch(`/api/usuarios/${id}`);
+    const usuario = await respuesta.json();
+    return usuario;
+  } catch (error) {
+    console.error('Error al obtener usuario:', error);
+    throw error;
+  }
+}
+
+// Manejo de errores con async/await
+async function busquedaRobusta(url) {
+  try {
+    const respuesta = await fetch(url);
+    
+    if (!respuesta.ok) {
+      throw new Error(`HTTP ${respuesta.status}: ${respuesta.statusText}`);
+    }
+    
+    return await respuesta.json();
+  } catch (error) {
+    if (error instanceof TypeError) {
+      console.error('Error de red:', error.message);
+    } else {
+      console.error('Solicitud falló:', error.message);
+    }
+    return null;
+  }
+}
+
+// Ejecución paralela con Promise.all
+async function obtenerMultiplesUsuarios(ids) {
+  try {
+    const promesas = ids.map(id => obtenerUsuario(id));
+    const usuarios = await Promise.all(promesas);
+    return usuarios;
+  } catch (error) {
+    console.error('Una o más solicitudes fallaron:', error);
+  }
+}
+```
+
+## Promises (Promesas)
+**Descripción:** Objetos que representan la eventual finalización o falla de operaciones asíncronas, proporcionando una alternativa más limpia a los callbacks.
+**Ejemplo:**
+```javascript
+// Creando Promesas
+const promesa1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const exito = Math.random() > 0.5;
+    if (exito) {
+      resolve('¡Operación exitosa!');
+    } else {
+      reject(new Error('¡Operación falló!'));
+    }
+  }, 1000);
+});
+
+// Métodos de Promise
+Promise.resolve('valor inmediato'); // Promesa resuelta
+Promise.reject(new Error('error inmediato')); // Promesa rechazada
+
+// Encadenamiento de Promesas
+fetch('/api/datos')
+  .then(respuesta => respuesta.json())
+  .then(datos => {
+    console.log('Datos recibidos:', datos);
+    return datos.procesados;
+  })
+  .then(procesados => {
+    console.log('Procesados:', procesados);
+  })
+  .catch(error => {
+    console.error('Cadena falló:', error);
+  })
+  .finally(() => {
+    console.log('Cadena completada');
+  });
+
+// Promise.all - espera a que todas se resuelvan
+const promesas = [
+  fetch('/api/usuarios'),
+  fetch('/api/posts'),
+  fetch('/api/comentarios')
+];
+
+Promise.all(promesas)
+  .then(respuestas => Promise.all(respuestas.map(r => r.json())))
+  .then(datos => {
+    console.log('Todos los datos cargados:', datos);
+  })
+  .catch(error => {
+    console.error('Una solicitud falló:', error);
+  });
+```
+
 ## Tipos de Datos
 **Descripción:** JavaScript tiene varios tipos de datos incluyendo primitivos (number, string, boolean, null, undefined, symbol, bigint) y objetos. 
 **Ejemplo:**

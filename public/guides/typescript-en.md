@@ -1584,3 +1584,581 @@ function handleUserResult(result: Result<User, string>) {
 ```
 
 **Comparison:** Generics vs any - Generics maintain type information and provide type safety, while any completely removes type checking. Generics enable reusability with safety.
+
+## Namespaces
+**Description:** Namespaces organize code into logical groups and provide a way to avoid naming conflicts in large applications. While modules are preferred in modern TypeScript, namespaces are still useful for certain scenarios.
+**Example:**
+```typescript
+// Basic namespace
+namespace Geometry {
+  export interface Point {
+    x: number;
+    y: number;
+  }
+  
+  export class Circle {
+    constructor(public center: Point, public radius: number) {}
+    
+    area(): number {
+      return Math.PI * this.radius ** 2;
+    }
+  }
+  
+  export function distance(p1: Point, p2: Point): number {
+    return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
+  }
+}
+
+// Usage
+const point1: Geometry.Point = { x: 0, y: 0 };
+const point2: Geometry.Point = { x: 3, y: 4 };
+const circle = new Geometry.Circle(point1, 5);
+
+console.log(Geometry.distance(point1, point2)); // 5
+console.log(circle.area()); // ~78.54
+
+// Nested namespaces
+namespace Company {
+  export namespace HR {
+    export class Employee {
+      constructor(public name: string, public id: number) {}
+    }
+    
+    export function hire(name: string): Employee {
+      return new Employee(name, Math.floor(Math.random() * 10000));
+    }
+  }
+  
+  export namespace Finance {
+    export class Budget {
+      constructor(public amount: number, public department: string) {}
+    }
+    
+    export function allocate(amount: number, dept: string): Budget {
+      return new Budget(amount, dept);
+    }
+  }
+}
+
+// Usage of nested namespaces
+const employee = Company.HR.hire("John Doe");
+const budget = Company.Finance.allocate(50000, "Engineering");
+
+// Namespace aliases
+import HR = Company.HR;
+const newEmployee = HR.hire("Jane Smith");
+
+// Merging namespaces
+namespace Utilities {
+  export function log(message: string): void {
+    console.log(`[LOG]: ${message}`);
+  }
+}
+
+// In another file or later in the same file
+namespace Utilities {
+  export function error(message: string): void {
+    console.error(`[ERROR]: ${message}`);
+  }
+  
+  export const version = "1.0.0";
+}
+
+// Both functions and version are available
+Utilities.log("Application started");
+Utilities.error("Something went wrong");
+console.log(Utilities.version);
+
+// Namespace vs Module comparison
+// Namespace (internal module)
+namespace DatabaseNamespace {
+  export interface Connection {
+    host: string;
+    port: number;
+  }
+  
+  export class MySQL implements Connection {
+    constructor(public host: string, public port: number) {}
+  }
+}
+
+// Module (external module) - preferred approach
+// database.ts
+export interface Connection {
+  host: string;
+  port: number;
+}
+
+export class MySQL implements Connection {
+  constructor(public host: string, public port: number) {}
+}
+
+// main.ts
+// import { MySQL, Connection } from './database';
+```
+
+## Enums
+**Description:** Enums allow you to define a set of named constants, making code more readable and maintainable by giving meaningful names to numeric or string values.
+**Example:**
+```typescript
+// Numeric enums (default)
+enum Direction {
+  Up,    // 0
+  Down,  // 1
+  Left,  // 2
+  Right  // 3
+}
+
+console.log(Direction.Up);    // 0
+console.log(Direction[0]);    // "Up" (reverse mapping)
+
+// Enum with custom numeric values
+enum HttpStatus {
+  OK = 200,
+  NotFound = 404,
+  InternalServerError = 500
+}
+
+function handleResponse(status: HttpStatus): string {
+  switch (status) {
+    case HttpStatus.OK:
+      return "Success";
+    case HttpStatus.NotFound:
+      return "Resource not found";
+    case HttpStatus.InternalServerError:
+      return "Server error";
+    default:
+      return "Unknown status";
+  }
+}
+
+console.log(handleResponse(HttpStatus.OK)); // "Success"
+
+// String enums
+enum Theme {
+  Light = "light",
+  Dark = "dark",
+  Auto = "auto"
+}
+
+function applyTheme(theme: Theme): void {
+  document.body.className = theme; // theme is guaranteed to be a valid string
+}
+
+applyTheme(Theme.Dark); // Sets className to "dark"
+
+// Heterogeneous enums (mixed types)
+enum MixedEnum {
+  No = 0,
+  Yes = "YES",
+}
+
+// Computed enums
+enum FileAccess {
+  // Constant members
+  None,
+  Read = 1 << 1,     // 2
+  Write = 1 << 2,    // 4
+  ReadWrite = Read | Write, // 6
+  
+  // Computed member
+  G = "123".length   // 3
+}
+
+// Enum member types
+enum ShapeKind {
+  Circle,
+  Square,
+}
+
+interface Circle {
+  kind: ShapeKind.Circle;
+  radius: number;
+}
+
+interface Square {
+  kind: ShapeKind.Square;
+  sideLength: number;
+}
+
+type Shape = Circle | Square;
+
+function getArea(shape: Shape): number {
+  switch (shape.kind) {
+    case ShapeKind.Circle:
+      return Math.PI * shape.radius ** 2;
+    case ShapeKind.Square:
+      return shape.sideLength ** 2;
+  }
+}
+
+// Const enums (compile-time optimization)
+const enum Colors {
+  Red = "red",
+  Green = "green",
+  Blue = "blue"
+}
+
+const favoriteColor = Colors.Red; // Inlined as "red" at compile time
+
+// Enum as types
+function move(direction: Direction): void {
+  // direction is guaranteed to be one of the Direction values
+  console.log(`Moving ${Direction[direction]}`);
+}
+
+move(Direction.Up); // Valid
+// move(5); // Error: Argument of type '5' is not assignable to parameter of type 'Direction'
+
+// Using enums with arrays and objects
+const directionNames = Object.values(Direction).filter(v => typeof v === "string");
+const statusCodes = Object.values(HttpStatus).filter(v => typeof v === "number");
+
+console.log(directionNames); // ["Up", "Down", "Left", "Right"]
+console.log(statusCodes);    // [200, 404, 500]
+```
+
+## Decorators
+**Description:** Decorators provide a way to add both annotations and a meta-programming syntax for class declarations and members. They're experimental but widely used in frameworks like Angular.
+**Example:**
+```typescript
+// Enable decorators in tsconfig.json: "experimentalDecorators": true
+
+// Class decorator
+function sealed(constructor: Function) {
+  Object.seal(constructor);
+  Object.seal(constructor.prototype);
+}
+
+@sealed
+class Greeter {
+  greeting: string;
+  constructor(message: string) {
+    this.greeting = message;
+  }
+  greet() {
+    return "Hello, " + this.greeting;
+  }
+}
+
+// Method decorator
+function enumerable(value: boolean) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.enumerable = value;
+  };
+}
+
+class Person {
+  constructor(public name: string) {}
+  
+  @enumerable(false)
+  greet() {
+    return `Hello, I'm ${this.name}`;
+  }
+}
+
+// Property decorator
+function format(formatString: string) {
+  return function (target: any, propertyKey: string) {
+    let value: string;
+    
+    const getter = () => value;
+    const setter = (newVal: string) => {
+      value = formatString.replace("%s", newVal);
+    };
+    
+    Object.defineProperty(target, propertyKey, {
+      get: getter,
+      set: setter,
+      enumerable: true,
+      configurable: true
+    });
+  };
+}
+
+class Product {
+  @format("Product: %s")
+  name: string = "";
+}
+
+const product = new Product();
+product.name = "Laptop";
+console.log(product.name); // "Product: Laptop"
+
+// Parameter decorator
+function required(target: any, propertyName: string | symbol | undefined, parameterIndex: number) {
+  let requiredParameters: number[] = Reflect.getOwnMetadata("required", target) || [];
+  requiredParameters.push(parameterIndex);
+  Reflect.defineMetadata("required", requiredParameters, target);
+}
+
+function validate(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  let method = descriptor.value;
+  
+  descriptor.value = function (...args: any[]) {
+    let requiredParameters: number[] = Reflect.getOwnMetadata("required", target) || [];
+    
+    for (let parameterIndex of requiredParameters) {
+      if (parameterIndex >= args.length || args[parameterIndex] === undefined) {
+        throw new Error(`Missing required argument at index ${parameterIndex}`);
+      }
+    }
+    
+    return method.apply(this, args);
+  };
+}
+
+class User {
+  @validate
+  setInfo(@required name: string, age: number) {
+    console.log(`Setting info: ${name}, ${age}`);
+  }
+}
+
+// Decorator factory
+function log(prefix: string) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+    
+    descriptor.value = function (...args: any[]) {
+      console.log(`${prefix} - Calling ${propertyKey} with args:`, args);
+      const result = originalMethod.apply(this, args);
+      console.log(`${prefix} - ${propertyKey} returned:`, result);
+      return result;
+    };
+  };
+}
+
+class Calculator {
+  @log("CALC")
+  add(a: number, b: number): number {
+    return a + b;
+  }
+  
+  @log("CALC")
+  multiply(a: number, b: number): number {
+    return a * b;
+  }
+}
+
+const calc = new Calculator();
+calc.add(2, 3); // Logs method calls and results
+calc.multiply(4, 5);
+
+// Multiple decorators
+@sealed
+class MultiDecorated {
+  @enumerable(false)
+  @log("PROP")
+  getValue(): string {
+    return "decorated value";
+  }
+}
+
+// Decorator metadata (requires reflect-metadata library)
+import "reflect-metadata";
+
+function Entity(tableName: string) {
+  return function (target: Function) {
+    Reflect.defineMetadata("tableName", tableName, target);
+  };
+}
+
+function Column(name?: string) {
+  return function (target: any, propertyKey: string) {
+    const columns = Reflect.getMetadata("columns", target) || [];
+    columns.push({
+      propertyKey,
+      name: name || propertyKey
+    });
+    Reflect.defineMetadata("columns", columns, target);
+  };
+}
+
+@Entity("users")
+class UserEntity {
+  @Column("user_id")
+  id: number = 0;
+  
+  @Column()
+  name: string = "";
+  
+  @Column("email_address")
+  email: string = "";
+}
+
+// Reading metadata
+const tableName = Reflect.getMetadata("tableName", UserEntity);
+const columns = Reflect.getMetadata("columns", UserEntity.prototype);
+
+console.log(`Table: ${tableName}`); // "Table: users"
+console.log("Columns:", columns);
+```
+
+## Utility Types
+**Description:** TypeScript provides built-in utility types that help transform and manipulate existing types, enabling powerful type compositions and transformations.
+**Example:**
+```typescript
+// Base interface for examples
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age?: number;
+  isActive: boolean;
+}
+
+// Partial<T> - makes all properties optional
+type PartialUser = Partial<User>;
+// Equivalent to: { id?: number; name?: string; email?: string; age?: number; isActive?: boolean; }
+
+function updateUser(user: User, updates: PartialUser): User {
+  return { ...user, ...updates };
+}
+
+const user: User = { id: 1, name: "John", email: "john@email.com", isActive: true };
+const updatedUser = updateUser(user, { name: "Jane", age: 25 });
+
+// Required<T> - makes all properties required
+type RequiredUser = Required<User>;
+// age is no longer optional: { id: number; name: string; email: string; age: number; isActive: boolean; }
+
+function createRequiredUser(data: RequiredUser): void {
+  console.log(`Creating user: ${data.name}, age: ${data.age}`); // age is guaranteed to exist
+}
+
+// Readonly<T> - makes all properties readonly
+type ReadonlyUser = Readonly<User>;
+
+const readonlyUser: ReadonlyUser = { id: 1, name: "John", email: "john@email.com", isActive: true };
+// readonlyUser.name = "Jane"; // Error: Cannot assign to 'name' because it is a read-only property
+
+// Pick<T, K> - creates type with only specified properties
+type UserSummary = Pick<User, 'id' | 'name'>;
+// { id: number; name: string; }
+
+function displaySummary(summary: UserSummary): void {
+  console.log(`User ${summary.id}: ${summary.name}`);
+}
+
+// Omit<T, K> - creates type without specified properties
+type UserWithoutId = Omit<User, 'id'>;
+// { name: string; email: string; age?: number; isActive: boolean; }
+
+function createUserWithoutId(userData: UserWithoutId): User {
+  return {
+    id: Math.floor(Math.random() * 1000),
+    ...userData
+  };
+}
+
+// Record<K, T> - creates object type with keys K and values T
+type UserRoles = Record<string, string[]>;
+const roles: UserRoles = {
+  "admin": ["read", "write", "delete"],
+  "user": ["read"],
+  "guest": ["read"]
+};
+
+type StatusMap = Record<'pending' | 'approved' | 'rejected', string>;
+const statusMessages: StatusMap = {
+  pending: "Waiting for approval",
+  approved: "Request approved",
+  rejected: "Request denied"
+};
+
+// Exclude<T, U> - excludes types that are assignable to U
+type NonBooleanPrimitives = Exclude<string | number | boolean | null, boolean>;
+// string | number | null
+
+type AllowedStatusCodes = Exclude<200 | 400 | 401 | 404 | 500, 400 | 401>;
+// 200 | 404 | 500
+
+// Extract<T, U> - extracts types that are assignable to U
+type BooleanProperties = Extract<keyof User, 'isActive'>;
+// "isActive"
+
+type StringOrNumber = Extract<string | number | boolean, string | number>;
+// string | number
+
+// NonNullable<T> - excludes null and undefined
+type NonNullableString = NonNullable<string | null | undefined>;
+// string
+
+function processValue(value: string | null | undefined): NonNullableString {
+  if (value == null) {
+    throw new Error("Value cannot be null or undefined");
+  }
+  return value; // TypeScript knows this is string
+}
+
+// ReturnType<T> - extracts return type of function
+function getUser(): User {
+  return { id: 1, name: "John", email: "john@email.com", isActive: true };
+}
+
+type GetUserReturn = ReturnType<typeof getUser>; // User
+
+// Parameters<T> - extracts parameter types of function
+function createUser(name: string, email: string, age?: number): User {
+  return { id: Math.random(), name, email, age, isActive: true };
+}
+
+type CreateUserParams = Parameters<typeof createUser>;
+// [name: string, email: string, age?: number | undefined]
+
+function callCreateUser(...args: CreateUserParams): User {
+  return createUser(...args);
+}
+
+// ConstructorParameters<T> - extracts constructor parameter types
+class DatabaseConnection {
+  constructor(public host: string, public port: number, public database: string) {}
+}
+
+type DBConstructorParams = ConstructorParameters<typeof DatabaseConnection>;
+// [host: string, port: number, database: string]
+
+function createConnection(...args: DBConstructorParams): DatabaseConnection {
+  return new DatabaseConnection(...args);
+}
+
+// InstanceType<T> - extracts instance type of constructor
+type DBInstance = InstanceType<typeof DatabaseConnection>;
+// DatabaseConnection
+
+// Conditional types with utility types
+type ApiResponse<T> = T extends string 
+  ? { message: T } 
+  : T extends number 
+    ? { code: T } 
+    : { data: T };
+
+type StringResponse = ApiResponse<string>; // { message: string }
+type NumberResponse = ApiResponse<number>; // { code: number }
+type UserResponse = ApiResponse<User>;     // { data: User }
+
+// Mapped type utilities
+type OptionalExcept<T, K extends keyof T> = Partial<T> & Pick<T, K>;
+type UserOptionalExceptId = OptionalExcept<User, 'id'>;
+// { id: number; name?: string; email?: string; age?: number; isActive?: boolean; }
+
+// Combining utility types
+type CreateUserRequest = Omit<Required<User>, 'id'>;
+// { name: string; email: string; age: number; isActive: boolean; }
+
+type UpdateUserRequest = Partial<Pick<User, 'name' | 'email' | 'age'>>;
+// { name?: string; email?: string; age?: number; }
+
+// Template literal types (TypeScript 4.1+)
+type EventName<T extends string> = `on${Capitalize<T>}`;
+type ClickEvent = EventName<'click'>; // "onClick"
+type HoverEvent = EventName<'hover'>; // "onHover"
+
+type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type Endpoint = `/${string}`;
+type APICall = `${HTTPMethod} ${Endpoint}`;
+
+const apiCall: APICall = "GET /users"; // Valid
+// const invalid: APICall = "INVALID /users"; // Error
+```
