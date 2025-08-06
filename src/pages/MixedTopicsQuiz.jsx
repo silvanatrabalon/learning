@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { SiJavascript, SiNextdotjs, SiNestjs, SiNodedotjs, SiGit } from 'react-icons/si'
-import { FaBuilding, FaUniversalAccess, FaTools, FaCogs } from 'react-icons/fa'
+import { SiJavascript, SiNextdotjs, SiNestjs, SiNodedotjs, SiGit, SiReact, SiTypescript } from 'react-icons/si'
+import { FaBuilding, FaUniversalAccess, FaTools, FaCogs, FaVial, FaMobile } from 'react-icons/fa'
 import MultiTopicSelector from '../components/MultiTopicSelector'
 import SessionConfig from '../components/SessionConfig'
 import DetailedReport from '../components/DetailedReport'
@@ -30,9 +30,13 @@ function MixedTopicsQuiz() {
 
   const topics = [
     { id: 'javascript', name: 'JavaScript', icon: <SiJavascript /> },
+    { id: 'react', name: 'React', icon: <SiReact /> },
+    { id: 'typescript', name: 'TypeScript', icon: <SiTypescript /> },
     { id: 'next', name: 'Next.js', icon: <SiNextdotjs /> },
     { id: 'nest', name: 'NestJS', icon: <SiNestjs /> },
     { id: 'node', name: 'Node.js', icon: <SiNodedotjs /> },
+    { id: 'react-native', name: 'React Native', icon: <FaMobile /> },
+    { id: 'testing', name: 'Testing', icon: <FaVial /> },
     { id: 'architecture', name: 'Architecture', icon: <FaBuilding /> },
     { id: 'accessibility', name: 'Accessibility', icon: <FaUniversalAccess /> },
     { id: 'git', name: 'Git', icon: <SiGit /> },
