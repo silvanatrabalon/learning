@@ -36,41 +36,38 @@ function funcionExterna(x) {
 
 const closure = funcionExterna(10);
 closure(5); // 15
-```
 
-## Sintaxis y Semántica
-**Descripción:** Reglas de sintaxis de JavaScript y significado semántico. Incluye diferencias entre declaraciones vs expresiones, inserción automática de punto y coma, y construcciones del lenguaje.
-**Ejemplo:**
-```javascript
-// Declaración vs Expresión
-if (true) console.log("Declaración"); // Declaración
-const resultado = true ? "sí" : "no"; // Expresión
+// Comparación: var vs let vs const
+// 1. Comportamiento de elevación (hoisting)
+console.log(variableVar); // undefined (elevada pero no inicializada)
+// console.log(variableLet); // ❌ ReferenceError (zona muerta temporal)
+// console.log(variableConst); // ❌ ReferenceError (zona muerta temporal)
 
-// Inserción Automática de Punto y Coma (ASI)
-function retornoProblemático() {
-  return
-    {
-      valor: 42
-    }; // ASI inserta punto y coma después de return, devuelve undefined
-}
+var variableVar = "Soy var";
+let variableLet = "Soy let";
+const variableConst = "Soy const";
 
-function retornoCorrecto() {
-  return {
-    valor: 42
-  }; // Devuelve el objeto
-}
+// 2. Re-declaración
+var variableVar = "Puedo ser re-declarada"; // ✅ Funciona
+// let variableLet = "No puedo ser re-declarada"; // ❌ SyntaxError
+// const variableConst = "No puedo ser re-declarada"; // ❌ SyntaxError
 
-// Modo Estricto
-"use strict";
-// variableNoDeclarada = 5; // ❌ Error en modo estricto
-// delete Object.prototype; // ❌ Error en modo estricto
+// 3. Re-asignación
+variableVar = "Puedo ser re-asignada"; // ✅ Funciona
+variableLet = "Puedo ser re-asignada"; // ✅ Funciona
+// variableConst = "No puedo ser re-asignada"; // ❌ TypeError
 
-// Etiquetas y break/continue
-externo: for (let i = 0; i < 3; i++) {
-  interno: for (let j = 0; j < 3; j++) {
-    if (i === 1 && j === 1) break externo; // Rompe el bucle externo
-    console.log(i, j);
+// 4. Ámbito de bloque
+function demoAmbito() {
+  if (true) {
+    var varEnBloque = "Tengo ámbito de función";
+    let letEnBloque = "Tengo ámbito de bloque";
+    const constEnBloque = "Tengo ámbito de bloque";
   }
+  
+  console.log(varEnBloque); // ✅ Funciona - ámbito de función
+  // console.log(letEnBloque); // ❌ ReferenceError - ámbito de bloque
+  // console.log(constEnBloque); // ❌ ReferenceError - ámbito de bloque
 }
 ```
 
@@ -430,8 +427,16 @@ fetch('/api/datos')
   .finally(() => {
     console.log('Cadena completada');
   });
+```
 
-// Promise.all - espera a que todas se resuelvan
+**Casos de Uso:** Llamadas a APIs, operaciones de archivos, manejo de entrada del usuario, cualquier operación asíncrona que necesite mejor manejo de errores que los callbacks.
+
+## Promise.all
+**Descripción:** Espera a que todas las promesas se resuelvan y devuelve un array de todos los valores resueltos. Si alguna promesa es rechazada, Promise.all inmediatamente se rechaza.
+
+**Ejemplo:**
+```javascript
+// Uso básico de Promise.all
 const promesas = [
   fetch('/api/usuarios'),
   fetch('/api/posts'),
@@ -442,11 +447,125 @@ Promise.all(promesas)
   .then(respuestas => Promise.all(respuestas.map(r => r.json())))
   .then(datos => {
     console.log('Todos los datos cargados:', datos);
+    // datos[0] = usuarios, datos[1] = posts, datos[2] = comentarios
   })
   .catch(error => {
     console.error('Una solicitud falló:', error);
   });
+
+// Promise.all con promesas mixtas
+const promesasMixtas = [
+  Promise.resolve(42),
+  Promise.resolve('hola'),
+  Promise.resolve(true)
+];
+
+Promise.all(promesasMixtas)
+  .then(valores => console.log(valores)); // [42, 'hola', true]
 ```
+
+**Casos de Uso:** Cargar múltiples recursos simultáneamente, llamadas paralelas a APIs donde todos los datos son requeridos, operaciones en lote.
+
+## Promise.allSettled
+**Descripción:** Espera a que todas las promesas se completen (ya sea resueltas o rechazadas) y devuelve un array de resultados con estado y valor/razón para cada promesa.
+
+**Ejemplo:**
+```javascript
+Promise.allSettled([
+  fetch('/api/confiable'),
+  fetch('/api/no-confiable'),
+  fetch('/api/a-veces-falla')
+]).then(resultados => {
+  resultados.forEach((resultado, indice) => {
+    if (resultado.status === 'fulfilled') {
+      console.log(`Solicitud ${indice} exitosa:`, resultado.value);
+    } else {
+      console.log(`Solicitud ${indice} falló:`, resultado.reason);
+    }
+  });
+});
+
+// Éxito y fallo mixtos
+Promise.allSettled([
+  Promise.resolve('Éxito'),
+  Promise.reject('Error'),
+  Promise.resolve('Otro éxito')
+]).then(resultados => {
+  console.log(resultados);
+  // [
+  //   { status: 'fulfilled', value: 'Éxito' },
+  //   { status: 'rejected', reason: 'Error' },
+  //   { status: 'fulfilled', value: 'Otro éxito' }
+  // ]
+});
+```
+
+**Casos de Uso:** Operaciones en lote donde algunos fallos son aceptables, recolectar resultados de múltiples fuentes no confiables, analíticas y logging.
+
+## Promise.race
+**Descripción:** Devuelve una promesa que se resuelve o rechaza con la primera promesa que se establece (ya sea resuelta o rechazada).
+
+**Ejemplo:**
+```javascript
+// Carrera entre múltiples servidores
+Promise.race([
+  fetch('/api/servidor-rapido'),
+  fetch('/api/servidor-lento'),
+  new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Timeout')), 5000)
+  )
+]).then(respuesta => {
+  console.log('Primera respuesta recibida');
+}).catch(error => {
+  console.error('La primera en establecerse fue un rechazo:', error);
+});
+
+// Carrera con timeout
+function fetchConTimeout(url, timeout) {
+  return Promise.race([
+    fetch(url),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), timeout)
+    )
+  ]);
+}
+
+fetchConTimeout('/api/datos', 3000)
+  .then(respuesta => respuesta.json())
+  .catch(error => console.error('Solicitud falló o se agotó el tiempo:', error));
+```
+
+**Casos de Uso:** Implementar timeouts, carrera entre múltiples fuentes de datos, cancelar operaciones lentas.
+
+## Promise.any
+**Descripción:** Devuelve una promesa que se resuelve con la primera promesa cumplida. Solo se rechaza si todas las promesas se rechazan (AggregateError).
+
+**Ejemplo:**
+```javascript
+// Primera respuesta exitosa del servidor
+Promise.any([
+  fetch('/api/servidor1').catch(() => Promise.reject('Servidor 1 falló')),
+  fetch('/api/servidor2').catch(() => Promise.reject('Servidor 2 falló')),
+  fetch('/api/servidor3').catch(() => Promise.reject('Servidor 3 falló'))
+]).then(respuesta => {
+  console.log('Al menos un servidor respondió');
+}).catch(error => {
+  console.error('Todos los servidores fallaron:', error.errors);
+});
+
+// Cadena de fallback
+Promise.any([
+  fetch('/api/primario'),
+  fetch('/api/respaldo'),
+  fetch('/api/emergencia')
+]).then(respuesta => {
+  console.log('Respuesta obtenida del servidor disponible');
+}).catch(errorAgregado => {
+  console.error('Todos los servidores no disponibles:', errorAgregado.errors);
+});
+```
+
+**Casos de Uso:** Mecanismos de fallback, obtener datos de la fuente más rápida disponible, solicitudes redundantes a servidores.
 
 ## Tipos de Datos
 **Descripción:** JavaScript tiene varios tipos de datos incluyendo primitivos (number, string, boolean, null, undefined, symbol, bigint) y objetos. 
@@ -488,114 +607,6 @@ const conjunto = new Set([1, 2, 3, 3]); // {1, 2, 3}
 ```
 
 **Comparación:** == realiza coerción de tipos mientras que === no. null se asigna explícitamente, undefined significa no asignado. Los Symbols crean identificadores únicos. BigInt maneja enteros grandes. typeof devuelve cadena de tipo, instanceof verifica cadena de prototipos. Map almacena pares clave-valor, Set almacena valores únicos.
-
-## Hoisting
-**Descripción:** Mecanismo de JavaScript que mueve las declaraciones de variables y funciones al inicio de su ámbito durante la compilación. Diferentes tipos de declaración se comportan diferente con hoisting.
-
-**Ejemplo:**
-```javascript
-// Hoisting de var vs let vs const
-console.log(variableVar); // undefined (elevada pero no inicializada)
-console.log(variableLet); // ReferenceError (Zona Temporal Muerta)
-
-var variableVar = "Soy var";
-let variableLet = "Soy let";
-const variableConst = "Soy const";
-
-// Zona Temporal Muerta
-function ejemplo() {
-  console.log(temp); // ReferenceError
-  let temp = "valor";
-}
-
-// Hoisting en funciones y clases
-console.log(funcionElevada()); // "¡Estoy elevada!"
-
-function funcionElevada() {
-  return "¡Estoy elevada!";
-}
-
-// console.log(noElevada()); // TypeError
-const noElevada = () => "No estoy elevada";
-
-// IIFE (Expresión de Función Inmediatamente Invocada)
-(function() {
-  var privada = "¡No puedes accederme desde afuera!";
-  console.log("IIFE ejecutada");
-})();
-
-// IIFE moderna con función flecha
-(() => {
-  const variableModulo = "Privada a este ámbito";
-  console.log("IIFE flecha ejecutada");
-})();
-```
-
-**Comparación:** var es elevada e inicializada con undefined, let/const son elevadas pero permanecen en Zona Temporal Muerta hasta su declaración. Las declaraciones de función son completamente elevadas, las expresiones de función no. IIFE crea aislamiento de ámbito inmediato.
-
-## Scope
-**Descripción:** Determina la accesibilidad de variables en diferentes partes del código. JavaScript usa scope léxico, closures y diferentes sistemas de módulos que afectan cómo se accede a las variables.
-
-**Ejemplo:**
-```javascript
-// Ámbito léxico
-function externa() {
-  const varExterna = "Soy externa";
-  
-  function interna() {
-    console.log(varExterna); // Accede al ámbito externo
-  }
-  
-  return interna;
-}
-
-// Closures
-function crearContador() {
-  let contador = 0;
-  return function() {
-    return ++contador;
-  };
-}
-const miContador = crearContador();
-console.log(miContador()); // 1
-console.log(miContador()); // 2
-
-// Módulos ES vs CommonJS
-// Módulos ES (moderno)
-import { exportacionNombrada } from './modulo.js';
-export const miFuncion = () => {};
-
-// CommonJS (tradicional de Node.js)
-const { exportacionNombrada } = require('./modulo');
-module.exports = { miFuncion };
-
-// this (call vs bind vs apply)
-const obj = {
-  nombre: "Objeto",
-  saludar: function(saludo, puntuacion) {
-    return `${saludo} ${this.nombre}${puntuacion}`;
-  }
-};
-
-console.log(obj.saludar.call(obj, "Hola", "!")); // "Hola Objeto!"
-console.log(obj.saludar.apply(obj, ["Hi", "."])); // "Hi Objeto."
-const saludoEnlazado = obj.saludar.bind(obj, "Hey");
-console.log(saludoEnlazado("?")); // "Hey Objeto?"
-
-// Modo Estricto
-"use strict";
-function ejemploEstricto() {
-  // variableNoDeclarada = "error"; // ReferenceError en modo estricto
-}
-
-// Funciones de primera clase
-const func = function() { return "Soy un valor"; };
-const array = [func];
-const obj2 = { metodo: func };
-function tomarFuncion(fn) { return fn(); }
-```
-
-**Comparación:** El scope léxico se determina en tiempo de compilación. Los closures mantienen acceso a variables externas. Los Módulos ES usan import/export, CommonJS usa require/module.exports. call/apply invocan inmediatamente, bind crea nueva función. El modo estricto previene errores comunes. Las funciones de primera clase pueden almacenarse, pasarse y devolver como cualquier otro valor.
 
 ## Sincronismo
 **Descripción:** La naturaleza de hilo único de JS con event loop, call stack y callback queue.
@@ -663,54 +674,6 @@ for (const valor of iterable) {
 ```
 
 **Comparación:** El call stack ejecuta síncronamente, la callback queue maneja operaciones async. Los callbacks pueden llevar al callback hell. Los generadores pausan/reanudan ejecución, los iteradores definen cómo se iteran los objetos. El event loop coordina entre stack y queue.
-
-## Promesas
-**Descripción:** Objetos que representan la eventual finalización o falla de operaciones asíncronas. Las promesas proporcionan mejor manejo async que los callbacks e integran con la sintaxis moderna async/await.
-
-**Ejemplo:**
-```javascript
-// Métodos de Promesas
-const promesa1 = Promise.resolve(3);
-const promesa2 = new Promise(resolve => setTimeout(() => resolve('foo'), 1000));
-const promesa3 = Promise.reject('Error');
-
-// Promise.all - espera a que todas se resuelvan
-Promise.all([promesa1, promesa2])
-  .then(valores => console.log(valores)); // [3, 'foo']
-
-// Promise.allSettled - espera a que todas se establezcan
-Promise.allSettled([promesa1, promesa2, promesa3])
-  .then(resultados => console.log(resultados));
-
-// Promise.race - la primera en establecerse gana
-Promise.race([promesa1, promesa2])
-  .then(valor => console.log(valor)); // 3
-
-// Promise.any - la primera en resolverse gana
-Promise.any([promesa3, promesa2])
-  .then(valor => console.log(valor)); // 'foo'
-
-// Async / Await
-async function obtenerDatosUsuario() {
-  try {
-    const respuesta = await fetch('/api/usuario');
-    const datosUsuario = await respuesta.json();
-    return datosUsuario;
-  } catch (error) {
-    console.error('Error al obtener usuario:', error);
-    throw error;
-  }
-}
-
-// Microtarea
-console.log('1');
-Promise.resolve().then(() => console.log('2'));
-setTimeout(() => console.log('3'), 0);
-console.log('4');
-// Salida: 1, 4, 2, 3 (microtarea Promise se ejecuta antes que setTimeout)
-```
-
-**Comparación:** Promise.all falla si una falla, Promise.allSettled espera a todas. Promise.race devuelve la primera establecida, Promise.any devuelve la primera resuelta. Async/await proporciona sintaxis similar a la síncrona para promesas. Las microtareas (Promises) tienen mayor prioridad que las macrotareas (setTimeout).
 
 ## Prototipo
 **Descripción:** Mecanismo de herencia de JavaScript donde los objetos pueden heredar propiedades y métodos de otros objetos a través de la cadena de prototipos.
@@ -782,12 +745,12 @@ const perroModerno = new PerroModerno("Buddy", "Golden Retriever");
 
 **Comparación:** La cadena de prototipos habilita herencia a través de enlaces __proto__. Object.create establece prototipo directamente, la sintaxis de clase proporciona modelo de herencia más limpio. Las clases son azúcar sintáctico sobre herencia prototípica.
 
-## Debounce & Throttle
-**Descripción:** Técnicas para mejorar el rendimiento y experiencia del usuario controlando la frecuencia de ejecución de funciones y optimizando la entrega de código.
+## Debounce
+**Descripción:** Una técnica que retrasa la ejecución de funciones hasta después de un período específico de inactividad. Útil para operaciones costosas que no deberían ejecutarse en cada entrada.
 
 **Ejemplo:**
 ```javascript
-// Debounce - retrasa ejecución hasta que las llamadas hayan parado
+// Implementación básica de debounce
 function debounce(func, retraso) {
   let timeoutId;
   return function(...args) {
@@ -796,11 +759,37 @@ function debounce(func, retraso) {
   };
 }
 
+// Debounce en input de búsqueda
+const inputBusqueda = document.getElementById('buscar');
 const busquedaDebounced = debounce((consulta) => {
   console.log(`Buscando: ${consulta}`);
+  // Llamada a API aquí
+  fetch(`/api/buscar?q=${consulta}`)
+    .then(respuesta => respuesta.json())
+    .then(datos => console.log(datos));
 }, 300);
 
-// Throttle - limita ejecución a una vez por período de tiempo
+inputBusqueda.addEventListener('input', (e) => {
+  busquedaDebounced(e.target.value);
+});
+
+// Debounce en redimensionamiento de ventana
+const redimensionarDebounced = debounce(() => {
+  console.log('Ventana redimensionada:', window.innerWidth, window.innerHeight);
+  // Cálculos costosos de layout aquí
+}, 250);
+
+window.addEventListener('resize', redimensionarDebounced);
+```
+
+**Casos de Uso:** Inputs de búsqueda, validación de formularios, manejadores de redimensionamiento, llamadas a API activadas por entrada del usuario.
+
+## Throttle
+**Descripción:** Una técnica que limita la ejecución de funciones a una vez por período de tiempo especificado, asegurando intervalos regulares de ejecución incluso con activación continua.
+
+**Ejemplo:**
+```javascript
+// Implementación básica de throttle
 function throttle(func, limite) {
   let enThrottle;
   return function(...args) {
@@ -812,66 +801,141 @@ function throttle(func, limite) {
   };
 }
 
+// Throttle en evento scroll
 const scrollThrottled = throttle(() => {
-  console.log('Evento scroll disparado');
+  console.log('Posición de scroll:', window.scrollY);
+  // Actualizar barra de progreso, verificar si elementos están en vista, etc.
 }, 100);
 
-// Tree Shaking (optimización en tiempo de construcción)
-// Solo importa lo que necesitas
-import { funcionEspecifica } from 'libreria-grande';
-// En lugar de: import * as libreria from 'libreria-grande';
+window.addEventListener('scroll', scrollThrottled);
 
-// Code Splitting (importaciones dinámicas)
-async function cargarCaracteristica() {
-  try {
-    const { moduloCaracteristica } = await import('./modulo-caracteristica.js');
-    moduloCaracteristica.inicializar();
-  } catch (error) {
-    console.error('Error al cargar característica:', error);
-  }
-}
+// Throttle en movimiento del mouse
+const mouseMoveThrottled = throttle((e) => {
+  console.log('Posición del mouse:', e.clientX, e.clientY);
+  // Actualizar efectos de cursor, operaciones de arrastre, etc.
+}, 16); // ~60 FPS
 
-// Code splitting basado en rutas
-const rutas = {
-  '/inicio': () => import('./paginas/Inicio.js'),
-  '/acerca': () => import('./paginas/Acerca.js'),
-  '/contacto': () => import('./paginas/Contacto.js')
-};
+document.addEventListener('mousemove', mouseMoveThrottled);
 
-async function navegarA(ruta) {
-  const cargarComponente = rutas[ruta];
-  if (cargarComponente) {
-    const componente = await cargarComponente();
-    // Renderizar componente
-  }
+// Throttle avanzado con opciones leading y trailing
+function throttleAvanzado(func, limite, opciones = {}) {
+  let timeout;
+  let anterior = 0;
+  const { leading = true, trailing = true } = opciones;
+
+  return function(...args) {
+    const ahora = Date.now();
+    if (!anterior && !leading) anterior = ahora;
+    const restante = limite - (ahora - anterior);
+
+    if (restante <= 0 || restante > limite) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      anterior = ahora;
+      func.apply(this, args);
+    } else if (!timeout && trailing) {
+      timeout = setTimeout(() => {
+        anterior = leading ? Date.now() : 0;
+        timeout = null;
+        func.apply(this, args);
+      }, restante);
+    }
+  };
 }
 ```
 
-**Comparación:** Debounce espera período de calma, throttle limita frecuencia. Tree shaking remueve código no usado en tiempo de construcción. Code splitting carga código bajo demanda, reduciendo el tamaño del bundle inicial.
+**Casos de Uso:** Eventos de scroll, seguimiento de movimiento del mouse, prevención de clics en botones, actualizaciones de frames de animación, llamadas a API que deben ejecutarse a intervalos regulares.
 
-## Web API
-**Descripción:** APIs proporcionadas por el navegador que extienden las capacidades de JavaScript para desarrollo web, incluyendo funciones de tiempo, almacenamiento, comunicación y componentes web.
+## setTimeout
+**Descripción:** Ejecuta una función una vez después de un retraso especificado en milisegundos.
 
 **Ejemplo:**
 ```javascript
-// setTimeout vs setInterval
+// setTimeout básico
 const timeoutId = setTimeout(() => {
-  console.log('Ejecutado una vez después de 1 segundo');
-}, 1000);
-
-const intervalId = setInterval(() => {
-  console.log('Ejecutado cada 2 segundos');
+  console.log('Ejecutado después de 2 segundos');
 }, 2000);
 
-// Limpiar temporizadores
-clearTimeout(timeoutId);
-clearInterval(intervalId);
+// setTimeout con parámetros
+setTimeout((nombre, edad) => {
+  console.log(`Hola ${nombre}, tienes ${edad} años`);
+}, 1000, 'Juan', 25);
 
-// Fetch (métodos: POST/GET, códigos de estado)
+// Limpiar timeout
+clearTimeout(timeoutId);
+
+// Patrón común: limpieza en desmontaje de componente
+function crearTemporizador() {
+  const timeoutId = setTimeout(() => {
+    console.log('Temporizador ejecutado');
+  }, 5000);
+  
+  // Devolver función de limpieza
+  return () => clearTimeout(timeoutId);
+}
+
+const limpiar = crearTemporizador();
+// Después... limpiar(); // Previene ejecución del temporizador
+```
+
+**Casos de Uso:** Ejecución retardada, debounce de entrada del usuario, auto-ocultado de notificaciones, operaciones de limpieza.
+
+## setInterval
+**Descripción:** Ejecuta una función repetidamente en intervalos especificados hasta ser cancelado.
+
+**Ejemplo:**
+```javascript
+// setInterval básico
+const intervalId = setInterval(() => {
+  console.log('Esto se ejecuta cada segundo');
+}, 1000);
+
+// Limpiar interval después de un tiempo
+setTimeout(() => {
+  clearInterval(intervalId);
+  console.log('Interval detenido');
+}, 5000);
+
+// Ejemplo de contador
+let contador = 0;
+const contadorInterval = setInterval(() => {
+  contador++;
+  console.log(`Contador: ${contador}`);
+  
+  if (contador >= 10) {
+    clearInterval(contadorInterval);
+    console.log('Contador terminado');
+  }
+}, 500);
+
+// Ejemplo de reloj
+function iniciarReloj() {
+  const intervalReloj = setInterval(() => {
+    const ahora = new Date();
+    console.log(ahora.toLocaleTimeString());
+  }, 1000);
+  
+  return () => clearInterval(intervalReloj);
+}
+
+const detenerReloj = iniciarReloj();
+```
+
+**Casos de Uso:** Relojes en tiempo real, obtención periódica de datos, animaciones, actualizaciones de progreso.
+
+## Fetch
+**Descripción:** API moderna para realizar peticiones HTTP, devolviendo Promises y proporcionando una alternativa más limpia a XMLHttpRequest.
+
+**Ejemplo:**
+```javascript
 // Petición GET
 fetch('/api/datos')
   .then(respuesta => {
     console.log('Estado:', respuesta.status); // 200, 404, 500, etc.
+    console.log('Headers:', respuesta.headers.get('content-type'));
+    
     if (!respuesta.ok) {
       throw new Error(`HTTP ${respuesta.status}: ${respuesta.statusText}`);
     }
@@ -885,76 +949,312 @@ fetch('/api/usuarios', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': 'Bearer token123'
   },
-  body: JSON.stringify({ nombre: 'Juan', email: 'juan@ejemplo.com' })
+  body: JSON.stringify({ 
+    nombre: 'Juan', 
+    email: 'juan@ejemplo.com' 
+  })
 })
   .then(respuesta => respuesta.json())
-  .then(datos => console.log('Éxito:', datos));
+  .then(datos => console.log('Éxito:', datos))
+  .catch(error => console.error('Error:', error));
 
-// localStorage vs sessionStorage
-localStorage.setItem('persistente', 'sobrevive reinicio de navegador');
-sessionStorage.setItem('temporal', 'se borra al cerrar pestaña');
-
-console.log(localStorage.getItem('persistente'));
-console.log(sessionStorage.getItem('temporal'));
-
-// Cookies
-document.cookie = "usuario=juan; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/";
-console.log(document.cookie);
-
-// Web Workers & Shared Workers
-const worker = new Worker('worker.js');
-worker.postMessage('Hola Worker');
-worker.onmessage = (e) => console.log('Del worker:', e.data);
-
-// postMessage (comunicación entre frames)
-// En ventana padre
-window.postMessage('Hola', '*');
-// En frame/ventana hijo
-window.addEventListener('message', (evento) => {
-  console.log('Recibido:', evento.data);
+// Peticiones PUT/PATCH/DELETE
+fetch('/api/usuarios/123', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nombre: 'Nombre Actualizado' })
 });
 
-// Service Workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-    .then(registro => console.log('SW registrado'))
-    .catch(error => console.log('Registro SW falló'));
-}
+fetch('/api/usuarios/123', { method: 'DELETE' });
 
-// WebSocket
-const socket = new WebSocket('wss://ejemplo.com/socket');
-socket.onopen = () => console.log('WebSocket conectado');
-socket.onmessage = (evento) => console.log('Mensaje:', evento.data);
-socket.send('Hola Servidor');
+// Subida de archivos
+const formData = new FormData();
+formData.append('archivo', inputArchivo.files[0]);
+formData.append('descripcion', 'Foto de perfil');
 
-// Estrategia de script (async vs defer)
-// <script async src="script.js"></script> // Descarga paralela, ejecuta inmediatamente
-// <script defer src="script.js"></script> // Descarga paralela, ejecuta después del parsing HTML
+fetch('/api/subir', {
+  method: 'POST',
+  body: formData // No establecer Content-Type header con FormData
+});
 
-// Componentes Web
-class BotonPersonalizado extends HTMLElement {
-  constructor() {
-    super();
-    const shadow = this.attachShadow({mode: 'open'});
+// Async/await con fetch
+async function obtenerDatosUsuario(userId) {
+  try {
+    const respuesta = await fetch(`/api/usuarios/${userId}`);
     
-    const boton = document.createElement('button');
-    boton.textContent = this.getAttribute('texto') || 'Clic aquí';
+    if (!respuesta.ok) {
+      throw new Error(`Usuario no encontrado: ${respuesta.status}`);
+    }
     
-    const estilo = document.createElement('style');
-    estilo.textContent = `
-      button { background: blue; color: white; padding: 10px; }
-    `;
-    
-    shadow.appendChild(estilo);
-    shadow.appendChild(boton);
+    const datosUsuario = await respuesta.json();
+    return datosUsuario;
+  } catch (error) {
+    console.error('Error al obtener usuario:', error);
+    throw error;
   }
 }
-
-customElements.define('boton-personalizado', BotonPersonalizado);
 ```
 
-**Comparación:** setTimeout ejecuta una vez, setInterval se repite. fetch devuelve promesas, maneja métodos HTTP y códigos de estado. localStorage persiste entre sesiones, sessionStorage es específico de pestaña. Service Workers habilitan funcionalidad offline, Web Workers ejecutan código en hilos en background. Scripts async ejecutan inmediatamente, defer espera el parsing HTML.
+**Casos de Uso:** Llamadas a APIs, obtención de datos, envío de formularios, subida de archivos, comunicación con microservicios.
+
+## Local Storage
+**Descripción:** API del navegador para almacenar datos localmente sin tiempo de expiración, persistiendo entre sesiones del navegador.
+
+**Ejemplo:**
+```javascript
+// Establecer elementos
+localStorage.setItem('nombreUsuario', 'juan_perez');
+localStorage.setItem('preferencias', JSON.stringify({
+  tema: 'oscuro',
+  idioma: 'es',
+  notificaciones: true
+}));
+
+// Obtener elementos
+const nombreUsuario = localStorage.getItem('nombreUsuario');
+const preferencias = JSON.parse(localStorage.getItem('preferencias') || '{}');
+
+console.log(nombreUsuario); // 'juan_perez'
+console.log(preferencias.tema); // 'oscuro'
+
+// Remover elementos
+localStorage.removeItem('nombreUsuario');
+
+// Limpiar todo
+localStorage.clear();
+
+// Verificar si existe elemento
+if (localStorage.getItem('token')) {
+  console.log('Usuario está logueado');
+}
+
+// Evento storage (se dispara cuando localStorage cambia en otra pestaña)
+window.addEventListener('storage', (e) => {
+  console.log('Storage cambió:', e.key, e.oldValue, e.newValue);
+});
+
+// Funciones helper para patrones comunes
+const almacenamiento = {
+  establecer(clave, valor) {
+    try {
+      localStorage.setItem(clave, JSON.stringify(valor));
+    } catch (error) {
+      console.error('Error al guardar en localStorage:', error);
+    }
+  },
+  
+  obtener(clave, valorPorDefecto = null) {
+    try {
+      const elemento = localStorage.getItem(clave);
+      return elemento ? JSON.parse(elemento) : valorPorDefecto;
+    } catch (error) {
+      console.error('Error al leer de localStorage:', error);
+      return valorPorDefecto;
+    }
+  },
+  
+  remover(clave) {
+    localStorage.removeItem(clave);
+  }
+};
+```
+
+**Casos de Uso:** Preferencias del usuario, datos del carrito de compras, persistencia de datos de formularios, tokens de autenticación, datos de caché.
+
+## Session Storage
+**Descripción:** Similar a localStorage pero los datos se borran cuando se cierra la pestaña. Limitado al ámbito de la pestaña actual del navegador.
+
+**Ejemplo:**
+```javascript
+// Establecer elementos (misma API que localStorage)
+sessionStorage.setItem('pestanaActual', 'dashboard');
+sessionStorage.setItem('datosFormulario', JSON.stringify({
+  paso: 2,
+  datos: { nombre: 'Juan', email: 'juan@ejemplo.com' }
+}));
+
+// Obtener elementos
+const pestanaActual = sessionStorage.getItem('pestanaActual');
+const datosFormulario = JSON.parse(sessionStorage.getItem('datosFormulario') || '{}');
+
+// Ejemplo de formulario multi-paso
+const gestorFormulario = {
+  guardarPaso(paso, datos) {
+    sessionStorage.setItem('pasoFormulario', paso);
+    sessionStorage.setItem(`datosFormulario_${paso}`, JSON.stringify(datos));
+  },
+  
+  cargarPaso() {
+    const paso = sessionStorage.getItem('pasoFormulario') || 1;
+    const datos = sessionStorage.getItem(`datosFormulario_${paso}`);
+    return { paso: parseInt(paso), datos: datos ? JSON.parse(datos) : {} };
+  },
+  
+  limpiarFormulario() {
+    const claves = Object.keys(sessionStorage);
+    claves.forEach(clave => {
+      if (clave.startsWith('datosFormulario_') || clave === 'pasoFormulario') {
+        sessionStorage.removeItem(clave);
+      }
+    });
+  }
+};
+
+// Datos específicos de pestaña
+sessionStorage.setItem('idPestana', Math.random().toString(36));
+```
+
+**Casos de Uso:** Formularios multi-paso, datos temporales, estado de navegación, estado específico de pestaña, entrada temporal del usuario.
+
+## Cookies
+**Descripción:** Pequeños fragmentos de datos almacenados por el navegador y enviados con cada petición HTTP al mismo dominio.
+
+**Ejemplo:**
+```javascript
+// Establecer cookies
+document.cookie = "nombreUsuario=juan_perez; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/";
+document.cookie = "tema=oscuro; max-age=3600; path=/; secure; samesite=strict";
+
+// Leer cookies
+function obtenerCookie(nombre) {
+  const valor = `; ${document.cookie}`;
+  const partes = valor.split(`; ${nombre}=`);
+  if (partes.length === 2) return partes.pop().split(';').shift();
+}
+
+const nombreUsuario = obtenerCookie('nombreUsuario');
+console.log(nombreUsuario); // 'juan_perez'
+
+// Funciones de utilidad para cookies
+const cookies = {
+  establecer(nombre, valor, opciones = {}) {
+    let cadenaCookie = `${nombre}=${valor}`;
+    
+    if (opciones.expires) {
+      cadenaCookie += `; expires=${opciones.expires.toUTCString()}`;
+    }
+    
+    if (opciones.maxAge) {
+      cadenaCookie += `; max-age=${opciones.maxAge}`;
+    }
+    
+    if (opciones.path) {
+      cadenaCookie += `; path=${opciones.path}`;
+    }
+    
+    if (opciones.domain) {
+      cadenaCookie += `; domain=${opciones.domain}`;
+    }
+    
+    if (opciones.secure) {
+      cadenaCookie += '; secure';
+    }
+    
+    if (opciones.sameSite) {
+      cadenaCookie += `; samesite=${opciones.sameSite}`;
+    }
+    
+    document.cookie = cadenaCookie;
+  },
+  
+  obtener(nombre) {
+    const valor = `; ${document.cookie}`;
+    const partes = valor.split(`; ${nombre}=`);
+    if (partes.length === 2) return partes.pop().split(';').shift();
+  },
+  
+  eliminar(nombre, path = '/') {
+    document.cookie = `${nombre}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}`;
+  },
+  
+  obtenerTodas() {
+    return document.cookie
+      .split(';')
+      .reduce((cookies, cookie) => {
+        const [nombre, valor] = cookie.trim().split('=');
+        cookies[nombre] = valor;
+        return cookies;
+      }, {});
+  }
+};
+
+// Ejemplos de uso
+cookies.establecer('sesion', 'abc123', { 
+  maxAge: 3600, 
+  path: '/', 
+  secure: true,
+  sameSite: 'strict' 
+});
+
+const todasLasCookies = cookies.obtenerTodas();
+console.log(todasLasCookies);
+```
+
+**Casos de Uso:** Autenticación, preferencias del usuario, seguimiento, gestión de sesiones, comunicación entre dominios.
+
+## Web Workers
+**Descripción:** API para ejecutar JavaScript en hilos en segundo plano, habilitando procesamiento paralelo sin bloquear el hilo principal de la UI.
+
+**Ejemplo:**
+```javascript
+// Hilo principal (main.js)
+const worker = new Worker('worker.js');
+
+// Enviar datos al worker
+worker.postMessage({
+  comando: 'procesar',
+  datos: [1, 2, 3, 4, 5]
+});
+
+// Escuchar mensajes del worker
+worker.onmessage = function(e) {
+  console.log('Resultado del worker:', e.data);
+};
+
+// Manejar errores del worker
+worker.onerror = function(error) {
+  console.error('Error del worker:', error);
+};
+
+// Terminar worker cuando termine
+setTimeout(() => {
+  worker.terminate();
+}, 10000);
+
+// Archivo del worker (worker.js)
+/*
+self.onmessage = function(e) {
+  const { comando, datos } = e.data;
+  
+  if (comando === 'procesar') {
+    // Computación pesada
+    const resultado = datos.map(n => {
+      let suma = 0;
+      for (let i = 0; i < 1000000; i++) {
+        suma += n * Math.random();
+      }
+      return suma;
+    });
+    
+    // Enviar resultado de vuelta al hilo principal
+    self.postMessage(resultado);
+  }
+};
+*/
+
+// Shared Worker (compartido entre múltiples pestañas)
+const sharedWorker = new SharedWorker('shared-worker.js');
+sharedWorker.port.start();
+
+sharedWorker.port.postMessage('Hola desde pestaña');
+sharedWorker.port.onmessage = function(e) {
+  console.log('Respuesta del shared worker:', e.data);
+};
+```
+
+**Casos de Uso:** Computaciones pesadas, procesamiento de imágenes/video, análisis de datos, algoritmos paralelos, sincronización en segundo plano.
 
 ## ECMAScript
 **Descripción:** Características modernas de JavaScript y mejoras de sintaxis que aumentan la productividad del desarrollador y legibilidad del código, incluyendo funciones flecha, métodos de array y operadores más nuevos.

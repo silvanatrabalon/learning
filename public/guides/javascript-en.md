@@ -36,41 +36,38 @@ function outerFunction(x) {
 
 const closure = outerFunction(10);
 closure(5); // 15
-```
 
-## Syntax and Semantics
-**Description:** JavaScript syntax rules and semantic meaning. Includes statement vs expression differences, automatic semicolon insertion, and language constructs.
-**Example:**
-```javascript
-// Statement vs Expression
-if (true) console.log("Statement"); // Statement
-const result = true ? "yes" : "no"; // Expression
+// Comparison: var vs let vs const
+// 1. Hoisting behavior
+console.log(varVariable); // undefined (hoisted but not initialized)
+// console.log(letVariable); // ❌ ReferenceError (temporal dead zone)
+// console.log(constVariable); // ❌ ReferenceError (temporal dead zone)
 
-// Automatic Semicolon Insertion (ASI)
-function problematicReturn() {
-  return
-    {
-      value: 42
-    }; // ASI inserts semicolon after return, returns undefined
-}
+var varVariable = "I'm var";
+let letVariable = "I'm let";
+const constVariable = "I'm const";
 
-function correctReturn() {
-  return {
-    value: 42
-  }; // Returns the object
-}
+// 2. Re-declaration
+var varVariable = "I can be re-declared"; // ✅ Works
+// let letVariable = "I cannot be re-declared"; // ❌ SyntaxError
+// const constVariable = "I cannot be re-declared"; // ❌ SyntaxError
 
-// Strict Mode
-"use strict";
-// undeclaredVariable = 5; // ❌ Error in strict mode
-// delete Object.prototype; // ❌ Error in strict mode
+// 3. Re-assignment
+varVariable = "I can be re-assigned"; // ✅ Works
+letVariable = "I can be re-assigned"; // ✅ Works
+// constVariable = "I cannot be re-assigned"; // ❌ TypeError
 
-// Labels and break/continue
-outer: for (let i = 0; i < 3; i++) {
-  inner: for (let j = 0; j < 3; j++) {
-    if (i === 1 && j === 1) break outer; // Break outer loop
-    console.log(i, j);
+// 4. Block scope
+function scopeDemo() {
+  if (true) {
+    var varInBlock = "I'm function scoped";
+    let letInBlock = "I'm block scoped";
+    const constInBlock = "I'm block scoped";
   }
+  
+  console.log(varInBlock); // ✅ Works - function scoped
+  // console.log(letInBlock); // ❌ ReferenceError - block scoped
+  // console.log(constInBlock); // ❌ ReferenceError - block scoped
 }
 ```
 
@@ -992,114 +989,6 @@ const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
 
 **Comparison:** == performs type coercion while === doesn't. null is explicitly assigned, undefined means not assigned. Symbols create unique identifiers. BigInt handles large integers. typeof returns type string, instanceof checks prototype chain. Map stores key-value pairs, Set stores unique values.
 
-## Hoisting
-**Description:** JavaScript's mechanism of moving variable and function declarations to the top of their scope during compilation. Different declaration types behave differently with hoisting.
-
-**Example:**
-```javascript
-// var vs let vs const hoisting
-console.log(varVariable); // undefined (hoisted but not initialized)
-console.log(letVariable); // ReferenceError (Temporal Dead Zone)
-
-var varVariable = "I'm var";
-let letVariable = "I'm let";
-const constVariable = "I'm const";
-
-// Temporal Dead Zone
-function example() {
-  console.log(temp); // ReferenceError
-  let temp = "value";
-}
-
-// Hoisting in functions and classes
-console.log(hoistedFunction()); // "I'm hoisted!"
-
-function hoistedFunction() {
-  return "I'm hoisted!";
-}
-
-// console.log(notHoisted()); // TypeError
-const notHoisted = () => "I'm not hoisted";
-
-// IIFE (Immediately Invoked Function Expression)
-(function() {
-  var private = "Can't access me outside!";
-  console.log("IIFE executed");
-})();
-
-// Modern IIFE with arrow function
-(() => {
-  const moduleVar = "Private to this scope";
-  console.log("Arrow IIFE executed");
-})();
-```
-
-**Comparison:** var is hoisted and initialized with undefined, let/const are hoisted but remain in Temporal Dead Zone until declaration. Function declarations are fully hoisted, function expressions are not. IIFE creates immediate scope isolation.
-
-## Scope
-**Description:** Determines variable accessibility in different parts of code. JavaScript uses lexical scoping, closures, and different module systems affect how variables are accessed.
-
-**Example:**
-```javascript
-// Lexical scope
-function outer() {
-  const outerVar = "I'm outer";
-  
-  function inner() {
-    console.log(outerVar); // Accesses outer scope
-  }
-  
-  return inner;
-}
-
-// Closures
-function createCounter() {
-  let count = 0;
-  return function() {
-    return ++count;
-  };
-}
-const counter = createCounter();
-console.log(counter()); // 1
-console.log(counter()); // 2
-
-// ES Modules vs CommonJS
-// ES Modules (modern)
-import { namedExport } from './module.js';
-export const myFunction = () => {};
-
-// CommonJS (Node.js traditional)
-const { namedExport } = require('./module');
-module.exports = { myFunction };
-
-// this (call vs bind vs apply)
-const obj = {
-  name: "Object",
-  greet: function(greeting, punctuation) {
-    return `${greeting} ${this.name}${punctuation}`;
-  }
-};
-
-console.log(obj.greet.call(obj, "Hello", "!")); // "Hello Object!"
-console.log(obj.greet.apply(obj, ["Hi", "."])); // "Hi Object."
-const boundGreet = obj.greet.bind(obj, "Hey");
-console.log(boundGreet("?")); // "Hey Object?"
-
-// Strict Mode
-"use strict";
-function strictExample() {
-  // undeclaredVar = "error"; // ReferenceError in strict mode
-}
-
-// First-class functions
-const func = function() { return "I'm a value"; };
-const array = [func];
-const obj2 = { method: func };
-function takeFunction(fn) { return fn(); }
-```
-
-**Comparison:** Lexical scope is determined at compile time. Closures maintain access to outer variables. ES Modules use import/export, CommonJS uses require/module.exports. call/apply invoke immediately, bind creates new function. Strict mode prevents common mistakes. First-class functions can be stored, passed, and returned like any other value.
-
 ## Synchronism
 **Description:** JavaScript's single-threaded nature with event loop, call stack, and callback queue. 
 
@@ -1172,48 +1061,177 @@ for (const value of iterable) {
 
 **Example:**
 ```javascript
-// Promise Methods
-const promise1 = Promise.resolve(3);
-const promise2 = new Promise(resolve => setTimeout(() => resolve('foo'), 1000));
-const promise3 = Promise.reject('Error');
+// Creating Promises
+const promise1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const success = Math.random() > 0.5;
+    if (success) {
+      resolve('Operation succeeded!');
+    } else {
+      reject(new Error('Operation failed!'));
+    }
+  }, 1000);
+});
 
-// Promise.all - waits for all to resolve
-Promise.all([promise1, promise2])
-  .then(values => console.log(values)); // [3, 'foo']
+// Promise methods
+Promise.resolve('immediate value'); // Resolved promise
+Promise.reject(new Error('immediate error')); // Rejected promise
 
-// Promise.allSettled - waits for all to settle
-Promise.allSettled([promise1, promise2, promise3])
-  .then(results => console.log(results));
-
-// Promise.race - first to settle wins
-Promise.race([promise1, promise2])
-  .then(value => console.log(value)); // 3
-
-// Promise.any - first to resolve wins
-Promise.any([promise3, promise2])
-  .then(value => console.log(value)); // 'foo'
-
-// Async / Await
-async function fetchUserData() {
-  try {
-    const response = await fetch('/api/user');
-    const userData = await response.json();
-    return userData;
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw error;
-  }
-}
-
-// Microtask
-console.log('1');
-Promise.resolve().then(() => console.log('2'));
-setTimeout(() => console.log('3'), 0);
-console.log('4');
-// Output: 1, 4, 2, 3 (Promise microtask executes before setTimeout)
+// Promise chaining
+fetch('/api/data')
+  .then(response => response.json())
+  .then(data => {
+    console.log('Data received:', data);
+    return data.processed;
+  })
+  .then(processed => {
+    console.log('Processed:', processed);
+  })
+  .catch(error => {
+    console.error('Chain failed:', error);
+  })
+  .finally(() => {
+    console.log('Chain completed');
+  });
 ```
 
-**Comparison:** Promise.all fails if one fail, Promise.allSettled waits for all. Promise.race returns first settled, Promise.any returns first resolved. Async/await provides synchronous-like syntax for promises. Microtasks (Promises) have higher priority than macrotasks (setTimeout).
+**Use Cases:** API calls, file operations, user input handling, any asynchronous operation that needs better error handling than callbacks.
+
+## Promise.all
+**Description:** Waits for all promises to resolve and returns an array of all resolved values. If any promise rejects, Promise.all immediately rejects.
+
+**Example:**
+```javascript
+// Basic Promise.all usage
+const promises = [
+  fetch('/api/users'),
+  fetch('/api/posts'),
+  fetch('/api/comments')
+];
+
+Promise.all(promises)
+  .then(responses => Promise.all(responses.map(r => r.json())))
+  .then(data => {
+    console.log('All data loaded:', data);
+    // data[0] = users, data[1] = posts, data[2] = comments
+  })
+  .catch(error => {
+    console.error('One request failed:', error);
+  });
+
+// Promise.all with mixed promises
+const mixedPromises = [
+  Promise.resolve(42),
+  Promise.resolve('hello'),
+  Promise.resolve(true)
+];
+
+Promise.all(mixedPromises)
+  .then(values => console.log(values)); // [42, 'hello', true]
+```
+
+**Use Cases:** Loading multiple resources simultaneously, parallel API calls where all data is required, batch operations.
+
+## Promise.allSettled
+**Description:** Waits for all promises to complete (either resolve or reject) and returns an array of results with status and value/reason for each promise.
+
+**Example:**
+```javascript
+Promise.allSettled([
+  fetch('/api/reliable'),
+  fetch('/api/unreliable'),
+  fetch('/api/sometimes-fails')
+]).then(results => {
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled') {
+      console.log(`Request ${index} succeeded:`, result.value);
+    } else {
+      console.log(`Request ${index} failed:`, result.reason);
+    }
+  });
+});
+
+// Mixed success and failure
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('Error'),
+  Promise.resolve('Another success')
+]).then(results => {
+  console.log(results);
+  // [
+  //   { status: 'fulfilled', value: 'Success' },
+  //   { status: 'rejected', reason: 'Error' },
+  //   { status: 'fulfilled', value: 'Another success' }
+  // ]
+});
+```
+
+**Use Cases:** Batch operations where some failures are acceptable, collecting results from multiple unreliable sources, analytics and logging.
+
+## Promise.race
+**Description:** Returns a promise that resolves or rejects with the first promise that settles (either resolves or rejects).
+
+**Example:**
+```javascript
+// Race between multiple servers
+Promise.race([
+  fetch('/api/fast-server'),
+  fetch('/api/slow-server'),
+  new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Timeout')), 5000)
+  )
+]).then(response => {
+  console.log('First response received');
+}).catch(error => {
+  console.error('First to settle was a rejection:', error);
+});
+
+// Race with timeout
+function fetchWithTimeout(url, timeout) {
+  return Promise.race([
+    fetch(url),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), timeout)
+    )
+  ]);
+}
+
+fetchWithTimeout('/api/data', 3000)
+  .then(response => response.json())
+  .catch(error => console.error('Request failed or timed out:', error));
+```
+
+**Use Cases:** Implementing timeouts, racing between multiple data sources, cancelling slow operations.
+
+## Promise.any
+**Description:** Returns a promise that resolves with the first fulfilled promise. Only rejects if all promises reject (AggregateError).
+
+**Example:**
+```javascript
+// First successful server response
+Promise.any([
+  fetch('/api/server1').catch(() => Promise.reject('Server 1 failed')),
+  fetch('/api/server2').catch(() => Promise.reject('Server 2 failed')),
+  fetch('/api/server3').catch(() => Promise.reject('Server 3 failed'))
+]).then(response => {
+  console.log('At least one server responded');
+}).catch(error => {
+  console.error('All servers failed:', error.errors);
+});
+
+// Fallback chain
+Promise.any([
+  fetch('/api/primary'),
+  fetch('/api/backup'),
+  fetch('/api/emergency')
+]).then(response => {
+  console.log('Got response from available server');
+}).catch(aggregateError => {
+  console.error('All servers unavailable:', aggregateError.errors);
+});
+```
+
+**Use Cases:** Fallback mechanisms, getting data from the fastest available source, redundant server requests.
 
 ## Prototype
 **Description:** JavaScript's inheritance mechanism where objects can inherit properties and methods from other objects through the prototype chain.
@@ -1285,12 +1303,12 @@ const modernDog = new ModernDog("Buddy", "Golden Retriever");
 
 **Comparison:** Prototype chain enables inheritance through __proto__ links. Object.create directly sets prototype, class syntax provides cleaner inheritance model. Classes are syntactic sugar over prototypal inheritance.
 
-## Debounce & Throttle
-**Description:** Techniques to improve performance and user experience by controlling function execution frequency and optimizing code delivery.
+## Debounce
+**Description:** A technique that delays function execution until after a specified period of inactivity. Useful for expensive operations that shouldn't run on every input.
 
 **Example:**
 ```javascript
-// Debounce - delay execution until after calls have stopped
+// Basic debounce implementation
 function debounce(func, delay) {
   let timeoutId;
   return function(...args) {
@@ -1299,11 +1317,37 @@ function debounce(func, delay) {
   };
 }
 
+// Search input debouncing
+const searchInput = document.getElementById('search');
 const debouncedSearch = debounce((query) => {
   console.log(`Searching for: ${query}`);
+  // API call here
+  fetch(`/api/search?q=${query}`)
+    .then(response => response.json())
+    .then(data => console.log(data));
 }, 300);
 
-// Throttle - limit execution to once per time period
+searchInput.addEventListener('input', (e) => {
+  debouncedSearch(e.target.value);
+});
+
+// Window resize debouncing
+const debouncedResize = debounce(() => {
+  console.log('Window resized:', window.innerWidth, window.innerHeight);
+  // Expensive layout calculations here
+}, 250);
+
+window.addEventListener('resize', debouncedResize);
+```
+
+**Use Cases:** Search inputs, form validation, window resize handlers, API calls triggered by user input.
+
+## Throttle
+**Description:** A technique that limits function execution to once per specified time period, ensuring regular execution intervals even with continuous triggering.
+
+**Example:**
+```javascript
+// Basic throttle implementation
 function throttle(func, limit) {
   let inThrottle;
   return function(...args) {
@@ -1315,66 +1359,141 @@ function throttle(func, limit) {
   };
 }
 
+// Scroll event throttling
 const throttledScroll = throttle(() => {
-  console.log('Scroll event fired');
+  console.log('Scroll position:', window.scrollY);
+  // Update progress bar, check if elements are in view, etc.
 }, 100);
 
-// Tree Shaking (build-time optimization)
-// Only import what you need
-import { specificFunction } from 'large-library';
-// Instead of: import * as library from 'large-library';
+window.addEventListener('scroll', throttledScroll);
 
-// Code Splitting (dynamic imports)
-async function loadFeature() {
-  try {
-    const { featureModule } = await import('./feature-module.js');
-    featureModule.initialize();
-  } catch (error) {
-    console.error('Failed to load feature:', error);
-  }
-}
+// Mouse move throttling
+const throttledMouseMove = throttle((e) => {
+  console.log('Mouse position:', e.clientX, e.clientY);
+  // Update cursor effects, drag operations, etc.
+}, 16); // ~60 FPS
 
-// Route-based code splitting
-const routes = {
-  '/home': () => import('./pages/Home.js'),
-  '/about': () => import('./pages/About.js'),
-  '/contact': () => import('./pages/Contact.js')
-};
+document.addEventListener('mousemove', throttledMouseMove);
 
-async function navigateTo(path) {
-  const loadComponent = routes[path];
-  if (loadComponent) {
-    const component = await loadComponent();
-    // Render component
-  }
+// Advanced throttle with leading and trailing options
+function advancedThrottle(func, limit, options = {}) {
+  let timeout;
+  let previous = 0;
+  const { leading = true, trailing = true } = options;
+
+  return function(...args) {
+    const now = Date.now();
+    if (!previous && !leading) previous = now;
+    const remaining = limit - (now - previous);
+
+    if (remaining <= 0 || remaining > limit) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      previous = now;
+      func.apply(this, args);
+    } else if (!timeout && trailing) {
+      timeout = setTimeout(() => {
+        previous = leading ? Date.now() : 0;
+        timeout = null;
+        func.apply(this, args);
+      }, remaining);
+    }
+  };
 }
 ```
 
-**Comparison:** Debounce waits for quiet period, throttle limits frequency. Tree shaking removes unused code at build time. Code splitting loads code on demand, reducing initial bundle size.
+**Use Cases:** Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 
-## Web API
-**Description:** Browser-provided APIs that extend JavaScript's capabilities for web development, including timing functions, storage, communication, and web components.
+## setTimeout
+**Description:** Executes a function once after a specified delay in milliseconds.
 
 **Example:**
 ```javascript
-// setTimeout vs setInterval
+// Basic setTimeout
 const timeoutId = setTimeout(() => {
-  console.log('Executed once after 1 second');
-}, 1000);
-
-const intervalId = setInterval(() => {
-  console.log('Executed every 2 seconds');
+  console.log('Executed after 2 seconds');
 }, 2000);
 
-// Clear timers
-clearTimeout(timeoutId);
-clearInterval(intervalId);
+// setTimeout with parameters
+setTimeout((name, age) => {
+  console.log(`Hello ${name}, you are ${age} years old`);
+}, 1000, 'John', 25);
 
-// Fetch (methods: POST/GET, status codes)
+// Clearing timeout
+clearTimeout(timeoutId);
+
+// Common pattern: cleanup on component unmount
+function createTimer() {
+  const timeoutId = setTimeout(() => {
+    console.log('Timer executed');
+  }, 5000);
+  
+  // Return cleanup function
+  return () => clearTimeout(timeoutId);
+}
+
+const cleanup = createTimer();
+// Later... cleanup(); // Prevents timer execution
+```
+
+**Use Cases:** Delayed execution, debouncing user input, auto-hiding notifications, cleanup operations.
+
+## setInterval
+**Description:** Executes a function repeatedly at specified intervals until cleared.
+
+**Example:**
+```javascript
+// Basic setInterval
+const intervalId = setInterval(() => {
+  console.log('This runs every second');
+}, 1000);
+
+// Clearing interval after some time
+setTimeout(() => {
+  clearInterval(intervalId);
+  console.log('Interval stopped');
+}, 5000);
+
+// Counter example
+let count = 0;
+const counter = setInterval(() => {
+  count++;
+  console.log(`Count: ${count}`);
+  
+  if (count >= 10) {
+    clearInterval(counter);
+    console.log('Counter finished');
+  }
+}, 500);
+
+// Clock example
+function startClock() {
+  const clockInterval = setInterval(() => {
+    const now = new Date();
+    console.log(now.toLocaleTimeString());
+  }, 1000);
+  
+  return () => clearInterval(clockInterval);
+}
+
+const stopClock = startClock();
+```
+
+**Use Cases:** Real-time clocks, periodic data fetching, animations, progress updates.
+
+## Fetch
+**Description:** Modern API for making HTTP requests, returning Promises and providing a cleaner alternative to XMLHttpRequest.
+
+**Example:**
+```javascript
 // GET request
 fetch('/api/data')
   .then(response => {
     console.log('Status:', response.status); // 200, 404, 500, etc.
+    console.log('Headers:', response.headers.get('content-type'));
+    
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -1388,76 +1507,312 @@ fetch('/api/users', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': 'Bearer token123'
   },
-  body: JSON.stringify({ name: 'John', email: 'john@example.com' })
+  body: JSON.stringify({ 
+    name: 'John', 
+    email: 'john@example.com' 
+  })
 })
   .then(response => response.json())
-  .then(data => console.log('Success:', data));
+  .then(data => console.log('Success:', data))
+  .catch(error => console.error('Error:', error));
 
-// localStorage vs sessionStorage
-localStorage.setItem('persistent', 'survives browser restart');
-sessionStorage.setItem('temporary', 'cleared when tab closes');
-
-console.log(localStorage.getItem('persistent'));
-console.log(sessionStorage.getItem('temporary'));
-
-// Cookies
-document.cookie = "username=john; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/";
-console.log(document.cookie);
-
-// Web Workers & Shared Workers
-const worker = new Worker('worker.js');
-worker.postMessage('Hello Worker');
-worker.onmessage = (e) => console.log('From worker:', e.data);
-
-// postMessage (cross-frame communication)
-// In parent window
-window.postMessage('Hello', '*');
-// In child frame/window
-window.addEventListener('message', (event) => {
-  console.log('Received:', event.data);
+// PUT/PATCH/DELETE requests
+fetch('/api/users/123', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: 'Updated Name' })
 });
 
-// Service Workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-    .then(registration => console.log('SW registered'))
-    .catch(error => console.log('SW registration failed'));
-}
+fetch('/api/users/123', { method: 'DELETE' });
 
-// WebSocket
-const socket = new WebSocket('wss://example.com/socket');
-socket.onopen = () => console.log('WebSocket connected');
-socket.onmessage = (event) => console.log('Message:', event.data);
-socket.send('Hello Server');
+// File upload
+const formData = new FormData();
+formData.append('file', fileInput.files[0]);
+formData.append('description', 'Profile picture');
 
-// Script strategy (async vs defer)
-// <script async src="script.js"></script> // Downloads parallel, executes immediately
-// <script defer src="script.js"></script> // Downloads parallel, executes after HTML parsing
+fetch('/api/upload', {
+  method: 'POST',
+  body: formData // Don't set Content-Type header with FormData
+});
 
-// Web Components
-class CustomButton extends HTMLElement {
-  constructor() {
-    super();
-    const shadow = this.attachShadow({mode: 'open'});
+// Async/await with fetch
+async function fetchUserData(userId) {
+  try {
+    const response = await fetch(`/api/users/${userId}`);
     
-    const button = document.createElement('button');
-    button.textContent = this.getAttribute('text') || 'Click me';
+    if (!response.ok) {
+      throw new Error(`User not found: ${response.status}`);
+    }
     
-    const style = document.createElement('style');
-    style.textContent = `
-      button { background: blue; color: white; padding: 10px; }
-    `;
-    
-    shadow.appendChild(style);
-    shadow.appendChild(button);
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw error;
   }
 }
-
-customElements.define('custom-button', CustomButton);
 ```
 
-**Comparison:** setTimeout executes once, setInterval repeats. fetch returns promises, handles HTTP methods and status codes. localStorage persists across sessions, sessionStorage is tab-specific. Service Workers enable offline functionality, Web Workers run code in background threads. async scripts execute immediately, defer scripts wait for HTML parsing.
+**Use Cases:** API calls, data fetching, form submissions, file uploads, microservice communication.
+
+## Local Storage
+**Description:** Browser API for storing data locally with no expiration time, persisting across browser sessions.
+
+**Example:**
+```javascript
+// Setting items
+localStorage.setItem('username', 'john_doe');
+localStorage.setItem('preferences', JSON.stringify({
+  theme: 'dark',
+  language: 'en',
+  notifications: true
+}));
+
+// Getting items
+const username = localStorage.getItem('username');
+const preferences = JSON.parse(localStorage.getItem('preferences') || '{}');
+
+console.log(username); // 'john_doe'
+console.log(preferences.theme); // 'dark'
+
+// Removing items
+localStorage.removeItem('username');
+
+// Clear all
+localStorage.clear();
+
+// Check if item exists
+if (localStorage.getItem('token')) {
+  console.log('User is logged in');
+}
+
+// Storage event (fires when localStorage changes in another tab)
+window.addEventListener('storage', (e) => {
+  console.log('Storage changed:', e.key, e.oldValue, e.newValue);
+});
+
+// Helper functions for common patterns
+const storage = {
+  set(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error('Failed to save to localStorage:', error);
+    }
+  },
+  
+  get(key, defaultValue = null) {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.error('Failed to read from localStorage:', error);
+      return defaultValue;
+    }
+  },
+  
+  remove(key) {
+    localStorage.removeItem(key);
+  }
+};
+```
+
+**Use Cases:** User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
+
+## Session Storage
+**Description:** Similar to localStorage but data is cleared when the tab is closed. Scoped to the current browser tab.
+
+**Example:**
+```javascript
+// Setting items (same API as localStorage)
+sessionStorage.setItem('currentTab', 'dashboard');
+sessionStorage.setItem('formData', JSON.stringify({
+  step: 2,
+  data: { name: 'John', email: 'john@example.com' }
+}));
+
+// Getting items
+const currentTab = sessionStorage.getItem('currentTab');
+const formData = JSON.parse(sessionStorage.getItem('formData') || '{}');
+
+// Multi-step form example
+const formManager = {
+  saveStep(step, data) {
+    sessionStorage.setItem('formStep', step);
+    sessionStorage.setItem(`formData_${step}`, JSON.stringify(data));
+  },
+  
+  loadStep() {
+    const step = sessionStorage.getItem('formStep') || 1;
+    const data = sessionStorage.getItem(`formData_${step}`);
+    return { step: parseInt(step), data: data ? JSON.parse(data) : {} };
+  },
+  
+  clearForm() {
+    const keys = Object.keys(sessionStorage);
+    keys.forEach(key => {
+      if (key.startsWith('formData_') || key === 'formStep') {
+        sessionStorage.removeItem(key);
+      }
+    });
+  }
+};
+
+// Tab-specific data
+sessionStorage.setItem('tabId', Math.random().toString(36));
+```
+
+**Use Cases:** Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
+
+## Cookies
+**Description:** Small pieces of data stored by the browser and sent with every HTTP request to the same domain.
+
+**Example:**
+```javascript
+// Setting cookies
+document.cookie = "username=john_doe; expires=Thu, 18 Dec 2024 12:00:00 UTC; path=/";
+document.cookie = "theme=dark; max-age=3600; path=/; secure; samesite=strict";
+
+// Reading cookies
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+const username = getCookie('username');
+console.log(username); // 'john_doe'
+
+// Cookie utility functions
+const cookies = {
+  set(name, value, options = {}) {
+    let cookieString = `${name}=${value}`;
+    
+    if (options.expires) {
+      cookieString += `; expires=${options.expires.toUTCString()}`;
+    }
+    
+    if (options.maxAge) {
+      cookieString += `; max-age=${options.maxAge}`;
+    }
+    
+    if (options.path) {
+      cookieString += `; path=${options.path}`;
+    }
+    
+    if (options.domain) {
+      cookieString += `; domain=${options.domain}`;
+    }
+    
+    if (options.secure) {
+      cookieString += '; secure';
+    }
+    
+    if (options.sameSite) {
+      cookieString += `; samesite=${options.sameSite}`;
+    }
+    
+    document.cookie = cookieString;
+  },
+  
+  get(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  },
+  
+  delete(name, path = '/') {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${path}`;
+  },
+  
+  getAll() {
+    return document.cookie
+      .split(';')
+      .reduce((cookies, cookie) => {
+        const [name, value] = cookie.trim().split('=');
+        cookies[name] = value;
+        return cookies;
+      }, {});
+  }
+};
+
+// Usage examples
+cookies.set('session', 'abc123', { 
+  maxAge: 3600, 
+  path: '/', 
+  secure: true,
+  sameSite: 'strict' 
+});
+
+const allCookies = cookies.getAll();
+console.log(allCookies);
+```
+
+**Use Cases:** Authentication, user preferences, tracking, session management, cross-domain communication.
+
+## Web Workers
+**Description:** API for running JavaScript in background threads, enabling parallel processing without blocking the main UI thread.
+
+**Example:**
+```javascript
+// Main thread (main.js)
+const worker = new Worker('worker.js');
+
+// Send data to worker
+worker.postMessage({
+  command: 'process',
+  data: [1, 2, 3, 4, 5]
+});
+
+// Listen for messages from worker
+worker.onmessage = function(e) {
+  console.log('Result from worker:', e.data);
+};
+
+// Handle worker errors
+worker.onerror = function(error) {
+  console.error('Worker error:', error);
+};
+
+// Terminate worker when done
+setTimeout(() => {
+  worker.terminate();
+}, 10000);
+
+// Worker file (worker.js)
+/*
+self.onmessage = function(e) {
+  const { command, data } = e.data;
+  
+  if (command === 'process') {
+    // Heavy computation
+    const result = data.map(n => {
+      let sum = 0;
+      for (let i = 0; i < 1000000; i++) {
+        sum += n * Math.random();
+      }
+      return sum;
+    });
+    
+    // Send result back to main thread
+    self.postMessage(result);
+  }
+};
+*/
+
+// Shared Worker (shared between multiple tabs)
+const sharedWorker = new SharedWorker('shared-worker.js');
+sharedWorker.port.start();
+
+sharedWorker.port.postMessage('Hello from tab');
+sharedWorker.port.onmessage = function(e) {
+  console.log('Shared worker response:', e.data);
+};
+```
+
+**Use Cases:** Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 
 ## ECMAScript
 **Description:** Modern JavaScript features and syntax improvements that enhance developer productivity and code readability, including arrow functions, array methods, and newer operators.
@@ -1648,134 +2003,6 @@ async function useAsyncGenerator() {
   for await (const value of asyncGenerator()) {
     console.log(value); // 0, 1, 2 (with 1s delays)
   }
-}
-```
-
-## Promises
-**Description:** Objects representing the eventual completion or failure of asynchronous operations, providing a cleaner alternative to callbacks.
-**Example:**
-```javascript
-// Creating Promises
-const promise1 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    const success = Math.random() > 0.5;
-    if (success) {
-      resolve('Operation succeeded!');
-    } else {
-      reject(new Error('Operation failed!'));
-    }
-  }, 1000);
-});
-
-// Promise methods
-Promise.resolve('immediate value'); // Resolved promise
-Promise.reject(new Error('immediate error')); // Rejected promise
-
-// Promise chaining
-fetch('/api/data')
-  .then(response => response.json())
-  .then(data => {
-    console.log('Data received:', data);
-    return data.processed;
-  })
-  .then(processed => {
-    console.log('Processed:', processed);
-  })
-  .catch(error => {
-    console.error('Chain failed:', error);
-  })
-  .finally(() => {
-    console.log('Chain completed');
-  });
-
-// Promise.all - waits for all to resolve
-const promises = [
-  fetch('/api/users'),
-  fetch('/api/posts'),
-  fetch('/api/comments')
-];
-
-Promise.all(promises)
-  .then(responses => Promise.all(responses.map(r => r.json())))
-  .then(data => {
-    console.log('All data loaded:', data);
-  })
-  .catch(error => {
-    console.error('One request failed:', error);
-  });
-
-// Promise.allSettled - waits for all to complete (success or failure)
-Promise.allSettled([
-  fetch('/api/reliable'),
-  fetch('/api/unreliable'),
-  fetch('/api/sometimes-fails')
-]).then(results => {
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') {
-      console.log(`Request ${index} succeeded:`, result.value);
-    } else {
-      console.log(`Request ${index} failed:`, result.reason);
-    }
-  });
-});
-
-// Promise.race - resolves with first settled promise
-Promise.race([
-  fetch('/api/fast-server'),
-  fetch('/api/slow-server'),
-  new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('Timeout')), 5000)
-  )
-]).then(response => {
-  console.log('First response received');
-}).catch(error => {
-  console.error('All failed or timed out');
-});
-
-// Promise.any - resolves with first fulfilled promise
-Promise.any([
-  fetch('/api/server1').catch(() => Promise.reject('Server 1 failed')),
-  fetch('/api/server2').catch(() => Promise.reject('Server 2 failed')),
-  fetch('/api/server3').catch(() => Promise.reject('Server 3 failed'))
-]).then(response => {
-  console.log('At least one server responded');
-}).catch(error => {
-  console.error('All servers failed:', error);
-});
-
-// Converting callbacks to promises
-function promisifyTimeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function promisifyNodeCallback(nodeFunction) {
-  return function(...args) {
-    return new Promise((resolve, reject) => {
-      nodeFunction(...args, (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
-      });
-    });
-  };
-}
-
-// Promise composition patterns
-function retryPromise(promiseFactory, maxRetries) {
-  return new Promise((resolve, reject) => {
-    function attempt(retryCount) {
-      promiseFactory()
-        .then(resolve)
-        .catch(error => {
-          if (retryCount < maxRetries) {
-            console.log(`Retry ${retryCount + 1}/${maxRetries}`);
-            setTimeout(() => attempt(retryCount + 1), 1000);
-          } else {
-            reject(error);
-          }
-        });
-    }
-    attempt(0);
-  });
 }
 ```
 
