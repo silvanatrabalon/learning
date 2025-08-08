@@ -8,8 +8,8 @@ function ModeSelector({ mode, onModeChange, language }) {
     const texts = {
       en: {
         selectMode: 'Select Mode',
-        flashcard: '🃏 Flashcards',
-        multipleChoice: '📝 Multiple Choice',
+        flashcard: 'Flashcards',
+        multipleChoice: 'Multiple Choice',
         flashcardDesc: 'Self-paced learning with flip cards',
         multipleChoiceDesc: 'Quick quiz with multiple options',
         currentMode: 'Current Mode',
@@ -17,8 +17,8 @@ function ModeSelector({ mode, onModeChange, language }) {
       },
       es: {
         selectMode: 'Seleccionar Modo',
-        flashcard: '🃏 Flashcards',
-        multipleChoice: '📝 Opción Múltiple',
+        flashcard: 'Flashcards',
+        multipleChoice: 'Opción Múltiple',
         flashcardDesc: 'Aprendizaje auto-dirigido con tarjetas',
         multipleChoiceDesc: 'Quiz rápido con múltiples opciones',
         currentMode: 'Modo Actual',

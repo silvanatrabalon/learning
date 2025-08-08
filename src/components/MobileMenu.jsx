@@ -24,20 +24,16 @@ function MobileMenu({
         selectTopic: 'Select Topic',
         selectMode: 'Select Mode',
         contentIndex: 'Content Index',
-        flashcard: '🃏 Flashcards',
-        multipleChoice: '📝 Multiple Choice',
-        flashcardDesc: 'Self-paced learning with flip cards',
-        multipleChoiceDesc: 'Quick quiz with multiple options'
+        flashcard: 'Flashcards',
+        multipleChoice: 'Multiple Choice'
       },
       es: {
         menu: 'Menú',
         selectTopic: 'Seleccionar Tópico',
         selectMode: 'Seleccionar Modo',
         contentIndex: 'Índice de Contenido',
-        flashcard: '🃏 Flashcards',
-        multipleChoice: '📝 Opción Múltiple',
-        flashcardDesc: 'Aprendizaje auto-dirigido con tarjetas',
-        multipleChoiceDesc: 'Quiz rápido con múltiples opciones'
+        flashcard: 'Flashcards',
+        multipleChoice: 'Opción Múltiple'
       }
     }
     
@@ -50,13 +46,11 @@ function MobileMenu({
     {
       id: 'flashcard',
       name: texts.flashcard,
-      description: texts.flashcardDesc,
       icon: '🃏'
     },
     {
       id: 'multiple-choice',
       name: texts.multipleChoice,
-      description: texts.multipleChoiceDesc,
       icon: '📝'
     }
   ]
@@ -135,7 +129,6 @@ function MobileMenu({
                           <span className="option-icon">{modeOption.icon}</span>
                           <div className="option-info">
                             <span className="option-name">{modeOption.name}</span>
-                            <p className="option-description">{modeOption.description}</p>
                           </div>
                         </div>
                         {mode === modeOption.id && <span className="check-icon">✓</span>}
