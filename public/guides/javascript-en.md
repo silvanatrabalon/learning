@@ -524,12 +524,11 @@ const greetArrow = (name) => `Hey, ${name}!`;
 **Description:** `call`, `bind`, and `apply` methods allow explicitly defining the value of `this` and how to pass arguments when calling a function.
 
 **Comparison:**
-| Método   | ¿Ejecuta la función de inmediato? | Forma de pasar argumentos | Uso típico |
-|----------|-----------------------------------|----------------------------|------------|
-| **call** | Sí                                | Argumentos separados por comas (`fn.call(ctx, arg1, arg2)`) | Ejecutar la función con un `this` específico y argumentos directos. |
-| **apply**| Sí                                | Argumentos en un array o similar (`fn.apply(ctx, [arg1, arg2])`) | Igual que `call`, pero útil cuando ya tienes los argumentos en un array. |
-| **bind** | No (devuelve una nueva función)   | Igual que `call` (separados por comas) | Crear una nueva función con `this` fijo y argumentos predefinidos para usar después. |
-
+| Method   | Executes the function immediately? | How to pass arguments | Typical use case |
+|----------|------------------------------------|-----------------------|-------------------|
+| **call** | Yes                                | Arguments separated by commas (`fn.call(ctx, arg1, arg2)`) | Call the function with a specific `this` value and direct arguments. |
+| **apply**| Yes                                | Arguments as an array or array-like (`fn.apply(ctx, [arg1, arg2])`) | Same as `call`, but useful when arguments are already in an array. |
+| **bind** | No (returns a new function)        | Same as `call` (separated by commas) | Create a new function with a fixed `this` value and predefined arguments to use later. |
 
 **Example:**
 ```javascript

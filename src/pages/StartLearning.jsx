@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import { SiJavascript, SiNextdotjs, SiNestjs, SiNodedotjs, SiGit, SiReact, SiTypescript } from 'react-icons/si'
 import { FaBuilding, FaUniversalAccess, FaTools, FaCogs, FaVial, FaMobile } from 'react-icons/fa'
 import SearchBar from '../components/SearchBar'
@@ -11,6 +12,7 @@ import ContentIndex from '../components/ContentIndex'
 import MobileMenu from '../components/MobileMenu'
 import Modal from '../components/Modal'
 import './StartLearning.css'
+import '../styles/markdown-tables.css'
 
 function StartLearning() {
   const [selectedTopics, setSelectedTopics] = useState(['javascript']) // Changed to array
@@ -309,7 +311,7 @@ function StartLearning() {
               </div>
               
               <div className="markdown-content">
-                <ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {renderConceptContent(selectedConcept.content)}
                 </ReactMarkdown>
               </div>
@@ -343,7 +345,7 @@ function StartLearning() {
       >
         {selectedConcept && (
           <div className="markdown-content">
-            <ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {extractExampleContent(selectedConcept.content)}
             </ReactMarkdown>
           </div>
