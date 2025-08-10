@@ -1,5 +1,57 @@
 # JavaScript Guide
 
+## Data Types
+**Description:** JavaScript tiene tipos de datos primitivos (number, string, boolean, null, undefined, symbol, bigint) y tipos por referencia como objetos.
+**Example:**
+```javascript
+// == vs === (Shallow comparison)
+console.log(5 == "5");    // true (type coercion)
+console.log(5 === "5");   // false (strict comparison)
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+
+// null vs undefined
+let declared;              // undefined
+let empty = null;         // null
+console.log(declared);    // undefined
+console.log(empty);       // null
+
+// Symbol use case
+const id1 = Symbol('id');
+const id2 = Symbol('id');
+console.log(id1 === id2); // false (symbols are unique)
+const user = { [id1]: 'John' };
+
+// BigInt
+const bigNumber = 9007199254740991n;
+const anotherBig = BigInt(9007199254740991);
+console.log(bigNumber + 1n); // 9007199254740992n
+
+// typeof vs instanceof
+console.log(typeof "hello");     // "string"
+console.log(typeof 42);          // "number"
+console.log([] instanceof Array); // true
+console.log({} instanceof Object); // true
+
+// Map vs Set
+const map = new Map();
+map.set('key', 'value');
+const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
+```
+
+**Comparison:**
+| Concepto                   | Descripción                                                       |
+|----------------------------|------------------------------------------------------------------|
+| `==` vs `===`              | `==` realiza coerción de tipo, `===` no la realiza (compara tipo y valor) |
+| `null` vs `undefined`      | `null` es asignado explícitamente; `undefined` significa no asignado |
+| `Symbol`                   | Crea identificadores únicos                                       |
+| `BigInt`                   | Maneja enteros muy grandes                                        |
+| `typeof`                   | Devuelve una cadena con el tipo de dato                           |
+| `instanceof`               | Verifica la cadena de prototipos para un tipo específico         |
+| `Map`                      | Almacena pares clave-valor                                       |
+| `Set`                      | Almacena valores únicos                                          |
+
+
 ## Scope
 **Description:** El *scope* define desde dónde puedes acceder a una variable. En JavaScript hay scope global, de función y de bloque (let/const). Conocerlo evita errores y conflictos de nombres.
 **Example:**
@@ -313,57 +365,6 @@ const clone = [...original];
 const objectClone = { ...obj1 };
 ```
 
-## Event Loop
-**Description:** El *event loop* coordina la ejecución de código, gestionando tareas síncronas y asíncronas para que JavaScript parezca multitarea.
-**Example:**
-```javascript
-// Call Stack and Event Loop
-console.log('1'); // Synchronous
-
-setTimeout(() => {
-  console.log('2'); // Asynchronous - goes to callback queue
-}, 0);
-
-console.log('3'); // Synchronous
-
-// Output: 1, 3, 2
-
-// Microtasks vs Macrotasks
-console.log('Start');
-
-setTimeout(() => console.log('Macrotask 1'), 0);
-
-Promise.resolve().then(() => console.log('Microtask 1'));
-Promise.resolve().then(() => console.log('Microtask 2'));
-
-setTimeout(() => console.log('Macrotask 2'), 0);
-
-console.log('End');
-
-// Output: Start, End, Microtask 1, Microtask 2, Macrotask 1, Macrotask 2
-
-// Event Loop with different APIs
-console.log('1');
-
-// Macrotask
-setTimeout(() => console.log('setTimeout'), 0);
-
-// Microtask
-Promise.resolve().then(() => console.log('Promise'));
-
-// Immediate (Node.js)
-if (typeof setImmediate !== 'undefined') {
-  setImmediate(() => console.log('setImmediate'));
-}
-
-// Process.nextTick (Node.js) - highest priority
-if (typeof process !== 'undefined') {
-  process.nextTick(() => console.log('nextTick'));
-}
-
-console.log('2');
-```
-
 ## Event Delegation and Event Handling
 **Description:** La delegación de eventos permite manejar eventos desde un elemento padre en lugar de asignar uno a cada hijo. Esto mejora el rendimiento y simplifica el código.
 **Example:**
@@ -503,6 +504,14 @@ function greet(name) {
 }
 ```
 
+**Comparison:**
+| Tipo de función       | Descripción | Hoisting | Enlace de `this` | Sintaxis |
+|-----------------------|-------------|----------|------------------|----------|
+| **Función Nombrada**  | Una función con un nombre declarado, elevada (*hoisted*) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código. | Sí | Tiene su propio `this` | `function nombre() { ... }` |
+| **Función Anónima**   | Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se eleva, por lo que solo puede usarse después de su definición. | No | Tiene su propio `this` | `const fn = function() { ... };` |
+| **Función Flecha**    | Una sintaxis más concisa para escribir funciones. No tiene su propio `this`, `arguments` ni `prototype`, lo que la hace útil para *callbacks* y para preservar el `this` del contexto exterior. | No | Hereda el `this` del contexto exterior | `const fn = () => { ... };` |
+
+
 ## Anonymous Function
 **Description:** Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se hoistea, por lo que solo puede usarse después de su definición.
 **Example:**
@@ -513,6 +522,14 @@ const greetAnon = function(name) {
 };
 ```
 
+**Comparison:**
+| Tipo de función       | Descripción | Hoisting | Enlace de `this` | Sintaxis |
+|-----------------------|-------------|----------|------------------|----------|
+| **Función Nombrada**  | Una función con un nombre declarado, elevada (*hoisted*) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código. | Sí | Tiene su propio `this` | `function nombre() { ... }` |
+| **Función Anónima**   | Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se eleva, por lo que solo puede usarse después de su definición. | No | Tiene su propio `this` | `const fn = function() { ... };` |
+| **Función Flecha**    | Una sintaxis más concisa para escribir funciones. No tiene su propio `this`, `arguments` ni `prototype`, lo que la hace útil para *callbacks* y para preservar el `this` del contexto exterior. | No | Hereda el `this` del contexto exterior | `const fn = () => { ... };` |
+
+
 ## Arrow Function
 **Description:** Una sintaxis más concisa para escribir funciones. No tiene su propio this, arguments ni prototype, lo que la hace útil para callbacks y para preservar el this del contexto exterior.
 **Example:**
@@ -520,6 +537,14 @@ const greetAnon = function(name) {
 // 3. Arrow Function
 const greetArrow = (name) => `Hey, ${name}!`;
 ```
+**Comparison:**
+
+| Tipo de función       | Descripción | Hoisting | Enlace de `this` | Sintaxis |
+|-----------------------|-------------|----------|------------------|----------|
+| **Función Nombrada**  | Una función con un nombre declarado, elevada (*hoisted*) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código. | Sí | Tiene su propio `this` | `function nombre() { ... }` |
+| **Función Anónima**   | Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se eleva, por lo que solo puede usarse después de su definición. | No | Tiene su propio `this` | `const fn = function() { ... };` |
+| **Función Flecha**    | Una sintaxis más concisa para escribir funciones. No tiene su propio `this`, `arguments` ni `prototype`, lo que la hace útil para *callbacks* y para preservar el `this` del contexto exterior. | No | Hereda el `this` del contexto exterior | `const fn = () => { ... };` |
+
 
 ## Call, Bind, and Apply
 **Description:** Los métodos `call`, `bind` y `apply` permiten definir explícitamente el valor de `this` y cómo pasar argumentos al llamar a una función.
@@ -637,73 +662,36 @@ class Component {
 }
 ```
 
-## ES Modules
-**Description:** Los módulos ES permiten organizar el código en archivos separados usando `import` y `export`, lo que mejora la reutilización y el mantenimiento.
+## Módulos
+
+**Description**  
+Los sistemas de módulos permiten dividir el código en partes independientes y reutilizables. En JavaScript, los tres sistemas de módulos más usados son: ES Modules (ESM), CommonJS (CJS) y AMD (Asynchronous Module Definition). Cada uno tiene su propia sintaxis, forma de cargar los módulos y soporte en distintas plataformas.
+
+**Comparison**
+
+| Característica              | ES Modules (ESM)                         | CommonJS (CJS)                      | AMD (Asynchronous Module Definition)         |
+|----------------------------|----------------------------------------|-----------------------------------|-----------------------------------------------|
+| Año / Estándar             | ECMAScript 2015 (ES6)                   | No estándar, surgió en Node.js    | Surgió en 2009 para navegadores                |
+| Sintaxis principal         | `import` / `export`                     | `require()` / `module.exports`    | `define()` y `require()`                        |
+| Carga                     | Asincrónica y estática                  | Sincrónica                       | Asincrónica                                    |
+| Soporte nativo             | Navegadores modernos y Node.js (v14+)  | Node.js                          | Navegadores (con librerías tipo RequireJS)     |
+| Scope                     | Cada módulo tiene su propio scope       | Cada módulo tiene su propio scope | Cada módulo tiene su propio scope                |
+| Formato                   | Archivos `.js` con import/export        | Archivos `.js` con require/module.exports | Funciones que definen módulos                 |
+| Uso principal             | JavaScript moderno (frontend y backend) | Principalmente backend (Node.js)  | Principalmente frontend antes de ESM           |
+| Compatibilidad            | No compatible directo con CommonJS sin herramientas | No compatible con ES Modules sin herramientas | No compatible directamente con CommonJS ni ESM |
+| Ventajas                  | Estándar oficial, soporte en navegadores, optimizable para carga | Simple, ampliamente usado en Node.js | Permite carga asíncrona en navegador           |
+| Desventajas               | Requiere herramientas o flags en Node.js antiguos, sintaxis estricta | Sin soporte en navegador nativo, carga sincrónica | Más complejo, menos popular hoy en día          |
+
+
 **Example:**
 ```javascript
-// math.js - Named exports
-export const PI = 3.14159;
-
-export function add(a, b) {
+// ES Modules (ESM)
+export function suma(a, b) {
   return a + b;
 }
 
-export const subtract = (a, b) => a - b;
-
-// Default export
-export default function multiply(a, b) {
-  return a * b;
-}
-
-// Alternative syntax
-const divide = (a, b) => a / b;
-const power = (a, b) => a ** b;
-
-export { divide, power };
-
-// utils.js - Default export
-export default class Calculator {
-  static add(a, b) { return a + b; }
-  static multiply(a, b) { return a * b; }
-}
-
-// main.js - Importing
-import multiply from './math.js'; // Default import
-import { add, subtract, PI } from './math.js'; // Named imports
-import Calculator from './utils.js'; // Default import with different name
-import * as MathUtils from './math.js'; // Namespace import
-
-console.log(add(5, 3)); // 8
-console.log(multiply(4, 2)); // 8
-console.log(PI); // 3.14159
-
-// Using namespace
-console.log(MathUtils.add(1, 2)); // 3
-console.log(MathUtils.default(3, 4)); // 12 (default export)
-
-// Dynamic imports
-async function loadModule() {
-  const { add, subtract } = await import('./math.js');
-  console.log(add(10, 5)); // 15
-}
-
-// Conditional imports
-if (condition) {
-  import('./feature.js').then(module => {
-    module.default();
-  });
-}
-
-// Re-exports
-// api.js
-export { add, subtract } from './math.js';
-export { default as Calculator } from './utils.js';
-
-// Mixed imports and exports
-import { someFunction } from './helper.js';
-
-export const processedData = someFunction(rawData);
-export { someFunction as processor };
+import { suma } from './suma.js';
+console.log(suma(2, 3)); // 5
 ```
 
 ## Template Strings
@@ -896,48 +884,8 @@ async function retryWithBackoff(fn, maxRetries = 3) {
 }
 ```
 
-## Data Types
-**Description:** JavaScript tiene tipos de datos primitivos (number, string, boolean, null, undefined, symbol, bigint) y tipos por referencia como objetos.
-**Example:**
-```javascript
-// == vs === (Shallow comparison)
-console.log(5 == "5");    // true (type coercion)
-console.log(5 === "5");   // false (strict comparison)
-console.log(null == undefined);  // true
-console.log(null === undefined); // false
 
-// null vs undefined
-let declared;              // undefined
-let empty = null;         // null
-console.log(declared);    // undefined
-console.log(empty);       // null
-
-// Symbol use case
-const id1 = Symbol('id');
-const id2 = Symbol('id');
-console.log(id1 === id2); // false (symbols are unique)
-const user = { [id1]: 'John' };
-
-// BigInt
-const bigNumber = 9007199254740991n;
-const anotherBig = BigInt(9007199254740991);
-console.log(bigNumber + 1n); // 9007199254740992n
-
-// typeof vs instanceof
-console.log(typeof "hello");     // "string"
-console.log(typeof 42);          // "number"
-console.log([] instanceof Array); // true
-console.log({} instanceof Object); // true
-
-// Map vs Set
-const map = new Map();
-map.set('key', 'value');
-const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
-```
-
-**Comparison:** == performs type coercion while === doesn't. null is explicitly assigned, undefined means not assigned. Symbols create unique identifiers. BigInt handles large integers. typeof returns type string, instanceof checks prototype chain. Map stores key-value pairs, Set stores unique values.
-
-## Synchronism
+## Synchronism Event Loop
 **Description:** JavaScript es de un solo hilo, ejecuta código de forma síncrona y usa el event loop para manejar tareas asíncronas.
 
 **Example:**
@@ -1002,7 +950,16 @@ for (const value of iterable) {
 }
 ```
 
-**Comparison:** Call stack executes synchronously, callback queue handles async operations. Callbacks can lead to callback hell. Generators pause/resume execution, iterators define how objects are iterated. Event loop coordinates between stack and queue.
+**Comparison:** 
+| Concepto              | Descripción                                                             |
+|-----------------------|------------------------------------------------------------------------|
+| Call Stack            | Ejecuta operaciones de forma síncrona                                  |
+| Callback Queue        | Maneja operaciones asíncronas                                          |
+| Callbacks             | Pueden generar callback hell (anidamiento profundo y difícil de leer) |
+| Generadores           | Permiten pausar y reanudar la ejecución                               |
+| Iteradores            | Definen cómo se itera un objeto                                        |
+| Event Loop            | Coordina la ejecución entre el call stack y la callback queue          |
+
 
 ## Promises
 **Description:** Una promesa representa una operación asíncrona que puede completarse con éxito o error. Facilita el manejo de código asíncrono.
@@ -1043,7 +1000,6 @@ fetch('/api/data')
   });
 ```
 
-**Description:** API calls, file operations, user input handling, any asynchronous operation that needs better error handling than callbacks.
 ## Promise.all
 **Description:** Ejecuta varias promesas en paralelo y devuelve todas sus respuestas si ninguna falla, o un error si alguna rechaza.
 
@@ -1077,7 +1033,6 @@ Promise.all(mixedPromises)
   .then(values => console.log(values)); // [42, 'hello', true]
 ```
 
-**Description:** Loading multiple resources simultaneously, parallel API calls where all data is required, batch operations.
 ## Promise.allSettled
 **Description:** Ejecuta varias promesas y devuelve los resultados de todas, sin importar si se resolvieron o rechazaron.
 
@@ -1112,7 +1067,6 @@ Promise.allSettled([
 });
 ```
 
-**Description:** Batch operations where some failures are acceptable, collecting results from multiple unreliable sources, analytics and logging.
 ## Promise.race
 **Description:** Devuelve el resultado de la primera promesa que se resuelva o rechace.
 
@@ -1146,7 +1100,7 @@ fetchWithTimeout('/api/data', 3000)
   .catch(error => console.error('Request failed or timed out:', error));
 ```
 
-**Description:** Implementing timeouts, racing between multiple data sources, cancelling slow operations.
+
 ## Promise.any
 **Description:** Devuelve la primera promesa que se cumpla. Solo falla si todas las promesas se rechazan.
 
@@ -1175,7 +1129,6 @@ Promise.any([
 });
 ```
 
-**Description:** Fallback mechanisms, getting data from the fastest available source, redundant server requests.
 ## Prototype
 **Description:** El *prototype* es el mecanismo de herencia en JavaScript donde objetos pueden compartir propiedades y métodos.
 
@@ -1244,10 +1197,8 @@ class ModernDog extends ModernAnimal {
 const modernDog = new ModernDog("Buddy", "Golden Retriever");
 ```
 
-**Comparison:** Prototype chain enables inheritance through __proto__ links. Object.create directly sets prototype, class syntax provides cleaner inheritance model. Classes are syntactic sugar over prototypal inheritance.
-
 ## Debounce
-**Description:** *Debounce* retrasa la ejecución de una función hasta que pasa un tiempo sin que vuelva a llamarse, útil para optimizar eventos frecuentes.
+**Description:** *Debounce* retrasa la ejecución de una función hasta que pasa un tiempo sin que vuelva a llamarse, útil para optimizar eventos frecuentes. Casos de uso: Search inputs, form validation, window resize handlers, API calls triggered by user input.
 
 **Example:**
 ```javascript
@@ -1283,9 +1234,9 @@ const debouncedResize = debounce(() => {
 window.addEventListener('resize', debouncedResize);
 ```
 
-**Description:** Search inputs, form validation, window resize handlers, API calls triggered by user input.
+
 ## Throttle
-**Description:** *Throttle* limita la frecuencia con la que una función puede ejecutarse durante un intervalo de tiempo.
+**Description:** *Throttle* limita la frecuencia con la que una función puede ejecutarse durante un intervalo de tiempo. Casos de uso: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 
 **Example:**
 ```javascript
@@ -1346,7 +1297,6 @@ function advancedThrottle(func, limit, options = {}) {
 }
 ```
 
-**Description:** Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 ## setTimeout
 **Description:** Ejecuta una función una sola vez después de un retraso en milisegundos.
 
@@ -1379,7 +1329,7 @@ const cleanup = createTimer();
 // Later... cleanup(); // Prevents timer execution
 ```
 
-**Description:** Delayed execution, debouncing user input, auto-hiding notifications, cleanup operations.
+
 ## setInterval
 **Description:** Ejecuta repetidamente una función cada cierto tiempo en milisegundos hasta que se detiene.
 
@@ -1421,7 +1371,7 @@ function startClock() {
 const stopClock = startClock();
 ```
 
-**Description:** Real-time clocks, periodic data fetching, animations, progress updates.
+
 ## Fetch
 **Description:** La API `fetch` permite hacer solicitudes HTTP de forma sencilla y devuelve promesas para manejar las respuestas.
 
@@ -1494,9 +1444,8 @@ async function fetchUserData(userId) {
 }
 ```
 
-**Description:** API calls, data fetching, form submissions, file uploads, microservice communication.
 ## Local Storage
-**Description:** El almacenamiento local guarda datos en el navegador sin fecha de expiración, accesibles incluso al cerrar y abrir el navegador.
+**Description:** El almacenamiento local guarda datos en el navegador sin fecha de expiración, accesibles incluso al cerrar y abrir el navegador. Casos de uso: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 
 **Example:**
 ```javascript
@@ -1557,9 +1506,8 @@ const storage = {
 };
 ```
 
-**Description:** User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 ## Session Storage
-**Description:** Similar a localStorage, pero los datos se eliminan cuando se cierra la pestaña o ventana del navegador.
+**Description:** Similar a localStorage, pero los datos se eliminan cuando se cierra la pestaña o ventana del navegador. Casos de uso: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 
 **Example:**
 ```javascript
@@ -1601,9 +1549,8 @@ const formManager = {
 sessionStorage.setItem('tabId', Math.random().toString(36));
 ```
 
-**Description:** Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 ## Cookies
-**Description:** Las cookies son pequeños datos que el navegador guarda y envía al servidor en cada petición HTTP al mismo dominio.
+**Description:** Las cookies son pequeños datos que el navegador guarda y envía al servidor en cada petición HTTP al mismo dominio. Casos de uso: Authentication, user preferences, tracking, session management, cross-domain communication.
 
 **Example:**
 ```javascript
@@ -1686,9 +1633,8 @@ const allCookies = cookies.getAll();
 console.log(allCookies);
 ```
 
-**Description:** Authentication, user preferences, tracking, session management, cross-domain communication.
 ## Web Workers
-**Description:** Los *Web Workers* permiten ejecutar código en segundo plano sin bloquear la interfaz del usuario.
+**Description:** Los *Web Workers* permiten ejecutar código en segundo plano sin bloquear la interfaz del usuario. Casos de uso: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 
 **Example:**
 ```javascript
@@ -1747,7 +1693,6 @@ sharedWorker.port.onmessage = function(e) {
 };
 ```
 
-**Description:** Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 ## ECMAScript
 **Description:** ECMAScript es el estándar que define el lenguaje JavaScript y sus nuevas características.
 
@@ -1842,8 +1787,6 @@ const zero = 0;
 console.log(zero || 'default'); // 'default'
 console.log(zero ?? 'default'); // 0
 ```
-
-**Comparison:** Arrow functions inherit this, regular functions have their own this context. map returns new array, forEach returns undefined. BigInt handles integers beyond Number.MAX_SAFE_INTEGER. Dynamic imports enable code splitting. Rest collects parameters, spread expands elements. Optional chaining prevents errors on undefined properties. Nullish coalescing only considers null/undefined as falsy, unlike || operator.
 
 ## Async/Await
 **Description:** `async` y `await` permiten manejar promesas con una sintaxis más clara y similar al código síncrono.
@@ -1940,10 +1883,6 @@ async function useAsyncGenerator() {
 }
 ```
 
-## Timers
-**Description:** Las funciones de temporizador permiten ejecutar código después de un tiempo o en intervalos regulares.
-**Example:**
-```javascript
 // setTimeout - execute once after delay
 const timeoutId = setTimeout(() => {
   console.log('Executed after 2 seconds');
@@ -2306,118 +2245,6 @@ class BinarySearchTree {
 }
 ```
 
-## Web Workers
-**Description:** Browser API that allows running JavaScript in background threads, enabling parallel processing without blocking the main UI thread.
-**Example:**
-```javascript
-// main.js - Main thread
-if (typeof Worker !== 'undefined') {
-  // Create a new worker
-  const worker = new Worker('worker.js');
-  
-  // Send data to worker
-  worker.postMessage({
-    command: 'calculate',
-    data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-  });
-  
-  // Listen for messages from worker
-  worker.onmessage = function(event) {
-    const { result, error } = event.data;
-    if (error) {
-      console.error('Worker error:', error);
-    } else {
-      console.log('Result from worker:', result);
-      document.getElementById('result').textContent = result;
-    }
-  };
-  
-  // Handle worker errors
-  worker.onerror = function(error) {
-    console.error('Worker failed:', error);
-  };
-  
-  // Terminate worker when done
-  setTimeout(() => {
-    worker.terminate();
-    console.log('Worker terminated');
-  }, 10000);
-} else {
-  console.log('Web Workers not supported');
-}
-
-// worker.js - Worker thread
-self.onmessage = function(event) {
-  const { command, data } = event.data;
-  
-  try {
-    switch (command) {
-      case 'calculate':
-        // Perform heavy calculation
-        const result = heavyCalculation(data);
-        self.postMessage({ result });
-        break;
-        
-      case 'process':
-        const processed = processData(data);
-        self.postMessage({ processed });
-        break;
-        
-      default:
-        throw new Error(`Unknown command: ${command}`);
-    }
-  } catch (error) {
-    self.postMessage({ error: error.message });
-  }
-};
-
-function heavyCalculation(numbers) {
-  // Simulate heavy computation
-  let result = 0;
-  for (let i = 0; i < 1000000; i++) {
-    result += numbers.reduce((sum, num) => sum + Math.sqrt(num), 0);
-  }
-  return result;
-}
-
-function processData(data) {
-  return data.map(item => ({
-    ...item,
-    processed: true,
-    timestamp: Date.now()
-  }));
-}
-
-// Shared Worker (for multiple tabs)
-// shared-worker.js
-const connections = [];
-
-self.addEventListener('connect', function(event) {
-  const port = event.ports[0];
-  connections.push(port);
-  
-  port.onmessage = function(e) {
-    // Broadcast to all connected tabs
-    connections.forEach(connection => {
-      if (connection !== port) {
-        connection.postMessage(e.data);
-      }
-    });
-  };
-  
-  port.start();
-});
-
-// main.js - using shared worker
-const sharedWorker = new SharedWorker('shared-worker.js');
-const port = sharedWorker.port;
-
-port.onmessage = function(event) {
-  console.log('Message from other tab:', event.data);
-};
-
-port.postMessage('Hello from this tab!');
-```
 
 ## Generators
 **Description:** Un generador es una función que puede pausarse y reanudarse, devolviendo múltiples valores bajo demanda.
@@ -2584,7 +2411,7 @@ console.log(errorGen.next()); // { value: 'Caught: Something went wrong', done: 
 console.log(errorGen.next()); // { value: 3, done: false }
 ```
 
-## Reactive Structures
+
 **Description:** Data structures and patterns that automatically update when their dependencies change, fundamental to reactive programming and modern UI frameworks.
 **Example:**
 ```javascript

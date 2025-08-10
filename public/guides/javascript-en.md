@@ -1,5 +1,58 @@
 # JavaScript Guide
 
+## Data Types
+**Description:** JavaScript has primitive data types (number, string, boolean, null, undefined, symbol, bigint) and reference types like objects.
+**Example:**
+```javascript
+// == vs === (Shallow comparison)
+console.log(5 == "5");    // true (type coercion)
+console.log(5 === "5");   // false (strict comparison)
+console.log(null == undefined);  // true
+console.log(null === undefined); // false
+
+// null vs undefined
+let declared;              // undefined
+let empty = null;         // null
+console.log(declared);    // undefined
+console.log(empty);       // null
+
+// Symbol use case
+const id1 = Symbol('id');
+const id2 = Symbol('id');
+console.log(id1 === id2); // false (symbols are unique)
+const user = { [id1]: 'John' };
+
+// BigInt
+const bigNumber = 9007199254740991n;
+const anotherBig = BigInt(9007199254740991);
+console.log(bigNumber + 1n); // 9007199254740992n
+
+// typeof vs instanceof
+console.log(typeof "hello");     // "string"
+console.log(typeof 42);          // "number"
+console.log([] instanceof Array); // true
+console.log({} instanceof Object); // true
+
+// Map vs Set
+const map = new Map();
+map.set('key', 'value');
+const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
+```
+
+**Comparison:**
+| Concept                   | Description                                                     |
+|---------------------------|-----------------------------------------------------------------|
+| `==` vs `===`             | `==` performs type coercion, `===` does not (compares type and value) |
+| `null` vs `undefined`     | `null` is explicitly assigned; `undefined` means not assigned    |
+| `Symbol`                  | Creates unique identifiers                                       |
+| `BigInt`                  | Handles very large integers                                      |
+| `typeof`                  | Returns a string indicating the data type                        |
+| `instanceof`              | Checks the prototype chain for a specific type                   |
+| `Map`                     | Stores key-value pairs                                           |
+| `Set`                     | Stores unique values                                            |
+
+
+
 ## Scope
 **Description:** *Scope* defines where in your code a variable can be accessed. JavaScript has global, function, and block scope (let/const). Understanding it helps prevent errors and name conflicts.
 **Example:**
@@ -313,57 +366,6 @@ const clone = [...original];
 const objectClone = { ...obj1 };
 ```
 
-## Event Loop
-**Description:** The *event loop* coordinates code execution, managing synchronous and asynchronous tasks so JavaScript appears multitasking.
-**Example:**
-```javascript
-// Call Stack and Event Loop
-console.log('1'); // Synchronous
-
-setTimeout(() => {
-  console.log('2'); // Asynchronous - goes to callback queue
-}, 0);
-
-console.log('3'); // Synchronous
-
-// Output: 1, 3, 2
-
-// Microtasks vs Macrotasks
-console.log('Start');
-
-setTimeout(() => console.log('Macrotask 1'), 0);
-
-Promise.resolve().then(() => console.log('Microtask 1'));
-Promise.resolve().then(() => console.log('Microtask 2'));
-
-setTimeout(() => console.log('Macrotask 2'), 0);
-
-console.log('End');
-
-// Output: Start, End, Microtask 1, Microtask 2, Macrotask 1, Macrotask 2
-
-// Event Loop with different APIs
-console.log('1');
-
-// Macrotask
-setTimeout(() => console.log('setTimeout'), 0);
-
-// Microtask
-Promise.resolve().then(() => console.log('Promise'));
-
-// Immediate (Node.js)
-if (typeof setImmediate !== 'undefined') {
-  setImmediate(() => console.log('setImmediate'));
-}
-
-// Process.nextTick (Node.js) - highest priority
-if (typeof process !== 'undefined') {
-  process.nextTick(() => console.log('nextTick'));
-}
-
-console.log('2');
-```
-
 ## Event Delegation and Event Handling
 **Description:** Event delegation allows handling events from a parent element instead of assigning one to each child. This improves performance and simplifies code.
 **Example:**
@@ -502,6 +504,14 @@ function greet(name) {
 }
 ```
 
+**Comparison:**
+| Function Type      | Description | Hoisting | `this` binding | Syntax |
+|--------------------|-------------|----------|----------------|--------|
+| **Named Function** | A function with a declared name, hoisted to the top of its scope, available even before its definition in the code. | Yes | Own `this` | `function name() { ... }` |
+| **Anonymous Function** | A function without a name, usually assigned to a variable or passed as an argument. Not hoisted, so it can only be used after its definition. | No | Own `this` | `const fn = function() { ... };` |
+| **Arrow Function** | A concise syntax for writing functions. Does not have its own `this`, `arguments`, or `prototype`, making it useful for callbacks and preserving the outer `this` context. | No | Inherits from outer scope | `const fn = () => { ... };` |
+
+
 ## Anonymous Function
 **Description:** A function without a name, usually assigned to a variable or passed as an argument. It is not hoisted, so it can only be used after its definition.
 **Example:**
@@ -511,6 +521,12 @@ const greetAnon = function(name) {
   return `Hi, ${name}!`;
 };
 ```
+**Comparison:**
+| Function Type      | Description | Hoisting | `this` binding | Syntax |
+|--------------------|-------------|----------|----------------|--------|
+| **Named Function** | A function with a declared name, hoisted to the top of its scope, available even before its definition in the code. | Yes | Own `this` | `function name() { ... }` |
+| **Anonymous Function** | A function without a name, usually assigned to a variable or passed as an argument. Not hoisted, so it can only be used after its definition. | No | Own `this` | `const fn = function() { ... };` |
+| **Arrow Function** | A concise syntax for writing functions. Does not have its own `this`, `arguments`, or `prototype`, making it useful for callbacks and preserving the outer `this` context. | No | Inherits from outer scope | `const fn = () => { ... };` |
 
 ## Arrow Function
 **Description:** A concise syntax for writing functions. It does not have its own this, arguments, or prototype, making it useful for callbacks and preserving the surrounding this context.
@@ -519,6 +535,12 @@ const greetAnon = function(name) {
 // 3. Arrow Function
 const greetArrow = (name) => `Hey, ${name}!`;
 ```
+**Comparison:**
+| Function Type      | Description | Hoisting | `this` binding | Syntax |
+|--------------------|-------------|----------|----------------|--------|
+| **Named Function** | A function with a declared name, hoisted to the top of its scope, available even before its definition in the code. | Yes | Own `this` | `function name() { ... }` |
+| **Anonymous Function** | A function without a name, usually assigned to a variable or passed as an argument. Not hoisted, so it can only be used after its definition. | No | Own `this` | `const fn = function() { ... };` |
+| **Arrow Function** | A concise syntax for writing functions. Does not have its own `this`, `arguments`, or `prototype`, making it useful for callbacks and preserving the outer `this` context. | No | Inherits from outer scope | `const fn = () => { ... };` |
 
 ## Call, Bind, and Apply
 **Description:** `call`, `bind`, and `apply` methods allow explicitly defining the value of `this` and how to pass arguments when calling a function.
@@ -636,73 +658,35 @@ class Component {
 }
 ```
 
-## ES Modules
-**Description:** ES modules allow organizing code into separate files using `import` and `export`, improving reuse and maintainability.
+## Modules
+
+**Description**  
+Module systems allow splitting code into independent and reusable parts. In JavaScript, the three most common module systems are: ES Modules (ESM), CommonJS (CJS), and AMD (Asynchronous Module Definition). Each has its own syntax, loading behavior, and platform support.
+
+**Comparison**
+
+| Feature                   | ES Modules (ESM)                       | CommonJS (CJS)                    | AMD (Asynchronous Module Definition)       |
+|---------------------------|--------------------------------------|---------------------------------|---------------------------------------------|
+| Year / Standard           | ECMAScript 2015 (ES6)                 | Not standardized, originated in Node.js | Originated in 2009 for browsers              |
+| Main Syntax               | `import` / `export`                   | `require()` / `module.exports`  | `define()` and `require()`                    |
+| Loading                  | Asynchronous and static               | Synchronous                     | Asynchronous                                |
+| Native Support            | Modern browsers and Node.js (v14+)   | Node.js                        | Browsers (with libraries like RequireJS)    |
+| Scope                    | Each module has its own scope          | Each module has its own scope   | Each module has its own scope                  |
+| Format                   | `.js` files with import/export         | `.js` files with require/module.exports | Functions that define modules               |
+| Main Usage               | Modern JavaScript (frontend and backend) | Mainly backend (Node.js)        | Mainly frontend before ESM                    |
+| Compatibility            | Not directly compatible with CommonJS without tools | Not compatible with ES Modules without tools | Not directly compatible with CommonJS or ESM |
+| Advantages               | Official standard, browser support, optimizable for loading | Simple, widely used in Node.js | Allows asynchronous loading in browsers       |
+| Disadvantages            | Requires tools or flags in older Node.js versions, strict syntax | No native browser support, synchronous loading | More complex, less popular today               |
+
 **Example:**
 ```javascript
-// math.js - Named exports
-export const PI = 3.14159;
-
-export function add(a, b) {
+// ES Modules (ESM)
+export function sum(a, b) {
   return a + b;
 }
 
-export const subtract = (a, b) => a - b;
-
-// Default export
-export default function multiply(a, b) {
-  return a * b;
-}
-
-// Alternative syntax
-const divide = (a, b) => a / b;
-const power = (a, b) => a ** b;
-
-export { divide, power };
-
-// utils.js - Default export
-export default class Calculator {
-  static add(a, b) { return a + b; }
-  static multiply(a, b) { return a * b; }
-}
-
-// main.js - Importing
-import multiply from './math.js'; // Default import
-import { add, subtract, PI } from './math.js'; // Named imports
-import Calculator from './utils.js'; // Default import with different name
-import * as MathUtils from './math.js'; // Namespace import
-
-console.log(add(5, 3)); // 8
-console.log(multiply(4, 2)); // 8
-console.log(PI); // 3.14159
-
-// Using namespace
-console.log(MathUtils.add(1, 2)); // 3
-console.log(MathUtils.default(3, 4)); // 12 (default export)
-
-// Dynamic imports
-async function loadModule() {
-  const { add, subtract } = await import('./math.js');
-  console.log(add(10, 5)); // 15
-}
-
-// Conditional imports
-if (condition) {
-  import('./feature.js').then(module => {
-    module.default();
-  });
-}
-
-// Re-exports
-// api.js
-export { add, subtract } from './math.js';
-export { default as Calculator } from './utils.js';
-
-// Mixed imports and exports
-import { someFunction } from './helper.js';
-
-export const processedData = someFunction(rawData);
-export { someFunction as processor };
+import { sum } from './sum.js';
+console.log(sum(2, 3)); // 5
 ```
 
 ## Template Strings
@@ -895,48 +879,8 @@ async function retryWithBackoff(fn, maxRetries = 3) {
 }
 ```
 
-## Data Types
-**Description:** JavaScript has primitive data types (number, string, boolean, null, undefined, symbol, bigint) and reference types like objects.
-**Example:**
-```javascript
-// == vs === (Shallow comparison)
-console.log(5 == "5");    // true (type coercion)
-console.log(5 === "5");   // false (strict comparison)
-console.log(null == undefined);  // true
-console.log(null === undefined); // false
 
-// null vs undefined
-let declared;              // undefined
-let empty = null;         // null
-console.log(declared);    // undefined
-console.log(empty);       // null
-
-// Symbol use case
-const id1 = Symbol('id');
-const id2 = Symbol('id');
-console.log(id1 === id2); // false (symbols are unique)
-const user = { [id1]: 'John' };
-
-// BigInt
-const bigNumber = 9007199254740991n;
-const anotherBig = BigInt(9007199254740991);
-console.log(bigNumber + 1n); // 9007199254740992n
-
-// typeof vs instanceof
-console.log(typeof "hello");     // "string"
-console.log(typeof 42);          // "number"
-console.log([] instanceof Array); // true
-console.log({} instanceof Object); // true
-
-// Map vs Set
-const map = new Map();
-map.set('key', 'value');
-const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
-```
-
-**Comparison:** == performs type coercion while === doesn't. null is explicitly assigned, undefined means not assigned. Symbols create unique identifiers. BigInt handles large integers. typeof returns type string, instanceof checks prototype chain. Map stores key-value pairs, Set stores unique values.
-
-## Synchronism
+## Synchronism Event Loop
 **Description:** JavaScript is single-threaded, executes code synchronously, and uses the event loop to handle asynchronous tasks.
 
 **Example:**
@@ -1001,7 +945,16 @@ for (const value of iterable) {
 }
 ```
 
-**Comparison:** Call stack executes synchronously, callback queue handles async operations. Callbacks can lead to callback hell. Generators pause/resume execution, iterators define how objects are iterated. Event loop coordinates between stack and queue.
+**Comparison:**
+| Concept           | Description                                                             |
+|-------------------|-------------------------------------------------------------------------|
+| Call Stack        | Executes operations synchronously                                      |
+| Callback Queue    | Handles asynchronous operations                                        |
+| Callbacks         | Can lead to callback hell (deeply nested and hard to read)             |
+| Generators        | Allow pausing and resuming execution                                   |
+| Iterators         | Define how an object is iterated                                       |
+| Event Loop        | Coordinates execution between the call stack and the callback queue    |
+
 
 ## Promises
 **Description:** A promise represents an asynchronous operation that can either complete successfully or fail. It makes handling async code easier.
@@ -1042,7 +995,6 @@ fetch('/api/data')
   });
 ```
 
-**Description:** API calls, file operations, user input handling, any asynchronous operation that needs better error handling than callbacks.
 ## Promise.all
 **Description:** Runs multiple promises in parallel and returns all their results if none fail, or an error if any reject.
 
@@ -1076,7 +1028,6 @@ Promise.all(mixedPromises)
   .then(values => console.log(values)); // [42, 'hello', true]
 ```
 
-**Description:** Loading multiple resources simultaneously, parallel API calls where all data is required, batch operations.
 ## Promise.allSettled
 **Description:** Runs multiple promises and returns the results of all, regardless of whether they resolved or rejected.
 
@@ -1111,7 +1062,7 @@ Promise.allSettled([
 });
 ```
 
-**Description:** Batch operations where some failures are acceptable, collecting results from multiple unreliable sources, analytics and logging.
+
 ## Promise.race
 **Description:** Returns the result of the first promise that resolves or rejects.
 
@@ -1145,7 +1096,6 @@ fetchWithTimeout('/api/data', 3000)
   .catch(error => console.error('Request failed or timed out:', error));
 ```
 
-**Description:** Implementing timeouts, racing between multiple data sources, cancelling slow operations.
 ## Promise.any
 **Description:** Returns the first promise that fulfills. It only fails if all promises reject.
 
@@ -1174,7 +1124,7 @@ Promise.any([
 });
 ```
 
-**Description:** Fallback mechanisms, getting data from the fastest available source, redundant server requests.
+
 ## Prototype
 **Description:** The *prototype* is JavaScript's inheritance mechanism where objects can share properties and methods.
 
@@ -1243,10 +1193,8 @@ class ModernDog extends ModernAnimal {
 const modernDog = new ModernDog("Buddy", "Golden Retriever");
 ```
 
-**Comparison:** Prototype chain enables inheritance through __proto__ links. Object.create directly sets prototype, class syntax provides cleaner inheritance model. Classes are syntactic sugar over prototypal inheritance.
-
 ## Debounce
-**Description:** *Debounce* delays the execution of a function until a certain time has passed without it being called again, useful for optimizing frequent events.
+**Description:** *Debounce* delays the execution of a function until a certain time has passed without it being called again, useful for optimizing frequent events. Use cases: Search inputs, form validation, window resize handlers, API calls triggered by user input.
 
 **Example:**
 ```javascript
@@ -1282,9 +1230,8 @@ const debouncedResize = debounce(() => {
 window.addEventListener('resize', debouncedResize);
 ```
 
-**Description:** Search inputs, form validation, window resize handlers, API calls triggered by user input.
 ## Throttle
-**Description:** *Throttle* limits how often a function can run during a set period of time.
+**Description:** *Throttle* limits how often a function can run during a set period of time. Use cases: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 
 **Example:**
 ```javascript
@@ -1345,7 +1292,6 @@ function advancedThrottle(func, limit, options = {}) {
 }
 ```
 
-**Description:** Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 ## setTimeout
 **Description:** Executes a function once after a delay in milliseconds.
 
@@ -1378,7 +1324,7 @@ const cleanup = createTimer();
 // Later... cleanup(); // Prevents timer execution
 ```
 
-**Description:** Delayed execution, debouncing user input, auto-hiding notifications, cleanup operations.
+
 ## setInterval
 **Description:** Executes a function repeatedly at a set interval in milliseconds until stopped.
 
@@ -1420,7 +1366,7 @@ function startClock() {
 const stopClock = startClock();
 ```
 
-**Description:** Real-time clocks, periodic data fetching, animations, progress updates.
+
 ## Fetch
 **Description:** The `fetch` API makes HTTP requests simple and returns promises to handle the responses.
 
@@ -1493,9 +1439,8 @@ async function fetchUserData(userId) {
 }
 ```
 
-**Description:** API calls, data fetching, form submissions, file uploads, microservice communication.
 ## Local Storage
-**Description:** Local storage saves data in the browser with no expiration date, accessible even after closing and reopening it.
+**Description:** Local storage saves data in the browser with no expiration date, accessible even after closing and reopening it. Use cases: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 
 **Example:**
 ```javascript
@@ -1556,9 +1501,8 @@ const storage = {
 };
 ```
 
-**Description:** User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 ## Session Storage
-**Description:** Similar to localStorage, but data is removed when the browser tab or window is closed.
+**Description:** Similar to localStorage, but data is removed when the browser tab or window is closed. Use cases: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 
 **Example:**
 ```javascript
@@ -1600,9 +1544,8 @@ const formManager = {
 sessionStorage.setItem('tabId', Math.random().toString(36));
 ```
 
-**Description:** Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 ## Cookies
-**Description:** Cookies are small pieces of data stored by the browser and sent to the server with each HTTP request to the same domain.
+**Description:** Cookies are small pieces of data stored by the browser and sent to the server with each HTTP request to the same domain. Use cases: Authentication, user preferences, tracking, session management, cross-domain communication.
 
 **Example:**
 ```javascript
@@ -1685,9 +1628,8 @@ const allCookies = cookies.getAll();
 console.log(allCookies);
 ```
 
-**Description:** Authentication, user preferences, tracking, session management, cross-domain communication.
 ## Web Workers
-**Description:** *Web Workers* allow running code in the background without blocking the user interface.
+**Description:** *Web Workers* allow running code in the background without blocking the user interface. Use cases: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 
 **Example:**
 ```javascript
@@ -1746,7 +1688,6 @@ sharedWorker.port.onmessage = function(e) {
 };
 ```
 
-**Description:** Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 ## ECMAScript
 **Description:** ECMAScript is the standard that defines the JavaScript language and its new features.
 
@@ -1842,8 +1783,6 @@ console.log(zero || 'default'); // 'default'
 console.log(zero ?? 'default'); // 0
 ```
 
-**Comparison:** Arrow functions inherit this, regular functions have their own this context. map returns new array, forEach returns undefined. BigInt handles integers beyond Number.MAX_SAFE_INTEGER. Dynamic imports enable code splitting. Rest collects parameters, spread expands elements. Optional chaining prevents errors on undefined properties. Nullish coalescing only considers null/undefined as falsy, unlike || operator.
-
 ## Async/Await
 **Description:** `async` and `await` let you handle promises with clearer syntax that looks like synchronous code.
 **Example:**
@@ -1937,485 +1876,6 @@ async function useAsyncGenerator() {
     console.log(value); // 0, 1, 2 (with 1s delays)
   }
 }
-```
-
-## Timers
-**Description:** Timer functions allow running code after a delay or at regular intervals.
-**Example:**
-```javascript
-// setTimeout - execute once after delay
-const timeoutId = setTimeout(() => {
-  console.log('Executed after 2 seconds');
-}, 2000);
-
-// Clearing timeout
-clearTimeout(timeoutId);
-
-// setTimeout with parameters
-setTimeout((name, age) => {
-  console.log(`Hello ${name}, you are ${age} years old`);
-}, 1000, 'John', 25);
-
-// setInterval - execute repeatedly
-const intervalId = setInterval(() => {
-  console.log('This runs every second');
-}, 1000);
-
-// Clearing interval
-setTimeout(() => {
-  clearInterval(intervalId);
-  console.log('Interval stopped');
-}, 5000);
-
-// setImmediate (Node.js) - execute on next iteration of event loop
-if (typeof setImmediate !== 'undefined') {
-  setImmediate(() => {
-    console.log('Runs on next tick');
-  });
-}
-
-// requestAnimationFrame (Browser) - sync with display refresh
-function animate() {
-  // Animation logic here
-  console.log('Animation frame');
-  requestAnimationFrame(animate);
-}
-requestAnimationFrame(animate);
-
-// Timer-based patterns
-function debounce(func, delay) {
-  let timeoutId;
-  return function(...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(this, args), delay);
-  };
-}
-
-function throttle(func, interval) {
-  let lastCall = 0;
-  return function(...args) {
-    const now = Date.now();
-    if (now - lastCall >= interval) {
-      lastCall = now;
-      func.apply(this, args);
-    }
-  };
-}
-
-// Usage examples
-const debouncedSearch = debounce((query) => {
-  console.log('Searching for:', query);
-}, 300);
-
-const throttledScroll = throttle(() => {
-  console.log('Scroll event handled');
-}, 100);
-
-// Precise timing with performance.now()
-const start = performance.now();
-setTimeout(() => {
-  const end = performance.now();
-  console.log(`Actual delay: ${end - start}ms`);
-}, 1000);
-
-// Timer cleanup patterns
-class ComponentWithTimers {
-  constructor() {
-    this.timers = [];
-  }
-  
-  addTimer(callback, delay) {
-    const id = setTimeout(callback, delay);
-    this.timers.push(id);
-    return id;
-  }
-  
-  addInterval(callback, interval) {
-    const id = setInterval(callback, interval);
-    this.timers.push(id);
-    return id;
-  }
-  
-  cleanup() {
-    this.timers.forEach(id => {
-      clearTimeout(id); // Works for both timeout and interval
-      clearInterval(id);
-    });
-    this.timers = [];
-  }
-}
-```
-
-## JavaScript Data Structures
-**Description:** JavaScript includes data structures like arrays, objects, maps, and sets, and also allows creating custom ones.
-**Example:**
-```javascript
-// JavaScript Primitives
-const primitives = {
-  number: 42,
-  string: 'Hello',
-  boolean: true,
-  undefined: undefined,
-  null: null,
-  symbol: Symbol('unique'),
-  bigint: 123n
-};
-
-// Arrays and methods
-const numbers = [1, 2, 3, 4, 5];
-
-// Mutating methods
-numbers.push(6);           // Add to end
-numbers.unshift(0);        // Add to beginning
-const last = numbers.pop(); // Remove from end
-const first = numbers.shift(); // Remove from beginning
-
-// Non-mutating methods
-const doubled = numbers.map(x => x * 2);
-const evens = numbers.filter(x => x % 2 === 0);
-const sum = numbers.reduce((acc, x) => acc + x, 0);
-
-// Objects and property access
-const person = {
-  name: 'John',
-  age: 30,
-  'complex-key': 'value',
-  nested: {
-    address: '123 Main St'
-  }
-};
-
-// Property access patterns
-console.log(person.name);           // Dot notation
-console.log(person['complex-key']); // Bracket notation
-console.log(person.nested?.address); // Optional chaining
-
-// Object methods
-const keys = Object.keys(person);
-const values = Object.values(person);
-const entries = Object.entries(person);
-
-// Maps - key-value pairs with any key type
-const map = new Map();
-map.set('string-key', 'value1');
-map.set(42, 'value2');
-map.set(true, 'value3');
-
-// Map methods
-console.log(map.get('string-key')); // 'value1'
-console.log(map.has(42));           // true
-console.log(map.size);              // 3
-
-// Iterating Maps
-for (const [key, value] of map) {
-  console.log(key, value);
-}
-
-// Sets - unique values collection
-const set = new Set([1, 2, 3, 3, 4, 4, 5]);
-console.log(set); // Set {1, 2, 3, 4, 5}
-
-set.add(6);
-set.delete(1);
-console.log(set.has(3)); // true
-
-// WeakMap and WeakSet - for memory efficiency
-const weakMap = new WeakMap();
-const obj1 = {};
-const obj2 = {};
-
-weakMap.set(obj1, 'associated data');
-// obj1 can be garbage collected when no other references exist
-
-// Custom data structures
-class Stack {
-  constructor() {
-    this.items = [];
-  }
-  
-  push(item) {
-    this.items.push(item);
-  }
-  
-  pop() {
-    return this.items.pop();
-  }
-  
-  peek() {
-    return this.items[this.items.length - 1];
-  }
-  
-  isEmpty() {
-    return this.items.length === 0;
-  }
-}
-
-class Queue {
-  constructor() {
-    this.items = [];
-  }
-  
-  enqueue(item) {
-    this.items.push(item);
-  }
-  
-  dequeue() {
-    return this.items.shift();
-  }
-  
-  front() {
-    return this.items[0];
-  }
-  
-  isEmpty() {
-    return this.items.length === 0;
-  }
-}
-
-// Linked List implementation
-class ListNode {
-  constructor(data) {
-    this.data = data;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.head = null;
-    this.size = 0;
-  }
-  
-  add(data) {
-    const newNode = new ListNode(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-    this.size++;
-  }
-  
-  remove(data) {
-    if (!this.head) return false;
-    
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      this.size--;
-      return true;
-    }
-    
-    let current = this.head;
-    while (current.next && current.next.data !== data) {
-      current = current.next;
-    }
-    
-    if (current.next) {
-      current.next = current.next.next;
-      this.size--;
-      return true;
-    }
-    
-    return false;
-  }
-  
-  toArray() {
-    const result = [];
-    let current = this.head;
-    while (current) {
-      result.push(current.data);
-      current = current.next;
-    }
-    return result;
-  }
-}
-
-// Tree structure
-class TreeNode {
-  constructor(data) {
-    this.data = data;
-    this.children = [];
-  }
-  
-  addChild(data) {
-    this.children.push(new TreeNode(data));
-  }
-  
-  removeChild(data) {
-    this.children = this.children.filter(child => child.data !== data);
-  }
-}
-
-// Binary Tree
-class BinaryTreeNode {
-  constructor(data) {
-    this.data = data;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-class BinarySearchTree {
-  constructor() {
-    this.root = null;
-  }
-  
-  insert(data) {
-    const newNode = new BinaryTreeNode(data);
-    
-    if (!this.root) {
-      this.root = newNode;
-      return;
-    }
-    
-    let current = this.root;
-    while (true) {
-      if (data < current.data) {
-        if (!current.left) {
-          current.left = newNode;
-          break;
-        }
-        current = current.left;
-      } else {
-        if (!current.right) {
-          current.right = newNode;
-          break;
-        }
-        current = current.right;
-      }
-    }
-  }
-  
-  search(data) {
-    let current = this.root;
-    while (current) {
-      if (data === current.data) return true;
-      if (data < current.data) {
-        current = current.left;
-      } else {
-        current = current.right;
-      }
-    }
-    return false;
-  }
-}
-```
-
-## Web Workers
-**Description:** Browser API that allows running JavaScript in background threads, enabling parallel processing without blocking the main UI thread.
-**Example:**
-```javascript
-// main.js - Main thread
-if (typeof Worker !== 'undefined') {
-  // Create a new worker
-  const worker = new Worker('worker.js');
-  
-  // Send data to worker
-  worker.postMessage({
-    command: 'calculate',
-    data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-  });
-  
-  // Listen for messages from worker
-  worker.onmessage = function(event) {
-    const { result, error } = event.data;
-    if (error) {
-      console.error('Worker error:', error);
-    } else {
-      console.log('Result from worker:', result);
-      document.getElementById('result').textContent = result;
-    }
-  };
-  
-  // Handle worker errors
-  worker.onerror = function(error) {
-    console.error('Worker failed:', error);
-  };
-  
-  // Terminate worker when done
-  setTimeout(() => {
-    worker.terminate();
-    console.log('Worker terminated');
-  }, 10000);
-} else {
-  console.log('Web Workers not supported');
-}
-
-// worker.js - Worker thread
-self.onmessage = function(event) {
-  const { command, data } = event.data;
-  
-  try {
-    switch (command) {
-      case 'calculate':
-        // Perform heavy calculation
-        const result = heavyCalculation(data);
-        self.postMessage({ result });
-        break;
-        
-      case 'process':
-        const processed = processData(data);
-        self.postMessage({ processed });
-        break;
-        
-      default:
-        throw new Error(`Unknown command: ${command}`);
-    }
-  } catch (error) {
-    self.postMessage({ error: error.message });
-  }
-};
-
-function heavyCalculation(numbers) {
-  // Simulate heavy computation
-  let result = 0;
-  for (let i = 0; i < 1000000; i++) {
-    result += numbers.reduce((sum, num) => sum + Math.sqrt(num), 0);
-  }
-  return result;
-}
-
-function processData(data) {
-  return data.map(item => ({
-    ...item,
-    processed: true,
-    timestamp: Date.now()
-  }));
-}
-
-// Shared Worker (for multiple tabs)
-// shared-worker.js
-const connections = [];
-
-self.addEventListener('connect', function(event) {
-  const port = event.ports[0];
-  connections.push(port);
-  
-  port.onmessage = function(e) {
-    // Broadcast to all connected tabs
-    connections.forEach(connection => {
-      if (connection !== port) {
-        connection.postMessage(e.data);
-      }
-    });
-  };
-  
-  port.start();
-});
-
-// main.js - using shared worker
-const sharedWorker = new SharedWorker('shared-worker.js');
-const port = sharedWorker.port;
-
-port.onmessage = function(event) {
-  console.log('Message from other tab:', event.data);
-};
-
-port.postMessage('Hello from this tab!');
 ```
 
 ## Generators
@@ -2583,7 +2043,7 @@ console.log(errorGen.next()); // { value: 'Caught: Something went wrong', done: 
 console.log(errorGen.next()); // { value: 3, done: false }
 ```
 
-## Reactive Structures
+
 **Description:** Data structures and patterns that automatically update when their dependencies change, fundamental to reactive programming and modern UI frameworks.
 **Example:**
 ```javascript
