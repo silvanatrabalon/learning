@@ -72,7 +72,7 @@ function scopeDemo() {
 ```
 
 ## Closures
-**Description:** Un *closure* es una función que recuerda el entorno en el que fue creada, incluso si se ejecuta fuera de él. Esto permite mantener datos privados o crear funciones personalizadas.
+**Description:** un closure es una función que recuerda y puede acceder a las variables de su scope (ámbito) externo, incluidas las variables declaradas internamente y los argumentos de la función externa, incluso después de que esta haya terminado de ejecutarse.
 **Example:**
 ```javascript
 // Basic Closure
@@ -492,97 +492,45 @@ for (let i = 0; i < 1000; i++) {
 document.getElementById('list').appendChild(fragment); // Single reflow
 ```
 
-## Functions (Life/Anonymous/Arrow)
-**Description:** Different ways to declare and use functions in JavaScript, each with specific characteristics regarding hoisting, this binding, and syntax.
+
+## Named Function
+**Description:** Una función con un nombre declarado, hoisted (elevada) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código.
 **Example:**
 ```javascript
-// Function Declaration (Hoisted)
-console.log(declared(5)); // Works due to hoisting
-
-function declared(x) {
-  return x * 2;
+// 1. Named Function
+function greet(name) {
+  return `Hello, ${name}!`;
 }
+```
 
-// Function Expression (Not hoisted)
-const expression = function(x) {
-  return x * 2;
+## Anonymous Function
+**Description:** Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se hoistea, por lo que solo puede usarse después de su definición.
+**Example:**
+```javascript
+// 2. Anonymous Function
+const greetAnon = function(name) {
+  return `Hi, ${name}!`;
 };
+```
 
-// Named Function Expression (useful for debugging)
-const namedExpression = function multiply(x) {
-  return x < 2 ? x : multiply(x - 1) * x; // Can reference itself
-};
-
-// Arrow Functions (ES6)
-const arrow = (x) => x * 2;
-const arrowBlock = (x) => {
-  const result = x * 2;
-  return result;
-};
-
-// IIFE (Immediately Invoked Function Expression)
-const result = (function(x) {
-  return x * 2;
-})(5);
-
-// Arrow functions and 'this' binding
-const obj = {
-  name: 'Object',
-  regularMethod: function() {
-    console.log(this.name); // 'Object'
-    
-    const innerArrow = () => {
-      console.log(this.name); // 'Object' (lexical this)
-    };
-    
-    function innerRegular() {
-      console.log(this.name); // undefined (or global in non-strict)
-    }
-    
-    innerArrow();
-    innerRegular();
-  },
-  
-  arrowMethod: () => {
-    console.log(this.name); // undefined (lexical this from global)
-  }
-};
-
-// Higher-order functions
-function createMultiplier(factor) {
-  return function(number) {
-    return number * factor;
-  };
-}
-
-const double = createMultiplier(2);
-const triple = createMultiplier(3);
-
-console.log(double(5)); // 10
-console.log(triple(5)); // 15
-
-// Function parameters and arguments
-function flexible(required, optional = 'default', ...rest) {
-  console.log(required); // First argument
-  console.log(optional); // Second or default
-  console.log(rest);     // Array of remaining arguments
-  console.log(arguments); // Arguments object (not in arrow functions)
-}
-
-flexible('req', 'opt', 'extra1', 'extra2');
-
-// Callback functions
-function processArray(arr, callback) {
-  return arr.map(callback);
-}
-
-const numbers = [1, 2, 3, 4, 5];
-const squared = processArray(numbers, x => x * x);
-console.log(squared); // [1, 4, 9, 16, 25]
+## Arrow Function
+**Description:** Una sintaxis más concisa para escribir funciones. No tiene su propio this, arguments ni prototype, lo que la hace útil para callbacks y para preservar el this del contexto exterior.
+**Example:**
+```javascript
+// 3. Arrow Function
+const greetArrow = (name) => `Hey, ${name}!`;
 ```
 
 ## Call, Bind, and Apply
 **Description:** Los métodos `call`, `bind` y `apply` permiten definir explícitamente el valor de `this` y cómo pasar argumentos al llamar a una función.
+
+**Comparison:**
+| Método   | ¿Ejecuta la función de inmediato? | Forma de pasar argumentos | Uso típico |
+|----------|-----------------------------------|----------------------------|------------|
+| **call** | Sí                                | Argumentos separados por comas (`fn.call(ctx, arg1, arg2)`) | Ejecutar la función con un `this` específico y argumentos directos. |
+| **apply**| Sí                                | Argumentos en un array o similar (`fn.apply(ctx, [arg1, arg2])`) | Igual que `call`, pero útil cuando ya tienes los argumentos en un array. |
+| **bind** | No (devuelve una nueva función)   | Igual que `call` (separados por comas) | Crear una nueva función con `this` fijo y argumentos predefinidos para usar después. |
+
 **Example:**
 ```javascript
 const person1 = { name: 'John', age: 30 };
