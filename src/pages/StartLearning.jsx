@@ -46,7 +46,7 @@ function StartLearning() {
   const loadAllTopicsContent = async () => {
     const allContents = {}
     const allIndices = {}
-    
+
     for (const topicId of selectedTopics) {
       try {
         const response = await fetch(`/learning/guides/${topicId}-${language}.md`)
@@ -59,7 +59,7 @@ function StartLearning() {
         allIndices[topicId] = []
       }
     }
-    
+
     setMarkdownContents(allContents)
     setContentIndices(allIndices)
     setSelectedConcept(null)
@@ -69,7 +69,7 @@ function StartLearning() {
   const parseContentIndex = (content, topicId) => {
     const lines = content.split('\n')
     const index = []
-    
+
     lines.forEach((line, i) => {
       if (line.startsWith('## ')) {
         const title = line.replace('## ', '')
@@ -84,7 +84,7 @@ function StartLearning() {
         })
       }
     })
-    
+
     return index
   }
 
@@ -95,21 +95,21 @@ function StartLearning() {
     }
 
     const results = []
-    
+
     // Search across all selected topics
     selectedTopics.forEach(topicId => {
       const content = markdownContents[topicId]
       const index = contentIndices[topicId] || []
-      
+
       if (!content) return
-      
+
       const lines = content.split('\n')
-      
+
       index.forEach(concept => {
         if (concept.title.toLowerCase().includes(query.toLowerCase())) {
           const startLine = concept.line
           let endLine = lines.length
-          
+
           // Find the end of this concept (next ## or end of file)
           for (let i = startLine + 1; i < lines.length; i++) {
             if (lines[i].startsWith('## ')) {
@@ -117,7 +117,7 @@ function StartLearning() {
               break
             }
           }
-          
+
           const conceptContent = lines.slice(startLine, endLine).join('\n')
           results.push({
             title: concept.title,
@@ -130,7 +130,7 @@ function StartLearning() {
         }
       })
     })
-    
+
     setSearchResults(results)
   }
 
@@ -143,13 +143,13 @@ function StartLearning() {
       // Need to extract content from markdown (from MobileMenu)
       const topicId = concept.topicId
       const markdownContent = markdownContents[topicId]
-      
+
       if (!markdownContent) return
-      
+
       const lines = markdownContent.split('\n')
       const startLine = concept.line
       let endLine = lines.length
-      
+
       // Find the end of this concept (next ## or end of file)
       for (let i = startLine + 1; i < lines.length; i++) {
         if (lines[i].startsWith('## ')) {
@@ -157,9 +157,9 @@ function StartLearning() {
           break
         }
       }
-      
+
       const conceptContent = lines.slice(startLine, endLine).join('\n')
-      
+
       const conceptData = {
         title: concept.title,
         content: conceptContent,
@@ -168,10 +168,10 @@ function StartLearning() {
         topicName: concept.topicName,
         topicIcon: topics.find(t => t.id === topicId)?.icon || '📚' // React component
       }
-      
+
       setSelectedConcept(conceptData)
     }
-    
+
     setShowExampleModal(false)
     setSearchResults([])
   }
@@ -181,7 +181,7 @@ function StartLearning() {
     const lines = content.split('\n')
     const filteredLines = []
     let skipExample = false
-    
+
     lines.forEach(line => {
       if (line.includes('**Example:**') || line.includes('**Ejemplo:**')) {
         skipExample = true
@@ -194,7 +194,7 @@ function StartLearning() {
         filteredLines.push(line)
       }
     })
-    
+
     return filteredLines.join('\n')
   }
 
@@ -202,7 +202,7 @@ function StartLearning() {
     const lines = content.split('\n')
     const exampleLines = []
     let inExample = false
-    
+
     lines.forEach(line => {
       if (line.includes('**Example:**') || line.includes('**Ejemplo:**')) {
         inExample = true
@@ -217,7 +217,7 @@ function StartLearning() {
         exampleLines.push(line)
       }
     })
-    
+
     return exampleLines.join('\n')
   }
 
@@ -235,16 +235,16 @@ function StartLearning() {
   const navigateToConcept = (direction) => {
     const allConcepts = getAllConcepts()
     const currentIndex = getCurrentConceptIndex()
-    
+
     if (currentIndex === -1) return
-    
+
     let newIndex
     if (direction === 'next') {
       newIndex = (currentIndex + 1) % allConcepts.length // Wrap to beginning
     } else {
       newIndex = currentIndex === 0 ? allConcepts.length - 1 : currentIndex - 1 // Wrap to end
     }
-    
+
     const newConcept = allConcepts[newIndex]
     handleConceptSelect(newConcept)
   }
@@ -258,7 +258,7 @@ function StartLearning() {
       <header className="learning-header">
         <Link to="/" className="back-button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
+            <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
         </Link>
         <h1>Start Learning</h1>
@@ -287,8 +287,8 @@ function StartLearning() {
       </header>
 
       <div className="learning-container">
-        <aside className="sidebar">          
-          <ContentIndex 
+        <aside className="sidebar">
+          <ContentIndex
             index={Object.values(contentIndices).flat()} // Show all indices from all topics
             onConceptSelect={handleConceptSelect}
             markdownContent={Object.values(markdownContents).join('\n\n')} // Combine all content
@@ -298,7 +298,7 @@ function StartLearning() {
 
         <main className="main-content">
           <SearchBar onSearch={handleSearch} />
-          
+
           {searchResults.length > 0 && (
             <div className="search-results">
               <h3>Search Results:</h3>
@@ -310,7 +310,7 @@ function StartLearning() {
                       {result.topicIcon} {result.topicName}
                     </span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => handleConceptSelect(result)}
                     className="select-concept-btn"
                   >
@@ -331,51 +331,48 @@ function StartLearning() {
                     </span>
                   )}
                 </div>
-                <div className="concept-actions">
-                  {canNavigate() && (
-                    <div className="concept-navigation">
-                      <button 
-                        onClick={() => navigateToConcept('previous')}
-                        className="nav-btn prev-btn"
-                        title="Previous concept"
-                      >
-                        <FaChevronLeft />
-                        <span>Previous</span>
-                      </button>
-                      <span className="concept-position">
-                        {getCurrentConceptIndex() + 1} of {getAllConcepts().length}
-                      </span>
-                      <button 
-                        onClick={() => navigateToConcept('next')}
-                        className="nav-btn next-btn"
-                        title="Next concept"
-                      >
-                        <span>Next</span>
-                        <FaChevronRight />
-                      </button>
-                    </div>
-                  )}
-                  <button 
-                    onClick={() => setShowExampleModal(true)}
-                    className="example-toggle-btn"
-                  >
-                    Show Example
-                  </button>
-                </div>
               </div>
-              
               <div className="markdown-content">
+                <button
+                  onClick={() => setShowExampleModal(true)}
+                  className="example-toggle-btn"
+                >
+                  Show Example
+                </button>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {renderConceptContent(selectedConcept.content)}
                 </ReactMarkdown>
+              </div>
+              <div className="concept-actions">
+                {canNavigate() && (
+                  <div className="concept-navigation">
+                    <button
+                      onClick={() => navigateToConcept('previous')}
+                      className="nav-btn prev-btn"
+                      title="Previous concept"
+                    >
+                      <FaChevronLeft />
+                      <span>Previous</span>
+                    </button>
+                    <span className="concept-position">
+                      {getCurrentConceptIndex() + 1} of {getAllConcepts().length}
+                    </span>
+                    <button
+                      onClick={() => navigateToConcept('next')}
+                      className="nav-btn next-btn"
+                      title="Next concept"
+                    >
+                      <span>Next</span>
+                      <FaChevronRight />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
             <div className="welcome-message">
               <h2>Welcome to Multi-Topic Learning</h2>
-              <p>Select multiple topics above, then use the search bar to find specific concepts across all selected topics, or browse the index on the left.</p>
               <div className="selected-topics-preview">
-                <h3>Selected Topics:</h3>
                 {selectedTopics.map(topicId => {
                   const topic = topics.find(t => t.id === topicId)
                   return (
