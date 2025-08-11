@@ -54,7 +54,7 @@ const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
 
 
 ## Scope
-**Description:** *Scope* defines where in your code a variable can be accessed. JavaScript has global, function, and block scope (let/const). Understanding it helps prevent errors and name conflicts.
+**Description:** defines where in your code a variable can be accessed. JavaScript has global, function, and block scope (let/const). Understanding it helps prevent errors and name conflicts.
 **Example:**
 ```javascript
 // Global Scope
@@ -125,7 +125,7 @@ function scopeDemo() {
 ```
 
 ## Closures
-**Description:** A closure is a function that remembers and can access variables from its outer scope, including variables declared internally and the arguments of the outer function, even after that function has finished executing.
+**Description:** Is a function that remembers and can access variables from its outer scope, including variables declared internally and the arguments of the outer function, even after that function has finished executing.
 **Example:**
 ```javascript
 // Basic Closure
@@ -184,7 +184,7 @@ for (var i = 0; i < 3; i++) {
 ```
 
 ## Type Coercion
-**Description:** *Type coercion* happens when JavaScript automatically converts a value from one type to another, such as from number to string. Understanding it helps avoid unexpected results.
+**Description:** happens when JavaScript automatically converts a value from one type to another, such as from number to string. Understanding it helps avoid unexpected results.
 **Example:**
 ```javascript
 // Implicit Coercion
@@ -227,7 +227,7 @@ console.log([1] - [2]);         // -1 (both become numbers: 1 - 2)
 ```
 
 ## Hoisting
-**Description:** *Hoisting* is JavaScript's behavior of moving declarations to the top of the scope before executing the code. This affects how and when you can use variables and functions.
+**Description:** Is JavaScript's behavior of moving declarations to the top of the scope before executing the code. This affects how and when you can use variables and functions.
 **Example:**
 ```javascript
 // var vs let vs const hoisting
@@ -269,7 +269,7 @@ class MyClass {
 ```
 
 ## Destructuring
-**Description:** *Destructuring* allows extracting values from arrays or objects and assigning them to variables concisely, making code easier to read.
+**Description:** Allows extracting values from arrays or objects and assigning them to variables concisely, making code easier to read.
 **Example:**
 ```javascript
 // Array Destructuring
@@ -325,7 +325,7 @@ displayUser({ name: 'Bob', email: 'bob@email.com' }); // Bob, 0, bob@email.com
 ```
 
 ## Rest and Spread Operators
-**Description:** *Rest* and *spread* operators use `...` to gather values into an array or object or to expand them. They make working with data and parameters easier.
+**Description:** operators that use `...` to gather values into an array or object or to expand them. They make working with data and parameters easier.
 **Example:**
 ```javascript
 // Rest in Functions
@@ -367,7 +367,7 @@ const objectClone = { ...obj1 };
 ```
 
 ## Event Delegation and Event Handling
-**Description:** Event delegation allows handling events from a parent element instead of assigning one to each child. This improves performance and simplifies code.
+**Description:** Allows handling events from a parent element instead of assigning one to each child. This improves performance and simplifies code.
 **Example:**
 ```javascript
 // Event Bubbling Example
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 
 ## DOM Manipulation
-**Description:** DOM manipulation is about selecting, creating, modifying, or removing HTML elements dynamically using JavaScript.
+**Description:** Is about selecting, creating, modifying, or removing HTML elements dynamically using JavaScript.
 **Example:**
 ```javascript
 // Element Selection
@@ -495,7 +495,7 @@ document.getElementById('list').appendChild(fragment); // Single reflow
 ```
 
 ## Named Function
-**Description:** A function with a declared name, hoisted to the top of its scope, and available before its definition is encountered.
+**Description:** A function, hoisted to the top of its scope, and available before its definition is encountered.
 **Example:**
 ```javascript
 // 1. Named Function
@@ -513,7 +513,7 @@ function greet(name) {
 
 
 ## Anonymous Function
-**Description:** A function without a name, usually assigned to a variable or passed as an argument. It is not hoisted, so it can only be used after its definition.
+**Description:** A function, usually assigned to a variable or passed as an argument. It is not hoisted, so it can only be used after its definition.
 **Example:**
 ```javascript
 // 2. Anonymous Function
@@ -543,7 +543,7 @@ const greetArrow = (name) => `Hey, ${name}!`;
 | **Arrow Function** | A concise syntax for writing functions. Does not have its own `this`, `arguments`, or `prototype`, making it useful for callbacks and preserving the outer `this` context. | No | Inherits from outer scope | `const fn = () => { ... };` |
 
 ## Call, Bind, and Apply
-**Description:** `call`, `bind`, and `apply` methods allow explicitly defining the value of `this` and how to pass arguments when calling a function.
+**Description:** methods allow explicitly defining the value of `this` and how to pass arguments when calling a function.
 
 **Comparison:**
 | Method   | Executes the function immediately? | How to pass arguments | Typical use case |
@@ -661,7 +661,7 @@ class Component {
 ## Modules
 
 **Description**  
-Module systems allow splitting code into independent and reusable parts. In JavaScript, the three most common module systems are: ES Modules (ESM), CommonJS (CJS), and AMD (Asynchronous Module Definition). Each has its own syntax, loading behavior, and platform support.
+Allow splitting code into independent and reusable parts. In JavaScript, the three most common module systems are: ES Modules (ESM), CommonJS (CJS), and AMD (Asynchronous Module Definition). Each has its own syntax, loading behavior, and platform support.
 
 **Comparison**
 
@@ -690,7 +690,7 @@ console.log(sum(2, 3)); // 5
 ```
 
 ## Template Strings
-**Description:** *Template strings* use backticks and allow inserting variables, expressions, and line breaks easily.
+**Description:** Use backticks and allow inserting variables, expressions, and line breaks easily.
 **Example:**
 ```javascript
 const name = 'John';
@@ -768,7 +768,7 @@ const renderCard = (title, items) => `
 ```
 
 ## Exception Handling
-**Description:** Exception handling allows catching and responding to errors with `try`, `catch`, and `finally`, preventing the program from crashing.
+**Description:** allows catching and responding to errors with `try`, `catch`, and `finally`, preventing the program from crashing.
 **Example:**
 ```javascript
 // Basic try-catch-finally
@@ -957,7 +957,7 @@ for (const value of iterable) {
 
 
 ## Promises
-**Description:** A promise represents an asynchronous operation that can either complete successfully or fail. It makes handling async code easier.
+**Description:** Represents an asynchronous operation that can either complete successfully or fail. It makes handling async code easier.
 
 **Example:**
 ```javascript
@@ -1126,7 +1126,7 @@ Promise.any([
 
 
 ## Prototype
-**Description:** The *prototype* is JavaScript's inheritance mechanism where objects can share properties and methods.
+**Description:** is JavaScript's inheritance mechanism where objects can share properties and methods.
 
 **Example:**
 ```javascript
@@ -1194,7 +1194,7 @@ const modernDog = new ModernDog("Buddy", "Golden Retriever");
 ```
 
 ## Debounce
-**Description:** *Debounce* delays the execution of a function until a certain time has passed without it being called again, useful for optimizing frequent events. Use cases: Search inputs, form validation, window resize handlers, API calls triggered by user input.
+**Description:** Delays the execution of a function until a certain time has passed without it being called again, useful for optimizing frequent events. Use cases: Search inputs, form validation, window resize handlers, API calls triggered by user input.
 
 **Example:**
 ```javascript
@@ -1231,7 +1231,7 @@ window.addEventListener('resize', debouncedResize);
 ```
 
 ## Throttle
-**Description:** *Throttle* limits how often a function can run during a set period of time. Use cases: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
+**Description:** limits how often a function can run during a set period of time. Use cases: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 
 **Example:**
 ```javascript
@@ -1368,7 +1368,7 @@ const stopClock = startClock();
 
 
 ## Fetch
-**Description:** The `fetch` API makes HTTP requests simple and returns promises to handle the responses.
+**Description:** The API makes HTTP requests simple and returns promises to handle the responses.
 
 **Example:**
 ```javascript
@@ -1440,7 +1440,7 @@ async function fetchUserData(userId) {
 ```
 
 ## Local Storage
-**Description:** Local storage saves data in the browser with no expiration date, accessible even after closing and reopening it. Use cases: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
+**Description:** Saves data in the browser with no expiration date, accessible even after closing and reopening it. Use cases: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 
 **Example:**
 ```javascript
@@ -1502,7 +1502,7 @@ const storage = {
 ```
 
 ## Session Storage
-**Description:** Similar to localStorage, but data is removed when the browser tab or window is closed. Use cases: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
+**Description:** Data is removed when the browser tab or window is closed. Use cases: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 
 **Example:**
 ```javascript
@@ -1545,7 +1545,7 @@ sessionStorage.setItem('tabId', Math.random().toString(36));
 ```
 
 ## Cookies
-**Description:** Cookies are small pieces of data stored by the browser and sent to the server with each HTTP request to the same domain. Use cases: Authentication, user preferences, tracking, session management, cross-domain communication.
+**Description:** Are small pieces of data stored by the browser and sent to the server with each HTTP request to the same domain. Use cases: Authentication, user preferences, tracking, session management, cross-domain communication.
 
 **Example:**
 ```javascript
@@ -1629,7 +1629,7 @@ console.log(allCookies);
 ```
 
 ## Web Workers
-**Description:** *Web Workers* allow running code in the background without blocking the user interface. Use cases: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
+**Description:** Allow running code in the background without blocking the user interface. Use cases: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 
 **Example:**
 ```javascript
@@ -1689,7 +1689,7 @@ sharedWorker.port.onmessage = function(e) {
 ```
 
 ## ECMAScript
-**Description:** ECMAScript is the standard that defines the JavaScript language and its new features.
+**Description:** is the standard that defines the JavaScript language and its new features.
 
 **Example:**
 ```javascript
@@ -1784,7 +1784,7 @@ console.log(zero ?? 'default'); // 0
 ```
 
 ## Async/Await
-**Description:** `async` and `await` let you handle promises with clearer syntax that looks like synchronous code.
+**Description:** it let you handle promises with clearer syntax that looks like synchronous code.
 **Example:**
 ```javascript
 // Basic async/await
@@ -1879,7 +1879,7 @@ async function useAsyncGenerator() {
 ```
 
 ## Generators
-**Description:** A generator is a function that can be paused and resumed, yielding multiple values on demand.
+**Description:** Is a function that can be paused and resumed, yielding multiple values on demand.
 **Example:**
 ```javascript
 // Basic generator

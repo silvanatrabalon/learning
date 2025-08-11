@@ -355,7 +355,7 @@ function useUser() {
 **Comparison:** Lifting State vs Context API - Lifting state is ideal for few component levels, Context API is better for global state that needs to be accessed by many dispersed components in the tree.
 
 ## Virtual DOM & Keys
-**Description:** The Virtual DOM is an in-memory representation of the real DOM that React uses to optimize updates. Keys help React identify which elements have changed.
+**Description:** is an in-memory representation of the real DOM that React uses to optimize updates. Keys help React identify which elements have changed.
 
 **Example:**
 ```javascript
@@ -1301,7 +1301,7 @@ function App() {
 
 ## React.memo
 **Description:**  
-`React.memo` is a function that wraps a component so it only re-renders if its props change.
+Is a function that wraps a component so it only re-renders if its props change.
 
 **Example:**
 ```javascript
@@ -1644,7 +1644,7 @@ Render props allow high logic reusability, similar to custom hooks but in props 
 
 ## High Order Components (HOC)
 **Description:**  
-An HOC is a function that receives a component and returns a new component with additional functionality, without modifying the original component.  
+Is a function that receives a component and returns a new component with additional functionality, without modifying the original component.  
 Used to reuse logic between multiple components.
 
 **Example:**
@@ -1694,7 +1694,7 @@ export default function App() {
 
 ## Custom Hook
 **Description:** 
-A custom hook is a JavaScript function whose name starts with use and can call other React hooks.
+is a JavaScript function whose name starts with use and can call other React hooks.
 Used to extract reusable logic from components and share it between several.
 
 **Example:**

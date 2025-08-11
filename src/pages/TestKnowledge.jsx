@@ -125,6 +125,7 @@ function TestKnowledge() {
     const cards = []
     
     concepts.forEach((concept, index) => {
+      // Only generate cards for descriptions (definitions), not comparisons
       if (concept.description) {
         cards.push({
           id: cards.length,
@@ -132,16 +133,6 @@ function TestKnowledge() {
           description: concept.description,
           comparison: concept.comparison,
           cardType: 'description'
-        })
-      }
-      
-      if (concept.comparison) {
-        cards.push({
-          id: cards.length,
-          concept: concept.name,
-          description: concept.description,
-          comparison: concept.comparison,
-          cardType: 'comparison'
         })
       }
     })
@@ -153,6 +144,7 @@ function TestKnowledge() {
     const questions = []
     
     concepts.forEach((concept, index) => {
+      // Only generate questions for descriptions (definitions), not comparisons
       if (concept.description) {
         // Definition question
         const wrongAnswers = concepts
@@ -167,24 +159,6 @@ function TestKnowledge() {
           question: getMultipleChoiceQuestion(concept.name, 'definition'),
           correctAnswer: concept.description,
           options: shuffleArray([concept.description, ...wrongAnswers]),
-          concept: concept.name
-        })
-      }
-      
-      if (concept.comparison) {
-        // Comparison question
-        const wrongAnswers = concepts
-          .filter(c => c.name !== concept.name && c.comparison)
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 3)
-          .map(c => c.comparison)
-        
-        questions.push({
-          id: questions.length,
-          type: 'comparison',
-          question: getMultipleChoiceQuestion(concept.name, 'comparison'),
-          correctAnswer: concept.comparison,
-          options: shuffleArray([concept.comparison, ...wrongAnswers]),
           concept: concept.name
         })
       }

@@ -53,7 +53,7 @@ const set = new Set([1, 2, 3, 3]); // {1, 2, 3}
 
 
 ## Scope
-**Description:** El *scope* define desde dónde puedes acceder a una variable. En JavaScript hay scope global, de función y de bloque (let/const). Conocerlo evita errores y conflictos de nombres.
+**Description:** define desde dónde puedes acceder a una variable. En JavaScript hay scope global, de función y de bloque (let/const). Conocerlo evita errores y conflictos de nombres.
 **Example:**
 ```javascript
 // Global Scope
@@ -124,7 +124,7 @@ function scopeDemo() {
 ```
 
 ## Closures
-**Description:** un closure es una función que recuerda y puede acceder a las variables de su scope (ámbito) externo, incluidas las variables declaradas internamente y los argumentos de la función externa, incluso después de que esta haya terminado de ejecutarse.
+**Description:** Es una función que recuerda y puede acceder a las variables de su scope (ámbito) externo, incluidas las variables declaradas internamente y los argumentos de la función externa, incluso después de que esta haya terminado de ejecutarse.
 **Example:**
 ```javascript
 // Basic Closure
@@ -183,7 +183,7 @@ for (var i = 0; i < 3; i++) {
 ```
 
 ## Type Coercion
-**Description:** La *coerción de tipos* es cuando JavaScript convierte automáticamente un valor de un tipo a otro, como de número a texto. Comprenderla ayuda a evitar resultados inesperados.
+**Description:** es cuando JavaScript convierte automáticamente un valor de un tipo a otro, como de número a texto. Comprenderla ayuda a evitar resultados inesperados.
 **Example:**
 ```javascript
 // Implicit Coercion
@@ -226,7 +226,7 @@ console.log([1] - [2]);         // -1 (both become numbers: 1 - 2)
 ```
 
 ## Hoisting
-**Description:** El *hoisting* es el comportamiento de JavaScript de mover declaraciones al inicio del ámbito antes de ejecutar el código. Esto afecta cómo y cuándo puedes usar variables y funciones.
+**Description:** Es el comportamiento de JavaScript de mover declaraciones al inicio del ámbito antes de ejecutar el código. Esto afecta cómo y cuándo puedes usar variables y funciones.
 **Example:**
 ```javascript
 // var vs let vs const hoisting
@@ -268,7 +268,7 @@ class MyClass {
 ```
 
 ## Destructuring
-**Description:** La *destructuración* permite extraer valores de arrays u objetos y asignarlos a variables de forma concisa, facilitando la lectura del código.
+**Description:** Permite extraer valores de arrays u objetos y asignarlos a variables de forma concisa, facilitando la lectura del código.
 **Example:**
 ```javascript
 // Array Destructuring
@@ -324,7 +324,7 @@ displayUser({ name: 'Bob', email: 'bob@email.com' }); // Bob, 0, bob@email.com
 ```
 
 ## Rest and Spread Operators
-**Description:** Los operadores *rest* y *spread* usan `...` para reunir valores en un array u objeto o para expandirlos. Facilitan la manipulación de datos y parámetros.
+**Description:**  operadores que usan `...` para reunir valores en un array u objeto o para expandirlos. Facilitan la manipulación de datos y parámetros.
 **Example:**
 ```javascript
 // Rest in Functions
@@ -366,7 +366,7 @@ const objectClone = { ...obj1 };
 ```
 
 ## Event Delegation and Event Handling
-**Description:** La delegación de eventos permite manejar eventos desde un elemento padre en lugar de asignar uno a cada hijo. Esto mejora el rendimiento y simplifica el código.
+**Description:** Permite manejar eventos desde un elemento padre en lugar de asignar uno a cada hijo. Esto mejora el rendimiento y simplifica el código.
 **Example:**
 ```javascript
 // Event Bubbling Example
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 
 ## DOM Manipulation
-**Description:** La manipulación del DOM consiste en seleccionar, crear, modificar o eliminar elementos HTML dinámicamente con JavaScript.
+**Description:** Consiste en seleccionar, crear, modificar o eliminar elementos HTML dinámicamente con JavaScript.
 **Example:**
 ```javascript
 // Element Selection
@@ -495,7 +495,7 @@ document.getElementById('list').appendChild(fragment); // Single reflow
 
 
 ## Named Function
-**Description:** Una función con un nombre declarado, hoisted (elevada) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código.
+**Description:** Una función, hoisted (elevada) al inicio de su ámbito, disponible incluso antes de que su definición aparezca en el código.
 **Example:**
 ```javascript
 // 1. Named Function
@@ -513,7 +513,7 @@ function greet(name) {
 
 
 ## Anonymous Function
-**Description:** Una función sin nombre, normalmente asignada a una variable o pasada como argumento. No se hoistea, por lo que solo puede usarse después de su definición.
+**Description:** Una función, normalmente asignada a una variable o pasada como argumento. No se hoistea, por lo que solo puede usarse después de su definición.
 **Example:**
 ```javascript
 // 2. Anonymous Function
@@ -547,7 +547,7 @@ const greetArrow = (name) => `Hey, ${name}!`;
 
 
 ## Call, Bind, and Apply
-**Description:** Los métodos `call`, `bind` y `apply` permiten definir explícitamente el valor de `this` y cómo pasar argumentos al llamar a una función.
+**Description:** Los métodos que permiten definir explícitamente el valor de `this` y cómo pasar argumentos al llamar a una función.
 
 **Comparison:**
 | Método   | ¿Ejecuta la función de inmediato? | Forma de pasar argumentos | Uso típico |
@@ -665,7 +665,7 @@ class Component {
 ## Módulos
 
 **Description**  
-Los sistemas de módulos permiten dividir el código en partes independientes y reutilizables. En JavaScript, los tres sistemas de módulos más usados son: ES Modules (ESM), CommonJS (CJS) y AMD (Asynchronous Module Definition). Cada uno tiene su propia sintaxis, forma de cargar los módulos y soporte en distintas plataformas.
+Permiten dividir el código en partes independientes y reutilizables. En JavaScript, los tres sistemas de módulos más usados son: ES Modules (ESM), CommonJS (CJS) y AMD (Asynchronous Module Definition). Cada uno tiene su propia sintaxis, forma de cargar los módulos y soporte en distintas plataformas.
 
 **Comparison**
 
@@ -695,7 +695,7 @@ console.log(suma(2, 3)); // 5
 ```
 
 ## Template Strings
-**Description:** Las *template strings* usan comillas invertidas y permiten insertar variables, expresiones y saltos de línea fácilmente.
+**Description:** Usan comillas invertidas y permiten insertar variables, expresiones y saltos de línea fácilmente.
 **Example:**
 ```javascript
 const name = 'John';
@@ -773,7 +773,7 @@ const renderCard = (title, items) => `
 ```
 
 ## Exception Handling
-**Description:** El manejo de excepciones permite capturar y responder a errores con `try`, `catch` y `finally`, evitando que el programa falle.
+**Description:** permite capturar y responder a errores con `try`, `catch` y `finally`, evitando que el programa falle.
 **Example:**
 ```javascript
 // Basic try-catch-finally
@@ -962,7 +962,7 @@ for (const value of iterable) {
 
 
 ## Promises
-**Description:** Una promesa representa una operación asíncrona que puede completarse con éxito o error. Facilita el manejo de código asíncrono.
+**Description:** Representa una operación asíncrona que puede completarse con éxito o error. Facilita el manejo de código asíncrono.
 
 **Example:**
 ```javascript
@@ -1130,7 +1130,7 @@ Promise.any([
 ```
 
 ## Prototype
-**Description:** El *prototype* es el mecanismo de herencia en JavaScript donde objetos pueden compartir propiedades y métodos.
+**Description:** Es el mecanismo de herencia en JavaScript donde objetos pueden compartir propiedades y métodos.
 
 **Example:**
 ```javascript
@@ -1198,7 +1198,7 @@ const modernDog = new ModernDog("Buddy", "Golden Retriever");
 ```
 
 ## Debounce
-**Description:** *Debounce* retrasa la ejecución de una función hasta que pasa un tiempo sin que vuelva a llamarse, útil para optimizar eventos frecuentes. Casos de uso: Search inputs, form validation, window resize handlers, API calls triggered by user input.
+**Description:** Retrasa la ejecución de una función hasta que pasa un tiempo sin que vuelva a llamarse, útil para optimizar eventos frecuentes. Casos de uso: Search inputs, form validation, window resize handlers, API calls triggered by user input.
 
 **Example:**
 ```javascript
@@ -1236,7 +1236,7 @@ window.addEventListener('resize', debouncedResize);
 
 
 ## Throttle
-**Description:** *Throttle* limita la frecuencia con la que una función puede ejecutarse durante un intervalo de tiempo. Casos de uso: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
+**Description:** limita la frecuencia con la que una función puede ejecutarse durante un intervalo de tiempo. Casos de uso: Scroll events, mouse movement tracking, button click prevention, animation frame updates, API calls that should execute at regular intervals.
 
 **Example:**
 ```javascript
@@ -1373,7 +1373,7 @@ const stopClock = startClock();
 
 
 ## Fetch
-**Description:** La API `fetch` permite hacer solicitudes HTTP de forma sencilla y devuelve promesas para manejar las respuestas.
+**Description:** La API  permite hacer solicitudes HTTP de forma sencilla y devuelve promesas para manejar las respuestas.
 
 **Example:**
 ```javascript
@@ -1445,7 +1445,7 @@ async function fetchUserData(userId) {
 ```
 
 ## Local Storage
-**Description:** El almacenamiento local guarda datos en el navegador sin fecha de expiración, accesibles incluso al cerrar y abrir el navegador. Casos de uso: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
+**Description:** Guarda datos en el navegador sin fecha de expiración, accesibles incluso al cerrar y abrir el navegador. Casos de uso: User preferences, shopping cart data, form data persistence, authentication tokens, cache data.
 
 **Example:**
 ```javascript
@@ -1507,7 +1507,7 @@ const storage = {
 ```
 
 ## Session Storage
-**Description:** Similar a localStorage, pero los datos se eliminan cuando se cierra la pestaña o ventana del navegador. Casos de uso: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
+**Description:** Los datos se eliminan cuando se cierra la pestaña o ventana del navegador. Casos de uso: Multi-step forms, temporary data, tab-specific state, navigation state, temporary user input.
 
 **Example:**
 ```javascript
@@ -1550,7 +1550,7 @@ sessionStorage.setItem('tabId', Math.random().toString(36));
 ```
 
 ## Cookies
-**Description:** Las cookies son pequeños datos que el navegador guarda y envía al servidor en cada petición HTTP al mismo dominio. Casos de uso: Authentication, user preferences, tracking, session management, cross-domain communication.
+**Description:** Son pequeños datos que el navegador guarda y envía al servidor en cada petición HTTP al mismo dominio. Casos de uso: Authentication, user preferences, tracking, session management, cross-domain communication.
 
 **Example:**
 ```javascript
@@ -1634,7 +1634,7 @@ console.log(allCookies);
 ```
 
 ## Web Workers
-**Description:** Los *Web Workers* permiten ejecutar código en segundo plano sin bloquear la interfaz del usuario. Casos de uso: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
+**Description:** Permiten ejecutar código en segundo plano sin bloquear la interfaz del usuario. Casos de uso: Heavy computations, image/video processing, data parsing, background sync, parallel algorithms.
 
 **Example:**
 ```javascript
@@ -1694,7 +1694,7 @@ sharedWorker.port.onmessage = function(e) {
 ```
 
 ## ECMAScript
-**Description:** ECMAScript es el estándar que define el lenguaje JavaScript y sus nuevas características.
+**Description:** Es el estándar que define el lenguaje JavaScript y sus nuevas características.
 
 **Example:**
 ```javascript
@@ -1789,7 +1789,7 @@ console.log(zero ?? 'default'); // 0
 ```
 
 ## Async/Await
-**Description:** `async` y `await` permiten manejar promesas con una sintaxis más clara y similar al código síncrono.
+**Description:** permiten manejar promesas con una sintaxis más clara y similar al código síncrono.
 **Example:**
 ```javascript
 // Basic async/await
@@ -2247,7 +2247,7 @@ class BinarySearchTree {
 
 
 ## Generators
-**Description:** Un generador es una función que puede pausarse y reanudarse, devolviendo múltiples valores bajo demanda.
+**Description:** Es una función que puede pausarse y reanudarse, devolviendo múltiples valores bajo demanda.
 **Example:**
 ```javascript
 // Basic generator
