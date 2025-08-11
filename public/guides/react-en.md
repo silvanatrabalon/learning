@@ -1,7 +1,7 @@
 # React - Learning Guide
 
 ## Props & State
-**Description:** Props are immutable data passed from parent to child components, while State is the mutable internal state of a component that can change over time.
+**Description:** Props are immutable data passed from parent components to child components, while State is the internal mutable state of a component that can change over time.
 
 **Example:**
 ```javascript
@@ -46,7 +46,7 @@ function Counter() {
   );
 }
 
-// Component usage with props
+// Using component with props
 function App() {
   const users = [
     { id: 1, name: "Ana García", email: "ana@email.com", avatar: "/avatars/ana.jpg" },
@@ -69,7 +69,14 @@ function App() {
 }
 ```
 
-**Comparison:** Props vs State - Props are immutable and flow downward, state is mutable and local to the component. Props enable communication between components, state manages internal data.
+**Comparison:** 
+| Concept           | Props                                         | State                              |
+|-------------------|-----------------------------------------------|----------------------------------|
+| Mutability        | Immutable                                    | Mutable                          |
+| Data flow         | Flow downward (from parent to child component) | Local to component               |
+| Purpose           | Communication between components             | Internal data management         |
+| Modification      | Cannot be modified by the receiving component | Can be modified within the component |
+
 
 ## Presentational vs Container Components
 **Description:** Presentational components focus on how things look (UI), while container components focus on how things work (business logic and state).
@@ -89,7 +96,7 @@ function ProductCard({ product, onAddToCart, isLoading }) {
         disabled={isLoading}
         className="add-to-cart-btn"
       >
-        {isLoading ? 'Adding...' : 'Add to Cart'}
+        {isLoading ? 'Adding...' : 'Add to cart'}
       </button>
     </div>
   );
@@ -129,6 +136,7 @@ function ProductContainer({ productId }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId: id, quantity: 1 })
       });
+      // Show success notification
       alert('Product added to cart');
     } catch (err) {
       alert('Error adding to cart');
@@ -167,7 +175,7 @@ function ProductsList() {
 **Comparison:** Presentational vs Container - Presentational components are more reusable and easier to test, containers handle complex logic. This separation improves maintainability and code architecture.
 
 ## Data Binding / Lifting State
-**Description:** Technique for sharing state between sibling components by lifting state to the common parent component and passing it down through props.
+**Description:** Technique to share state between sibling components by lifting the state to the common parent component and passing it down through props.
 
 **Example:**
 ```javascript
@@ -229,7 +237,7 @@ function UserProfile({ user, onUpdateUser }) {
   );
 }
 
-// Child component showing statistics
+// Child component that displays statistics
 function UserStats({ user, activities }) {
   const userActivities = activities.filter(activity => activity.userId === user.id);
   
@@ -252,7 +260,7 @@ function UserStats({ user, activities }) {
   );
 }
 
-// Parent component managing lifted state
+// Parent component that manages lifted state
 function UserDashboard() {
   // Lifted state - shared between child components
   const [user, setUser] = useState({
@@ -344,7 +352,7 @@ function useUser() {
 }
 ```
 
-**Comparison:** Lifting State vs Context API - Lifting state is ideal for few component levels, Context API is better for global state that needs to be accessed by many components scattered throughout the tree.
+**Comparison:** Lifting State vs Context API - Lifting state is ideal for few component levels, Context API is better for global state that needs to be accessed by many dispersed components in the tree.
 
 ## Virtual DOM & Keys
 **Description:** The Virtual DOM is an in-memory representation of the real DOM that React uses to optimize updates. Keys help React identify which elements have changed.
@@ -367,7 +375,7 @@ function BadTodoList() {
       text: `New task ${todos.length + 1}`,
       completed: false
     };
-    setTodos([newTodo, ...todos]); // Adding to beginning
+    setTodos([newTodo, ...todos]); // Adding to the beginning
   };
 
   const deleteTodo = (id) => {
@@ -403,7 +411,7 @@ function BadTodoList() {
   );
 }
 
-// Correct example - with proper keys
+// Correct example - with appropriate keys
 function GoodTodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: 'Learn React', completed: false },
@@ -432,7 +440,7 @@ function GoodTodoList() {
 
   return (
     <div>
-      <h3>✅ CORRECT Example (with proper keys)</h3>
+      <h3>✅ CORRECT Example (with appropriate keys)</h3>
       <button onClick={addTodo}>Add task</button>
       <ul>
         {todos.map(todo => (
@@ -461,7 +469,7 @@ function GoodTodoList() {
   );
 }
 
-// Virtual DOM optimization example
+// Optimization example with Virtual DOM
 function OptimizedList() {
   const [items, setItems] = useState(
     Array.from({ length: 1000 }, (_, i) => ({
@@ -553,7 +561,7 @@ function PerformanceComparison() {
 }
 ```
 
-**Comparison:** Virtual DOM vs Real DOM - Virtual DOM allows React to make efficient updates by comparing virtual versions before touching the real DOM. Correct keys prevent unnecessary re-renders and maintain component state.
+**Comparison:** Virtual DOM vs Real DOM - The Virtual DOM allows React to make efficient updates by comparing virtual versions before touching the real DOM. Correct keys prevent unnecessary re-renders and maintain component state.
 
 ## useState Hook
 **Description:** Fundamental hook for adding local state to functional components, providing a state value and a function to update it.
@@ -562,7 +570,7 @@ function PerformanceComparison() {
 ```javascript
 import React, { useState } from 'react';
 
-// Basic useState usage
+// Basic usage of useState
 function SimpleCounter() {
   const [count, setCount] = useState(0);
 
@@ -845,7 +853,7 @@ function TodoApp() {
 
 // useState with lazy initialization
 function ExpensiveComponent() {
-  // The function only executes once, on first render
+  // Function only executes once, on first render
   const [expensiveValue, setExpensiveValue] = useState(() => {
     console.log('Expensive calculation executed');
     // Simulate expensive calculation
@@ -892,10 +900,10 @@ function UseStateExample() {
 }
 ```
 
-**Comparison:** useState vs Normal Variable - useState persists the value between re-renders and triggers updates when changed, while normal variables reset on each render and don't cause updates.
+**Comparison:** useState vs Normal variable - useState persists the value between re-renders and triggers updates when it changes, while normal variables reset on each render and don't cause updates.
 
 ## useEffect Hook
-**Description:** Hook for managing side effects in functional components, such as API calls, subscriptions, DOM manipulation, and resource cleanup.
+**Description:** Hook for handling side effects in functional components, such as API calls, subscriptions, DOM manipulation, and resource cleanup.
 
 **Example:**
 ```javascript
@@ -905,7 +913,7 @@ import React, { useState, useEffect } from 'react';
 function BasicEffect() {
   const [count, setCount] = useState(0);
 
-  // Runs after every render
+  // Executes after every render
   useEffect(() => {
     document.title = `Counter: ${count}`;
     console.log('useEffect executed, count:', count);
@@ -927,7 +935,7 @@ function EffectWithDependencies() {
   const [userId, setUserId] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // Only runs when userId changes
+  // Only executes when userId changes
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
@@ -949,7 +957,7 @@ function EffectWithDependencies() {
     };
 
     fetchUser();
-  }, [userId]); // Only runs when userId changes
+  }, [userId]); // Only executes when userId changes
 
   return (
     <div style={{ padding: '20px', border: '1px solid #ddd', margin: '10px 0' }}>
@@ -1004,7 +1012,7 @@ function TimerComponent() {
         console.log('Timer cleaned up');
       }
     };
-  }, [isActive]); // Runs when isActive changes
+  }, [isActive]); // Executes when isActive changes
 
   const toggle = () => setIsActive(!isActive);
   const reset = () => {
@@ -1033,7 +1041,7 @@ function OnMountEffect() {
   const [data, setData] = useState(null);
   const [renderCount, setRenderCount] = useState(0);
 
-  // Only runs once, when component mounts
+  // Only executes once, when component mounts
   useEffect(() => {
     console.log('Component mounted - only once');
     
@@ -1048,9 +1056,9 @@ function OnMountEffect() {
     };
 
     fetchData();
-  }, []); // Empty array = only runs on mount
+  }, []); // Empty array = only executes on mount
 
-  // This useEffect runs on every render
+  // This useEffect executes on every render
   useEffect(() => {
     setRenderCount(prev => prev + 1);
   });
@@ -1075,7 +1083,7 @@ function OnMountEffect() {
   );
 }
 
-// Multiple useEffects to separate concerns
+// Multiple useEffect to separate concerns
 function MultipleEffects() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [online, setOnline] = useState(navigator.onLine);
@@ -1219,4 +1227,772 @@ function UseEffectExamples() {
 }
 ```
 
-**Comparison:** useEffect vs class lifecycle methods - useEffect combines componentDidMount, componentDidUpdate, and componentWillUnmount in a single API, enabling better logical organization and less repetitive code.
+**Comparison:** useEffect vs class lifecycle methods - useEffect combines componentDidMount, componentDidUpdate, and componentWillUnmount into a single API, allowing better logical organization and less repetitive code.
+| Dependency Array           | Behavior                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------- |
+| No dependency array        | Runs **after every render**, including the first one.                                   |
+| Empty array `[]`           | Runs **only once** after the first render (when the component mounts).                  |
+| Array with state variables | Runs **after the first render** and **whenever any of the listed dependencies change**. |
+
+
+## useCallback & useMemo
+**Description:**  
+- **useCallback**: Memoizes a function so it's not recreated on every render, avoiding unnecessary renders in child components.  
+- **useMemo**: Memoizes the result of an expensive calculation to avoid recalculating it on every render.  
+
+**Example:**
+```javascript
+import React, { useState, useCallback, useMemo } from 'react';
+
+function ExpensiveList({ items, onItemClick }) {
+  console.log('Rendering list...');
+  return (
+    <ul>
+      {items.map(item => (
+        <li key={item.id} onClick={() => onItemClick(item.id)}>
+          {item.name}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const MemoizedList = React.memo(ExpensiveList);
+
+function App() {
+  const [count, setCount] = useState(0);
+  const [filter, setFilter] = useState('');
+
+  const items = useMemo(() => {
+    console.log('Filtering items...');
+    return [
+      { id: 1, name: 'Apple' },
+      { id: 2, name: 'Banana' },
+      { id: 3, name: 'Cherry' }
+    ].filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
+  }, [filter]);
+
+  const handleItemClick = useCallback((id) => {
+    alert(`Clicked on item ${id}`);
+  }, []);
+
+  return (
+    <div>
+      <h3>useCallback & useMemo</h3>
+      <input
+        value={filter}
+        onChange={e => setFilter(e.target.value)}
+        placeholder="Filter..."
+      />
+      <MemoizedList items={items} onItemClick={handleItemClick} />
+      <button onClick={() => setCount(count + 1)}>Increment ({count})</button>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+| Hook         | Main use                                    | Memoizes |
+|--------------|---------------------------------------------|----------|
+| useCallback  | Functions                                   | Yes      |
+| useMemo      | Values/expensive calculations               | Yes      |
+
+---
+
+## React.memo
+**Description:**  
+`React.memo` is a function that wraps a component so it only re-renders if its props change.
+
+**Example:**
+```javascript
+import React from 'react';
+
+const Child = React.memo(({ value }) => {
+  console.log('Rendering Child...');
+  return <div>Value: {value}</div>;
+});
+
+function Parent() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    <div>
+      <Child value="Constant" />
+      <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+React.memo ≈ PureComponent for functional components. Prevents unnecessary renders if props don't change.
+
+## New Hooks in React 19
+**Description:**  
+React 19 introduces new hooks like:  
+- **useOptimistic**: To show immediate UI changes before server confirmation.  
+- **useFormStatus** and **useFormState**: Form handling with transitions and state.  
+
+**Example:**
+```javascript
+import { useOptimistic, useState } from 'react';
+
+function CommentForm({ onSubmit }) {
+  const [comments, setComments] = useState([]);
+  const [optimisticComments, addOptimisticComment] = useOptimistic(
+    comments,
+    (state, newComment) => [...state, newComment]
+  );
+
+  const handleSubmit = async (text) => {
+    addOptimisticComment({ id: Date.now(), text });
+    await onSubmit(text); // Simulate API call
+  };
+
+  return (
+    <div>
+      <ul>
+        {optimisticComments.map(c => (
+          <li key={c.id}>{c.text}</li>
+        ))}
+      </ul>
+      <button onClick={() => handleSubmit('New comment')}>
+        Add comment
+      </button>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+The new hooks in React 19 are focused on **more responsive UI**, **better form handling**, and **optimistic updates**.
+
+
+## useRef
+**Description:**  
+Allows creating a mutable reference that persists between renders without triggering re-renders when changed.
+
+**Example:**
+```javascript
+import React, { useRef } from 'react';
+
+function FocusInput() {
+  const inputRef = useRef();
+
+  const focusInput = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} placeholder="Write something..." />
+      <button onClick={focusInput}>Focus</button>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+useRef ≠ state. Changing `.current` doesn't re-render the component.
+
+## useContext / Context API
+**Description:**  
+Allows sharing global state and functions without manually passing props.
+
+**Example:**
+```javascript
+import React, { createContext, useContext, useState } from 'react';
+
+const ThemeContext = createContext();
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+function ThemeButton() {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  return (
+    <button onClick={toggleTheme}>
+      Current theme: {theme}
+    </button>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <ThemeButton />
+    </ThemeProvider>
+  );
+}
+```
+
+**Comparison:**  
+Context API avoids **prop drilling** (passing props through multiple levels).
+
+
+## React Router (v6+)
+**Description:**  
+Standard library for handling routes in React SPA applications, enabling declarative navigation.
+
+**Example:**
+```javascript
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useParams } from 'react-router-dom';
+
+function Home() {
+  return <h2>Home Page</h2>;
+}
+
+function About() {
+  return <h2>About</h2>;
+}
+
+function User() {
+  const { id } = useParams();
+  return <h3>User ID: {id}</h3>;
+}
+
+export default function App() {
+  return (
+    <Router>
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/about">About</Link> | 
+        <Link to="/user/42">User</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/user/:id" element={<User />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+**Comparison:**  
+React Router vs Manual navigation: React Router manages history and updates UI declaratively.
+
+## React Query
+**Description:**  
+Library for remote data management (fetching, caching, synchronization), optimizing API calls.
+
+**Example:**
+```javascript
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+async function fetchPosts() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+  return res.json();
+}
+
+function Posts() {
+  const { data, error, isLoading } = useQuery(['posts'], fetchPosts);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
+
+  return (
+    <ul>
+      {data.slice(0, 5).map(post => (
+        <li key={post.id}>{post.title}</li>
+      ))}
+    </ul>
+  );
+}
+
+export default Posts;
+```
+
+**Comparison:**  
+React Query vs useEffect + useState: React Query handles caching, retries, invalidation, and data synchronization automatically.
+
+## Suspense and Lazy Loading
+**Description:**  
+Allows loading components lazily and showing a fallback while they load.
+
+**Example:**
+```javascript
+import React, { Suspense, lazy } from 'react';
+
+const HeavyComponent = lazy(() => import('./HeavyComponent'));
+
+function App() {
+  return (
+    <div>
+      <h1>Lazy Loading Example</h1>
+      <Suspense fallback={<p>Loading heavy component...</p>}>
+        <HeavyComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+Suspense + lazy avoids loading all code at once, improving initial performance.
+
+## Error Boundaries
+**Description:**  
+Components that catch errors in their children and show a fallback.
+
+**Example:**
+```javascript
+import React from 'react';
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    console.error("Error caught:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <h2>An error occurred in the component.</h2>;
+    }
+    return this.props.children;
+  }
+}
+
+function ProblematicComponent() {
+  throw new Error('Example Error');
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <ProblematicComponent />
+    </ErrorBoundary>
+  );
+}
+```
+
+**Comparison:**  
+Error boundaries only work for rendering errors and lifecycle, not for events or async.
+
+## Portals
+**Description:**  
+Render content outside the parent component's DOM.
+
+**Example:**
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+function Modal({ children }) {
+  return ReactDOM.createPortal(
+    <div className="modal">{children}</div>,
+    document.getElementById('modal-root')
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <h1>Main app</h1>
+      <Modal>
+        <p>This is a modal</p>
+      </Modal>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+Portals are useful for modals, tooltips, notifications that need to break the z-index flow.
+
+## Render Props
+**Description:**  
+Pattern where a component receives a function as a prop to decide what to render.
+
+**Example:**
+```javascript
+function DataProvider({ render }) {
+  const data = { user: 'John', age: 30 };
+  return render(data);
+}
+
+export default function App() {
+  return (
+    <DataProvider render={(data) => (
+      <p>User: {data.user} - Age: {data.age}</p>
+    )} />
+  );
+}
+```
+
+**Comparison:**  
+Render props allow high logic reusability, similar to custom hooks but in props pattern.
+
+
+## High Order Components (HOC)
+**Description:**  
+An HOC is a function that receives a component and returns a new component with additional functionality, without modifying the original component.  
+Used to reuse logic between multiple components.
+
+**Example:**
+```javascript
+import React from 'react';
+
+// HOC that adds loading functionality
+function withLoading(Component) {
+  return function WrappedComponent({ isLoading, ...props }) {
+    if (isLoading) return <p>Loading...</p>;
+    return <Component {...props} />;
+  };
+}
+
+// Base component
+function UserList({ users }) {
+  return (
+    <ul>
+      {users.map(user => <li key={user.id}>{user.name}</li>)}
+    </ul>
+  );
+}
+
+// Enhanced component with HOC
+const UserListWithLoading = withLoading(UserList);
+
+export default function App() {
+  const users = [
+    { id: 1, name: 'Ana' },
+    { id: 2, name: 'Luis' }
+  ];
+
+  return (
+    <div>
+      <h3>HOC Example</h3>
+      <UserListWithLoading isLoading={false} users={users} />
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+| Concept | Characteristics                                    |
+| ------- | -------------------------------------------------- |
+| HOC     | Reuses logic by wrapping components                |
+| Hooks   | Reuses logic within functional components          |
+
+## Custom Hook
+**Description:** 
+A custom hook is a JavaScript function whose name starts with use and can call other React hooks.
+Used to extract reusable logic from components and share it between several.
+
+**Example:**
+```javascript
+import React, { useState, useEffect } from 'react';
+
+// Custom hook to fetch data from an API
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancel = false;
+
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Request error');
+        const json = await res.json();
+        if (!cancel) setData(json);
+      } catch (err) {
+        if (!cancel) setError(err.message);
+      } finally {
+        if (!cancel) setLoading(false);
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      cancel = true; // prevents state update if component unmounts
+    };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+// Using the custom hook
+function PostsList() {
+  const { data: posts, loading, error } = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=5');
+
+  if (loading) return <p>Loading posts...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  return (
+    <ul>
+      {posts.map(p => (
+        <li key={p.id}>{p.title}</li>
+      ))}
+    </ul>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <h3>Custom Hook Example</h3>
+      <PostsList />
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+| Concept | Characteristics                                    |
+| ------- | -------------------------------------------------- |
+| HOC     | Reuses logic by wrapping components                |
+| Hooks   | Reuses logic within functional components          |
+
+## useReducer
+**Description:**  
+Hook for managing complex states using a Redux-like pattern, where updates are performed through actions and a reducer.
+
+**Example:**
+```javascript
+import React, { useReducer } from 'react';
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    case 'reset':
+      return { count: 0 };
+    default:
+      throw new Error();
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    <div>
+      <p>Counter: {state.count}</p>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+    </div>
+  );
+}
+```
+
+**Comparison:**  
+useReducer is preferable when state update logic is complex or involves multiple sub-values.
+
+## useTransition and useDeferredValue
+**Description:**  
+Hooks for handling concurrent updates and keeping UI responsive.
+
+**Example:**
+```javascript
+// (useTransition)
+import React, { useState, useTransition } from 'react';
+
+export default function FilterList() {
+  const [input, setInput] = useState('');
+  const [list, setList] = useState([]);
+  const [isPending, startTransition] = useTransition();
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+    startTransition(() => {
+      const filtered = Array.from({ length: 20000 }, (_, i) => `Item ${i}`)
+        .filter(item => item.includes(value));
+      setList(filtered);
+    });
+  };
+
+  return (
+    <div>
+      <input value={input} onChange={handleChange} placeholder="Filter..." />
+      {isPending && <p>Filtering...</p>}
+      <ul>{list.map((item, i) => <li key={i}>{item}</li>)}</ul>
+    </div>
+  );
+}
+
+// (useDeferredValue)
+import React, { useState, useDeferredValue } from 'react';
+
+export default function DeferredList() {
+  const [input, setInput] = useState('');
+  const deferredInput = useDeferredValue(input);
+
+  const list = Array.from({ length: 20000 }, (_, i) => `Item ${i}`)
+    .filter(item => item.includes(deferredInput));
+
+  return (
+    <div>
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
+      <ul>{list.map((item, i) => <li key={i}>{item}</li>)}</ul>
+    </div>
+  );
+}
+```
+
+
+## Server Components
+**Description:**  
+Components that render on the server and send pre-built HTML to the client. They reduce the JavaScript size sent to the browser and improve performance.
+- Don't include JS code on the client.
+- Don't have state hooks or effects.
+- Can directly access databases or private APIs.
+
+**Comparison:**  
+Server Components ≠ traditional SSR. Server Components don't send JS for interaction, SSR does.
+
+## Testing in React
+**Description:**  
+Used to validate that components work as expected. Tools like React Testing Library and Jest allow unit and integration testing.
+
+**Example:**
+```javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import Counter from './Counter';
+
+test('increments the counter', () => {
+  render(<Counter />);
+  fireEvent.click(screen.getByText('+'));
+  expect(screen.getByText(/Counter:/)).toHaveTextContent('1');
+});
+```
+
+### Compound Components
+**Description:**  
+Allow creating components that work together, sharing common state without prop drilling.
+
+**Example:**
+```javascript
+import React, { createContext, useContext, useState } from 'react';
+
+const TabsContext = createContext();
+
+function Tabs({ children }) {
+  const [active, setActive] = useState(0);
+  return (
+    <TabsContext.Provider value={{ active, setActive }}>
+      <div>{children}</div>
+    </TabsContext.Provider>
+  );
+}
+
+function TabList({ children }) {
+  return <div>{children}</div>;
+}
+
+function Tab({ index, children }) {
+  const { active, setActive } = useContext(TabsContext);
+  return (
+    <button
+      style={{ fontWeight: active === index ? 'bold' : 'normal' }}
+      onClick={() => setActive(index)}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TabPanels({ children }) {
+  const { active } = useContext(TabsContext);
+  return <div>{children[active]}</div>;
+}
+
+Tabs.List = TabList;
+Tabs.Tab = Tab;
+Tabs.Panels = TabPanels;
+
+export default function App() {
+  return (
+    <Tabs>
+      <Tabs.List>
+        <Tabs.Tab index={0}>One</Tabs.Tab>
+        <Tabs.Tab index={1}>Two</Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panels>
+        <div>Content 1</div>
+        <div>Content 2</div>
+      </Tabs.Panels>
+    </Tabs>
+  );
+}
+```
+
+## Performance Optimization
+**Description:**  
+Techniques and tools to improve rendering speed and user experience.
+- **React.memo** to avoid unnecessary renders.
+- **Code splitting** with `React.lazy` and `Suspense`.
+- **List virtualization** with `react-window`.
+
+**Example:**
+```javascript
+import { FixedSizeList as List } from 'react-window';
+
+export default function VirtualizedList() {
+  const items = Array.from({ length: 10000 }, (_, i) => `Item ${i}`);
+
+  return (
+    <List
+      height={400}
+      itemCount={items.length}
+      itemSize={35}
+      width={300}
+    >
+      {({ index, style }) => <div style={style}>{items[index]}</div>}
+    </List>
+  );
+}
+```
+
+## Internationalization (i18n)
+**Description:**  
+Allows supporting multiple languages and date/number formats in an app.
+
+**Example:**
+```javascript
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
+function MyComponent() {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <div>
+      <p>{t('welcome_message')}</p>
+      <button onClick={() => i18n.changeLanguage('es')}>ES</button>
+      <button onClick={() => i18n.changeLanguage('en')}>EN</button>
+    </div>
+  );
+}
+
+export default MyComponent;
+```
+
+**Comparison:**  
+i18n ≠ simple text translation; it also includes date formats, currencies, and pluralization.
