@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { SiJavascript, SiNextdotjs, SiNestjs, SiNodedotjs, SiGit, SiReact, SiTypescript } from 'react-icons/si'
-import { FaBuilding, FaUniversalAccess, FaTools, FaCogs, FaVial, FaMobile } from 'react-icons/fa'
+import { FaBuilding, FaUniversalAccess, FaTools, FaCogs, FaVial, FaMobile, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import SearchBar from '../components/SearchBar'
 import TopicSelector from '../components/TopicSelector'
 import MultiTopicDropdown from '../components/MultiTopicDropdown'
@@ -221,6 +221,38 @@ function StartLearning() {
     return exampleLines.join('\n')
   }
 
+  // Navigation functions for concept display
+  const getAllConcepts = () => {
+    return Object.values(contentIndices).flat()
+  }
+
+  const getCurrentConceptIndex = () => {
+    if (!selectedConcept) return -1
+    const allConcepts = getAllConcepts()
+    return allConcepts.findIndex(concept => concept.id === selectedConcept.id)
+  }
+
+  const navigateToConcept = (direction) => {
+    const allConcepts = getAllConcepts()
+    const currentIndex = getCurrentConceptIndex()
+    
+    if (currentIndex === -1) return
+    
+    let newIndex
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % allConcepts.length // Wrap to beginning
+    } else {
+      newIndex = currentIndex === 0 ? allConcepts.length - 1 : currentIndex - 1 // Wrap to end
+    }
+    
+    const newConcept = allConcepts[newIndex]
+    handleConceptSelect(newConcept)
+  }
+
+  const canNavigate = () => {
+    return getAllConcepts().length > 1 && selectedConcept
+  }
+
   return (
     <div className="start-learning">
       <header className="learning-header">
@@ -293,7 +325,6 @@ function StartLearning() {
             <div className="concept-display">
               <div className="concept-header">
                 <div className="concept-title">
-                  <h2>{selectedConcept.title}</h2>
                   {selectedConcept.topicName && (
                     <span className="concept-topic-badge">
                       {selectedConcept.topicIcon} {selectedConcept.topicName}
@@ -301,6 +332,29 @@ function StartLearning() {
                   )}
                 </div>
                 <div className="concept-actions">
+                  {canNavigate() && (
+                    <div className="concept-navigation">
+                      <button 
+                        onClick={() => navigateToConcept('previous')}
+                        className="nav-btn prev-btn"
+                        title="Previous concept"
+                      >
+                        <FaChevronLeft />
+                        <span>Previous</span>
+                      </button>
+                      <span className="concept-position">
+                        {getCurrentConceptIndex() + 1} of {getAllConcepts().length}
+                      </span>
+                      <button 
+                        onClick={() => navigateToConcept('next')}
+                        className="nav-btn next-btn"
+                        title="Next concept"
+                      >
+                        <span>Next</span>
+                        <FaChevronRight />
+                      </button>
+                    </div>
+                  )}
                   <button 
                     onClick={() => setShowExampleModal(true)}
                     className="example-toggle-btn"
